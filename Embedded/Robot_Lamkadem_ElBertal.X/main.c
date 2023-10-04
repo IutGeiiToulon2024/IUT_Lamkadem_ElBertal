@@ -12,6 +12,7 @@
 #include "IO.h"
 #include "timer.h"
 #include "PWM.h"
+#include "ADC.h"
 
 int main(void)
 {
@@ -23,6 +24,7 @@ int main(void)
 
     /****************************************************************************************************/
     InitOscillator();
+    InitADC1();
     /****************************************************************************************************/
     // Configuration des éentres sorties
     /****************************************************************************************************/
@@ -37,10 +39,21 @@ int main(void)
     /****************************************************************************************************/
     // Boucle Principale
     /****************************************************************************************************/
+    unsigned int * result; 
+    float val1;
+    float val2;
+    float val3;
+    
     while (1) {
-        //    LED_BLANCHE = !LED_BLANCHE;
-        //    LED_BLEUE = !LED_BLEUE;
-        //    LED_ORANGE = !LED_ORANGE;
+        if (ADCIsConversionFinished()){
+            result = ADCGetResult();
+            val1 = result[0];
+            val2 = result[1];
+            val3 = result[2];
+            ADCClearConversionFinishedFlag();
+            LED_ORANGE = 1;
+        }
+        
     } // fin main
 }
 
