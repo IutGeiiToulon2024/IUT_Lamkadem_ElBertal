@@ -13,25 +13,35 @@
 #include "timer.h"
 #include "PWM.h"
 #include "ADC.h"
+#include "robot.h"
+
+unsigned int * result; 
+int ADCValue0 = 0;
+int ADCValue1 = 0;
+int ADCValue2 = 0;
 
 int main(void)
 {
-    // Initialisation des timers
-    InitTimer23();
-    InitTimer1();
+    
     /***************************************************************************************************/
     //Initialisation de l?oscillateur
 
     /****************************************************************************************************/
     InitOscillator();
-    InitADC1();
+    
+    InitIO();
+    
+    
+    InitADC1();// Initialisation des timers
+    InitTimer23();
+    InitTimer1();
     /****************************************************************************************************/
     // Configuration des éentres sorties
     /****************************************************************************************************/
-    InitIO();
-    LED_BLANCHE = 1;
-    LED_BLEUE = 1;
-    LED_ORANGE = 1;
+    
+    LED_BLANCHE = 0;
+    LED_BLEUE = 0;
+    LED_ORANGE = 0;
 
     InitPWM();
     //    PWMSetSpeed(20, MOTEUR_GAUCHE);
@@ -39,21 +49,60 @@ int main(void)
     /****************************************************************************************************/
     // Boucle Principale
     /****************************************************************************************************/
-    unsigned int * result; 
-    float val1;
-    float val2;
-    float val3;
+    
     
     while (1) {
-        if (ADCIsConversionFinished()){
-            result = ADCGetResult();
-            val1 = result[0];
-            val2 = result[1];
-            val3 = result[2];
+//        if (ADCIsConversionFinished()){
+//            result = ADCGetResult();
+//            ADCValue0 = result[0];
+//            ADCValue1 = result[1];
+//            ADCValue2 = result[2];
+//            LED_ORANGE = !LED_ORANGE;
+//            for(int i = 0; i < 2; i++){
+//                
+//            }
+            
+//            ADCClearConversionFinishedFlag();
+        
+        if (ADCIsConversionFinished() == 1)
+        {
             ADCClearConversionFinishedFlag();
-            LED_ORANGE = 1;
+
+            unsigned int * result = ADCGetResult();
+            float volts = ((float) result [2])* 3.3 / 4096 * 3.2;
+            robotState.distanceTelemetreGauche = 34/volts - 5;
+            volts = ((float) result [1])* 3.3 / 4096 * 3.2;
+            robotState.distanceTelemetreCentre = 34/volts - 5;
+            volts = ((float) result [0])* 3.3 / 4096 * 3.2;
+            robotState.distanceTelemetreDroit = 34/volts - 5;
+            
+            if(robotState.distanceTelemetreDroit > 30)
+            {
+                LED_ORANGE = 1 ;
+            }
+            else
+            {
+                LED_ORANGE = 0;
+            }
+            if(robotState.distanceTelemetreGauche > 30)
+            {
+                LED_BLANCHE = 1 ;
+            }
+            else
+            {
+                LED_BLANCHE = 0 ;
+            }
+            if(robotState.distanceTelemetreCentre > 30)
+            {
+                LED_BLEUE = 1 ;
+            }
+            else
+            {
+                LED_BLEUE = 0 ;
+            }
         }
+      }
         
     } // fin main
-}
+
 

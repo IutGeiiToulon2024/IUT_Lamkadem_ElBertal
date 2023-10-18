@@ -1,5 +1,5 @@
 #include <xc.h>
-#include "adc.h"
+#include "ADC.h"
 unsigned char ADCResultIndex = 0;
 static unsigned int ADCResult[4];
 unsigned char ADCConversionFinishedFlag;
@@ -45,15 +45,10 @@ void InitADC1(void)
     ANSELCbits.ANSC11 = 1;
     ANSELGbits.ANSG9 = 1;
     
-    
-    
-    
     AD1CSSLbits.CSS6=1; // Enable AN6 for scan
     AD1CSSLbits.CSS11=1; // Enable AN11 for scan
     AD1CSSHbits.CSS16=1; // Enable AN16 for scan
-    
-    
-    
+
     /* Assign MUXA inputs */
     AD1CHS0bits.CH0SA = 0;// CH0SA bits ignored for CH0 +ve input selection
     AD1CHS0bits.CH0NA = 0;// Select VREF- for CH0 -ve inpu
@@ -70,6 +65,7 @@ void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void)
     ADCResult[2] = ADC1BUF2;// Read the AN5 conversion result
     ADCConversionFinishedFlag = 1;
 }
+
 void ADC1StartConversionSequence()
 {
     AD1CON1bits.SAMP = 1 ; //Lance une acquisition ADC
