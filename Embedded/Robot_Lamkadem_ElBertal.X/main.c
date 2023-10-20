@@ -14,6 +14,7 @@
 #include "PWM.h"
 #include "ADC.h"
 #include "robot.h"
+#include "main.h"
 
 unsigned int * result; 
 int ADCValue0 = 0;
@@ -92,14 +93,14 @@ int main(void)
             {
                 LED_BLANCHE = 0 ;
             }
-            if(robotState.distanceTelemetreCentre > 30)
-            {
-                LED_BLEUE = 1 ;
-            }
-            else
-            {
-                LED_BLEUE = 0 ;
-            }
+//            if(robotState.distanceTelemetreCentre > 30)
+//            {
+//                LED_BLEUE = 1 ;
+//            }
+//            else
+//            {
+//                LED_BLEUE = 0 ;
+//            }
         }
       }
         

@@ -3,6 +3,7 @@
 #include "PWM.h"
 #include "Robot.h"
 #include "ToolBox.h"
+#include "main.h"
 
 #define PWMPER 40.0
 float  acceleration = 5;
@@ -97,15 +98,15 @@ void PWMUpdateSpeed()
     
     if (robotState.vitesseDroiteCommandeCourante > 0)
     {
-        MOTEUR_DROIT_L_PWM_ENABLE = 0; //pilotage de la pin en mode IO
-        MOTEUR_DROIT_L_IO_OUTPUT = 1; //Mise à1 de la pin
-        MOTEUR_DROIT_H_PWM_ENABLE = 1; //Pilotage de la pin en mode PWM
-    }
-    else
-    {
         MOTEUR_DROIT_H_PWM_ENABLE = 0; //pilotage de la pin en mode IO
         MOTEUR_DROIT_H_IO_OUTPUT = 1; //Mise à1 de la pin
         MOTEUR_DROIT_L_PWM_ENABLE = 1; //Pilotage de la pin en mode PWM
+    }
+    else
+    {
+        MOTEUR_DROIT_L_PWM_ENABLE = 0; //pilotage de la pin en mode IO
+        MOTEUR_DROIT_L_IO_OUTPUT = 1; //Mise à1 de la pin
+        MOTEUR_DROIT_H_PWM_ENABLE = 1; //Pilotage de la pin en mode PWM
     }
     MOTEUR_DROIT_DUTY_CYCLE = Abs(robotState.vitesseDroiteCommandeCourante)*PWMPER;
     if (robotState.vitesseGaucheCommandeCourante < robotState.vitesseGaucheConsigne)

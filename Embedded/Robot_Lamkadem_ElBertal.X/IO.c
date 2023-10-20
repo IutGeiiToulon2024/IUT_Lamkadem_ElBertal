@@ -4,7 +4,8 @@
 
 #include <xc.h>
 #include "IO.h"
-//#include "main.h"
+
+#include "main.h"
 
 void InitIO()
 {
