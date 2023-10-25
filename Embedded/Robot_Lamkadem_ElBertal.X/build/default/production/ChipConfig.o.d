@@ -1,1 +1,3 @@
-build/default/production/ChipConfig.o: ChipConfig.c
+build/default/production/ChipConfig.o: ChipConfig.c main.h
+
+main.h:
