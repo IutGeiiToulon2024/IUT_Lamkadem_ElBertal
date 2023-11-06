@@ -28,8 +28,17 @@ namespace InterfaceRobot
         public MainWindow()
         {
             InitializeComponent();
-            serialPort1 = new ReliableSerialPort("COM1", 115200, Parity.None, 8, StopBits.One);
+            serialPort1 = new ReliableSerialPort("COM4", 115200, Parity.None, 8, StopBits.One);
+            serialPort1.OnDataReceivedEvent += SerialPort1_OnDataReceivedEvent;
             serialPort1.Open();
+            
+
+        }
+
+        String receivedText ;
+        public void SerialPort1_OnDataReceivedEvent(object sender, DataReceivedArgs e)
+        {
+            receivedText += Encoding.UTF8.GetString(e.Data, 0, e.Data.Length);
         }
 
         bool toggle = true ;
@@ -63,8 +72,8 @@ namespace InterfaceRobot
 
         void SendMessage()
         {
-            textBoxReception.Text += "Reçu : " + textBoxEmission.Text;
-            textBoxEmission.Text = "";
+            //textBoxReception.Text += "Reçu : " + textBoxEmission.Text;
+            //textBoxEmission.Text = "";
             serialPort1.WriteLine(textBoxEmission.Text);
         }
 
