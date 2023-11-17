@@ -78,11 +78,11 @@ int main(void)
             } else {
                 LED_BLANCHE = 0;
             }
-            if (robotState.distanceTelemetreCentre > 30) {
-                LED_BLEUE = 1;
-            } else {
-                LED_BLEUE = 0;
-            }
+//            if (robotState.distanceTelemetreCentre > 30) {
+//                LED_BLEUE = 1;
+//            } else {
+//                LED_BLEUE = 0;
+//            }
         }
     }
 
@@ -142,6 +142,14 @@ void OperatingSystemLoop(void)
         case STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS:
             SetNextRobotStateInAutomaticMode();
             break;
+        case STATE_RALENTIR:
+            PWMSetSpeedConsigne(10, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(10, MOTEUR_GAUCHE);
+            stateRobot = STATE_RALENTIR_EN_COURS;
+            break;
+        case STATE_RALENTIR_EN_COURS:
+            SetNextRobotStateInAutomaticMode();
+            break;
         default:
             stateRobot = STATE_ATTENTE;
             break;
@@ -151,36 +159,47 @@ unsigned char nextStateRobot = 0;
 
 void SetNextRobotStateInAutomaticMode()
 {
-    unsigned char positionObstacle = PAS_D_OBSTACLE;
+    unsigned char positionObstacle = BIENTOT ;
     //éDtermination de la position des obstacles en fonction des ééètlmtres
     if ((robotState.distanceTelemetreExtremeDroit < 35 ||
             robotState.distanceTelemetreDroit < 45) &&
-            robotState.distanceTelemetreCentre > 35 &&
+            robotState.distanceTelemetreCentre > 45 &&
             robotState.distanceTelemetreGauche > 45 &&
             robotState.distanceTelemetreExtremeGauche > 35) //Obstacle à droite
         positionObstacle = OBSTACLE_A_DROITE;
     else if (robotState.distanceTelemetreExtremeDroit > 35 &&
             robotState.distanceTelemetreDroit > 45 &&
-            robotState.distanceTelemetreCentre > 35 &&
+            robotState.distanceTelemetreCentre > 45 &&
             (robotState.distanceTelemetreGauche < 45 ||
             robotState.distanceTelemetreExtremeGauche < 35)) //Obstacle à gauche
         positionObstacle = OBSTACLE_A_GAUCHE;
-    else if (robotState.distanceTelemetreCentre < 35) //Obstacle en face
-        positionObstacle = OBSTACLE_EN_FACE;
+    else if (robotState.distanceTelemetreCentre < 80){
+        if (robotState.distanceTelemetreCentre < 35) //Obstacle en face
+            positionObstacle = OBSTACLE_EN_FACE;
+        else if (robotState.distanceTelemetreCentre < 65){
+            positionObstacle = BIENTOT ;
+        }
+        else
+        {
+            positionObstacle = PAS_D_OBSTACLE ;
+        }
+    }
     else if (robotState.distanceTelemetreExtremeDroit > 35 &&
             robotState.distanceTelemetreDroit > 45 &&
-            robotState.distanceTelemetreCentre > 35 &&
+            robotState.distanceTelemetreCentre > 45 &&
             robotState.distanceTelemetreGauche > 45 &&
             robotState.distanceTelemetreExtremeGauche > 35) //pas d?obstacle
         positionObstacle = PAS_D_OBSTACLE;
-    //éDtermination de lé?tat àvenir du robot
+    //Détermination de lé?tat àvenir du robot
     if (positionObstacle == PAS_D_OBSTACLE)
         nextStateRobot = STATE_AVANCE;
     else if (positionObstacle == OBSTACLE_A_DROITE)
         nextStateRobot = STATE_TOURNE_GAUCHE;
     else if (positionObstacle == OBSTACLE_A_GAUCHE)
         nextStateRobot = STATE_TOURNE_DROITE;
-    else if (positionObstacle == OBSTACLE_EN_FACE)
+    else if (positionObstacle == BIENTOT)
+        nextStateRobot = STATE_RALENTIR;
+    else if (positionObstacle == OBSTACLE_EN_FACE){
         if(robotState.distanceTelemetreExtremeGauche > robotState.distanceTelemetreExtremeGauche)
         {
             nextStateRobot = STATE_TOURNE_SUR_PLACE_GAUCHE;
@@ -189,6 +208,7 @@ void SetNextRobotStateInAutomaticMode()
         {
             nextStateRobot = STATE_TOURNE_SUR_PLACE_DROITE ;
         }
+    }
         
     //Si l?on n?est pas dans la transition de lé?tape en cours
     if (nextStateRobot != stateRobot - 1)

@@ -6,7 +6,7 @@
 #include "main.h"
 
 #define PWMPER 40.0
-float  acceleration = 5;
+float  acceleration = 8;
 
 void InitPWM(void)
 {

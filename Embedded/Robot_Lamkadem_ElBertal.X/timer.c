@@ -6,15 +6,17 @@
 #include "ADC.h"
 #include "main.h"
 
-//Initialisation d?un timer 32 bits
+
 unsigned long timestamp ; 
+//Initialisation d?un timer 32 bits
+
 
 void InitTimer23(void)
 {
     T3CONbits.TON = 0; // Stop any 16-bit Timer3 operation
     T2CONbits.TON = 0; // Stop any 16/32-bit Timer3 operation
     T2CONbits.T32 = 1; // Enable 32-bit Timer mode
-    T2CONbits.TCS = 0; // Select internal instruction cycle clock
+   // T2CONbits.TCS = 0; // Select internal instruction cycle clock
     T2CONbits.TCKPS = 0b00; // Select 1:1 Prescaler
     TMR3 = 0x00; // Clear 32-bit Timer (msw)
     TMR2 = 0x00; // Clear 32-bit Timer (lsw)
@@ -33,7 +35,7 @@ unsigned char toggle = 0;
 void __attribute__((interrupt, no_auto_psv)) _T3Interrupt(void)
 {
     IFS0bits.T3IF = 0; // Clear Timer3 Interrupt Flag
-
+    
 }
 
 //Initialisation d?un timer 16 bits
@@ -43,13 +45,13 @@ void InitTimer1(void)
     //Timer1 pour horodater les mesures (1ms)
    
     T1CONbits.TON = 0; // Disable Timer
-//    T1CONbits.TCKPS = 0b01; //Prescaler
-    //11 = 1:256 prescale value
-    //10 = 1:64 prescale value
-    //01 = 1:8 prescale value
-    //00 = 1:1 prescale value
+    T1CONbits.TCKPS = 0b01; //Prescaler
+//    11 = 1:256 prescale value
+//    10 = 1:64 prescale value
+//    01 = 1:8 prescale value
+//    00 = 1:1 prescale value
     T1CONbits.TCS = 0; //clock source = internal clock
-//    PR1 = 0x1388;
+    PR1 = 0x1388;
     
     
     IFS0bits.T1IF = 0; // Clear Timer Interrupt Flag
@@ -126,4 +128,42 @@ void SetFreqTimer4(float freq)
             PR4 = (int) (FCY / freq / 8);
     } else
         PR4 = (int) (FCY / freq);
+}
+
+
+void InitTimer6(void)
+{
+    //Timer6 pour une rampe plus lente
+   
+    T6CONbits.TON = 0; // Disable Timer
+    T6CONbits.TCS = 0; //clock source = internal clock
+    IFS2bits.T6IF = 0; // Clear Timer Interrupt Flag
+    IEC2bits.T6IE = 1; // Enable Timer interrupt
+    T6CONbits.TON = 1; // Enable Timer
+    SetFreqTimer6(100.0);
+}
+
+void __attribute__((interrupt, no_auto_psv)) _T6Interrupt(void)
+{
+    IFS2bits.T6IF = 0;
+    LED_BLEUE = !LED_BLEUE ;
+    
+}
+
+void SetFreqTimer6(float freq)
+{
+    T6CONbits.TCKPS = 0b00; //00 = 1:1 prescaler value
+    if (FCY / freq > 65535) {
+        T6CONbits.TCKPS = 0b01; //01 = 1:8 prescaler value
+        if (FCY / freq / 8 > 65535) {
+            T6CONbits.TCKPS = 0b10; //10 = 1:64 prescaler value
+            if (FCY / freq / 64 > 65535) {
+                T6CONbits.TCKPS = 0b11; //11 = 1:256 prescaler value
+                PR6 = (int) (FCY / freq / 256);
+            } else
+                PR6 = (int) (FCY / freq / 64);
+        } else
+            PR6 = (int) (FCY / freq / 8);
+    } else
+        PR6 = (int) (FCY / freq);
 }
