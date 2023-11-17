@@ -68,17 +68,21 @@ int main(void)
             robotState.distanceTelemetreDroit = 34 / volts - 5;
 
 
-            if (robotState.distanceTelemetreDroit > 30) {
+            if (robotState.distanceTelemetreExtremeDroit > 30) {
                 LED_ORANGE = 1;
             } else {
                 LED_ORANGE = 0;
             }
-            if (robotState.distanceTelemetreGauche > 30) {
+            if (robotState.distanceTelemetreExtremeGauche > 30) {
                 LED_BLANCHE = 1;
             } else {
                 LED_BLANCHE = 0;
             }
-     
+            if (robotState.distanceTelemetreCentre > 30) {
+                LED_BLEUE = 1;
+            } else {
+                LED_BLEUE = 0;
+            }
         }
     }
 
