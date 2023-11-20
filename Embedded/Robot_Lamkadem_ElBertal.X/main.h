@@ -28,12 +28,19 @@
 #define STATE_RECULE_EN_COURS 15
 #define STATE_RALENTIR 16
 #define STATE_RALENTIR_EN_COURS 17
+#define STATE_RALENTIR_D 18
+#define STATE_RALENTIR_D_EN_COURS 19
+#define STATE_RALENTIR_G 20
+#define STATE_RALENTIR_G_EN_COURS 21
 
 #define PAS_D_OBSTACLE 0
 #define OBSTACLE_A_GAUCHE 1
 #define OBSTACLE_A_DROITE 2
 #define OBSTACLE_EN_FACE 3
 #define BIENTOT 4
+#define BIENTOT_D 5
+#define BIENTOT_G 6
+
 
 void OperatingSystemLoop(void) ;
 void SetNextRobotStateInAutomaticMode(void) ;
