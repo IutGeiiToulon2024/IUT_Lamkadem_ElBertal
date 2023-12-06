@@ -33,7 +33,7 @@ namespace InterfaceRobot
         public MainWindow()
         {
             InitializeComponent();
-            serialPort1 = new ReliableSerialPort("COM6", 115200, Parity.None, 8, StopBits.One);
+            serialPort1 = new ReliableSerialPort("COM14", 115200, Parity.None, 8, StopBits.One);
             serialPort1.OnDataReceivedEvent += SerialPort1_OnDataReceivedEvent;
             serialPort1.Open();
             timerAffichage = new DispatcherTimer();
@@ -45,16 +45,24 @@ namespace InterfaceRobot
 
         private void TimerAffichage_Tick(object sender, EventArgs e)
         {
-            if(robot.receivedText != "" && robot.receivedText != "\r")
+            //if(robot.receivedText != "" && robot.receivedText != "\r")
+            //{
+            //    textBoxReception.Text += robot.receivedText;
+            //    robot.receivedText = "";
+            //}
+            while (robot.byteListReceived.Count > 0)
             {
-                textBoxReception.Text += robot.receivedText;
-                robot.receivedText = "";
+                textBoxReception.Text += Convert.ToChar(robot.byteListReceived.Dequeue());
             }
         }
 
         public void SerialPort1_OnDataReceivedEvent(object sender, DataReceivedArgs e)
         {
-            robot.receivedText += Encoding.UTF8.GetString(e.Data, 0, e.Data.Length);
+            //robot.receivedText += Encoding.UTF8.GetString(e.Data, 0, e.Data.Length);
+            foreach(byte value in e.Data)
+            {
+                robot.byteListReceived.Enqueue(value);
+            }
         }
 
         bool toggle = true ;
@@ -133,7 +141,7 @@ namespace InterfaceRobot
         {
             //textBoxReception.Text += "Reçu : " + textBoxEmission.Text;
             //textBoxEmission.Text = "";
-            serialPort1.WriteLine(textBoxEmission.Text);
+            serialPort1.WriteLine(textBoxEmission.Text.Substring(0, textBoxEmission.Text.Length-2));
         }
 
         private void textBoxEmission_KeyUp(object sender, KeyEventArgs e)
