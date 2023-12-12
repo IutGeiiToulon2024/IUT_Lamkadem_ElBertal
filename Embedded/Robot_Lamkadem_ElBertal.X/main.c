@@ -16,6 +16,7 @@
 #include "robot.h"
 #include "main.h"
 #include "UART.h"
+#include "CB_TX1.h"
 
 unsigned int * result;
 int ADCValue0 = 0;
@@ -31,29 +32,26 @@ int main(void) {
     InitOscillator();
     InitIO();
 
-    InitUART();
-    InitADC1();
-    InitTimer23(); // Initialisation des timers
-    InitTimer1();
-    InitTimer4();
     /****************************************************************************************************/
     // Configuration des éentres sorties
     /****************************************************************************************************/
-
-    LED_BLANCHE = 0;
-    LED_BLEUE = 0;
-    LED_ORANGE = 0;
-
+    InitTimer23(); // Initialisation des timers
+    InitTimer1();
+    InitTimer4();
+    InitADC1();
     InitPWM();
-    //    PWMSetSpeed(20, MOTEUR_GAUCHE);
-    //    PWMSetSpeed(20, MOTEUR_DROIT);
+    InitUART();
     /****************************************************************************************************/
     // Boucle Principale
     /****************************************************************************************************/
 
-
+    int modeauto = 0;
     while (1) {
-        if (ADCIsConversionFinished() == 1) {
+        
+        SendMessage((unsigned char*) "Bonjour", 7);
+        __delay32(40000000);
+        
+        if (modeauto & ADCIsConversionFinished() == 1) {
             ADCClearConversionFinishedFlag();
             unsigned int * result = ADCGetResult();
             float volts = ((float) result [0])* 3.3 / 4096 * 3.2;
@@ -66,7 +64,6 @@ int main(void) {
             robotState.distanceTelemetreCentre = 34 / volts - 5;
             volts = ((float) result [1])* 3.3 / 4096 * 3.2;
             robotState.distanceTelemetreDroit = 34 / volts - 5;
-
 
             if (robotState.distanceTelemetreExtremeDroit < 30) {
                 LED_ORANGE = 1;
@@ -84,10 +81,6 @@ int main(void) {
                 LED_BLEUE = 0;
             }
         }
-
-        SendMessageDirect((unsigned char*) "Bonjour", 7);
-        __delay32(40000000);
-
     }
 
 } // fin main
