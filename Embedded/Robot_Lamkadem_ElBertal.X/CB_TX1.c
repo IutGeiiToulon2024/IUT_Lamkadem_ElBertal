@@ -20,19 +20,16 @@ void SendMessage(unsigned char* message, int length) {
 }
 
 void CB_TX1_Add(unsigned char value) {
-    cbTx1Buffer[cbTx1Tail++] = value ;
-    if(cbTx1Tail >= CBTX1_BUFFER_SIZE){
-        cbTx1Tail = 0;
-    }
+    cbTx1Buffer[cbTx1Head++] = value ;
+    if(cbTx1Head >= CBTX1_BUFFER_SIZE)
+        cbTx1Head = 0;
 }
 
 unsigned char CB_TX1_Get(void) {
     unsigned char getValue;
-    getValue = cbTx1Buffer[cbTx1Head++];
-    if(cbTx1Head >= CBTX1_BUFFER_SIZE)
-    {
-        cbTx1Head = 0 ;
-    }
+    getValue = cbTx1Buffer[cbTx1Tail++];
+    if(cbTx1Tail >= CBTX1_BUFFER_SIZE)
+        cbTx1Tail = 0 ;
     return getValue;
 }
 
@@ -56,28 +53,13 @@ unsigned char CB_TX1_IsTranmitting(void) {
 
 int CB_TX1_GetDataSize(void) {
     //return size of data stored in circular buffer
-    int dataSize;
-    if(cbTx1Head <= cbTx1Tail)
-    {
-        dataSize = cbTx1Tail - cbTx1Head ; 
-    }
-    else
-    {
-        dataSize = 128 - (cbTx1Head - cbTx1Tail) ;
-    }
-    return dataSize;
+    if (cbTx1Head >= cbTx1Tail) 
+        return cbTx1Head - cbTx1Tail;
+    else 
+        return CBTX1_BUFFER_SIZE - (cbTx1Tail - cbTx1Head);
 }
 
 int CB_TX1_GetRemainingSize(void) {
-    //return size of remaining size in circular buffer
-    int remainingSize;
-    if(cbTx1Head <= cbTx1Tail)
-    {
-        remainingSize = 128 - (cbTx1Tail - cbTx1Head) ; 
-    }
-    else
-    {
-        remainingSize = cbTx1Head - cbTx1Tail ;
-    }
-    return remainingSize;
+    return CBTX1_BUFFER_SIZE - CB_TX1_GetDataSize();
 }
+

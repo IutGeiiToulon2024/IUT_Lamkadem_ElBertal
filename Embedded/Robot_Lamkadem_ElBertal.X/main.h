@@ -35,8 +35,8 @@
 #define OBSTACLE_EN_FACE 3
 #define OBSTACLE_D_G 4
 
-void OperatingSystemLoop(void) ;
-void SetNextRobotStateInAutomaticMode(void) ;
+void OperatingSystemLoop(void);
+void SetNextRobotStateInAutomaticMode(void);
 
 #endif	/* MAIN_H */
 

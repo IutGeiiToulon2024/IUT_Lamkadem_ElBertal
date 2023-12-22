@@ -17,6 +17,8 @@
 #include "main.h"
 #include "UART.h"
 #include "CB_TX1.h"
+#include "CB_RX1.h"
+#include <libpic30.h>
 
 unsigned int * result;
 int ADCValue0 = 0;
@@ -45,13 +47,20 @@ int main(void) {
     // Boucle Principale
     /****************************************************************************************************/
 
-    int modeauto = 0;
     while (1) {
-        
-        SendMessage((unsigned char*) "Bonjour", 7);
-        __delay32(40000000);
-        
-        if (modeauto & ADCIsConversionFinished() == 1) {
+
+//        SendMessage((unsigned char*) "Bonjour", 7);
+//        __delay32(40000000);
+
+        int i;
+        for (i = 0; i < CB_RX1_GetDataSize(); i++) {
+            unsigned char c = CB_RX1_Get();
+            SendMessage(&c, 1);
+        }
+        __delay32(10000);
+
+
+        if (ADCIsConversionFinished() == 1) {
             ADCClearConversionFinishedFlag();
             unsigned int * result = ADCGetResult();
             float volts = ((float) result [0])* 3.3 / 4096 * 3.2;

@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ExtendedSerialPort;
 using System.Windows.Threading;
+using System.Security.RightsManagement;
 
 namespace InterfaceRobot
 {
@@ -105,25 +106,28 @@ namespace InterfaceRobot
 
         private void buttonTest_Click(object sender, RoutedEventArgs e)
         {
-            if (test)
-            {
-                buttonClear.Background = Brushes.RoyalBlue;
-                test = false;
-            }
-            else
-            {
-                buttonClear.Background = Brushes.Beige;
-                test = true;
-            }
+            //if (test)
+            //{
+            //    buttonClear.Background = Brushes.RoyalBlue;
+            //    test = false;
+            //}
+            //else
+            //{
+            //    buttonClear.Background = Brushes.Beige;
+            //    test = true;
+            //}
 
-            byte[] byteList;
-            byteList = new byte[20];
+            //byte[] byteList;
+            //byteList = new byte[20];
 
-            for(int i=0; i<20; i++)
-            {
-                byteList[i] = (byte)(2 * i);
-                serialPort1.WriteLine(byteList[i].ToString());
-            }
+            //for(int i=0; i<20; i++)
+            //{
+            //    byteList[i] = (byte)(2 * i);
+            //    serialPort1.WriteLine(byteList[i].ToString());
+            //}
+
+            byte[] array = Encoding.ASCII.GetBytes("Bonjour");
+            UartEncodeAndSendMessage(0x0080, 7, array) ;
         }
 
 
@@ -152,6 +156,38 @@ namespace InterfaceRobot
                 textBoxEmission.Clear();
             }
             
+        }
+
+        private byte CalculateChecksum(int msgFunction,
+                int msgPayloadLength, byte[] msgPayload)
+        {
+            byte checksum = 0;
+            checksum ^= 0xFE ;
+            checksum ^= (byte)(msgFunction >> 8);
+            checksum ^= (byte) msgFunction;
+            checksum ^= (byte)(msgPayloadLength >> 8);
+            checksum ^= (byte) msgPayloadLength; 
+            for (int n=0 ; n<msgPayloadLength ; n++)
+                checksum ^= msgPayload[n];             
+            return checksum;            
+        }
+
+        private void UartEncodeAndSendMessage(int msgFunction,
+                int msgPayloadLength, byte[] msgPayload)
+        {
+            int taille = 6 + msgPayloadLength ;
+            byte[] trame;
+            trame = new byte[taille];
+            trame[0] = 0xFE;
+            trame[1] = (byte) (msgFunction >> 8) ;
+            trame[2] = (byte)(msgFunction);
+            trame[3] = (byte)(msgPayloadLength >> 8) ;
+            trame[4] = (byte)(msgPayloadLength) ;
+            for (int i = 0; i < msgPayloadLength; i++)
+                trame[5 + i] = msgPayload[i];
+            trame[taille - 1] = CalculateChecksum(msgFunction,
+                msgPayloadLength, msgPayload);
+            serialPort1.Write(trame,0,taille-1);
         }
     }
 }
