@@ -49,8 +49,8 @@ int main(void) {
 
     while (1) {
 
-//        SendMessage((unsigned char*) "Bonjour", 7);
-//        __delay32(40000000);
+        //        SendMessage((unsigned char*) "Bonjour", 7);
+        //        __delay32(40000000);
 
         int i;
         for (i = 0; i < CB_RX1_GetDataSize(); i++) {
@@ -58,6 +58,7 @@ int main(void) {
             SendMessage(&c, 1);
         }
         __delay32(10000);
+
 
 
         if (ADCIsConversionFinished() == 1) {

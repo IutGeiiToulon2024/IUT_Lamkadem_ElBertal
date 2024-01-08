@@ -53,7 +53,14 @@ namespace InterfaceRobot
             //}
             while (robot.byteListReceived.Count > 0)
             {
-                textBoxReception.Text += Convert.ToChar(robot.byteListReceived.Dequeue());
+                var c = robot.byteListReceived.Dequeue();
+                DecodeMessage(c);
+                // ASCII :
+                //    textBoxReception.Text += Convert.ToChar(c);
+
+                // HEXA :
+                //    textBoxReception.Text += "0x" + c.ToString("X2") + " ";
+
             }
         }
 
@@ -179,7 +186,7 @@ namespace InterfaceRobot
             byte[] trame;
             trame = new byte[taille];
             trame[0] = 0xFE;
-            trame[1] = (byte) (msgFunction >> 8) ;
+            trame[1] = (byte)(msgFunction >> 8);
             trame[2] = (byte)(msgFunction);
             trame[3] = (byte)(msgPayloadLength >> 8) ;
             trame[4] = (byte)(msgPayloadLength) ;
@@ -187,7 +194,92 @@ namespace InterfaceRobot
                 trame[5 + i] = msgPayload[i];
             trame[taille - 1] = CalculateChecksum(msgFunction,
                 msgPayloadLength, msgPayload);
-            serialPort1.Write(trame,0,taille-1);
+            serialPort1.Write(trame,0, taille);
         }
+
+        public enum StateReception
+        {
+            Waiting,
+            FunctionMSB,
+            FunctionLSB,
+            PayloadLengthMSB,
+            PayloadLengthLSB,
+            Payload,
+            CheckSum
+        }
+
+        StateReception rcvState = StateReception.Waiting;
+        int msgDecodedFunction = 0;
+        int msgDecodedPayloadLength = 0;
+        byte[] msgDecodedPayload;
+        int msgDecodedPayloadIndex = 0;
+        private void DecodeMessage(byte c)
+        {
+            switch (rcvState)
+            {
+                case StateReception.Waiting:
+                    if (c == 0xFE)
+                        rcvState = StateReception.FunctionMSB;
+                    break;
+                case StateReception.FunctionMSB:
+                    msgDecodedFunction = c << 8 ;
+                    rcvState = StateReception.FunctionLSB;
+                    break;
+                case StateReception.FunctionLSB:
+                    msgDecodedFunction |= c ;
+                    rcvState |= StateReception.PayloadLengthMSB;
+                    break;
+                case StateReception.PayloadLengthMSB:
+                    msgDecodedPayloadLength = c << 8 ;
+                    rcvState = StateReception.PayloadLengthLSB;
+                    break;
+                case StateReception.PayloadLengthLSB:
+                    msgDecodedPayloadLength |= c ;
+                    msgDecodedPayload = new byte[msgDecodedPayloadLength];
+                    rcvState = StateReception.Payload;
+                    break;
+                case StateReception.Payload:
+
+                    msgDecodedPayload[msgDecodedPayloadIndex ++] = c ;
+                    if (msgDecodedPayloadIndex == msgDecodedPayloadLength)
+                    {
+                        rcvState = StateReception.CheckSum;
+                    }
+                   
+                    break;
+                case StateReception.CheckSum:
+                    char calculatedChecksum = CalculateChecksum(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload[]);
+
+                    if (calculatedChecksum == c)
+                    {
+                        //Success, on a un message valide
+                        ProcessDecodedMessage( ECRIRE ICI);
+                    }
+                    else
+                    {
+                        ProcessDecodedMessage(0x7, msgDecodedPayloadLength, msgDecodedPayload)
+                    }
+
+                    break;
+                default:
+                    rcvState = StateReception.Waiting;
+                    break;
+            }
+        }
+
+        private void ProcessDecodedMessage(int msgFunction, int msgPayloadLength, byte[] msgPayload)
+        {
+            if(msgFunction == 0x80)
+            {
+                textBoxReception.Text += Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength);
+            }
+
+            else if (msgFunction == 0x7)
+            {
+                textBoxReception.Text += " ERROR ";
+            }
+
+        }
+
     }
 }
