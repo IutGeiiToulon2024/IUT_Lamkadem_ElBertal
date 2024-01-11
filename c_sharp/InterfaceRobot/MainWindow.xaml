@@ -10,9 +10,13 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30"/>
@@ -21,15 +25,28 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="30"/>
         </Grid.ColumnDefinitions>
-        <GroupBox x:Name="Emission" Header="Emission" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"  Background="#FFDA1B1B" Foreground="Black" BorderBrush="Black"  Grid.Column="1" Grid.Row="1">
+        <GroupBox x:Name="Emission" Header="Emission"  Background="#FF9FB9B0" Foreground="Black" BorderBrush="Black"  Grid.Column="1" Grid.Row="1">
             <TextBox x:Name="textBoxEmission" Margin="2,0,-2,0" TextWrapping="Wrap" Background="{x:Null}" BorderBrush="{x:Null}" AcceptsReturn="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextChanged="textBoxEmission_TextChanged" KeyUp="textBoxEmission_KeyUp"/>
         </GroupBox>
-        <GroupBox x:Name="Reception" Header="Reception" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="Black" Foreground="Black" Background="#FF295B00" Grid.Column="3" Grid.Row="1">
+        <GroupBox x:Name="Reception" Header="Reception" BorderBrush="Black" Foreground="Black" Background="#FF9FB9B0" Grid.Column="3" Grid.Row="1">
             <TextBox x:Name="textBoxReception" HorizontalAlignment="Stretch" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" AcceptsReturn="True" IsReadOnly="True" TextChanged="TextBox_TextChanged"/>
         </GroupBox>
-        <Button x:Name="buttonEnvoyer" Content="ENVOYER" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Stretch" Width="100" Click="buttonEnvoyer_Click"/>
-        <Button x:Name="buttonClear" Content="NETTOYER" Grid.Column="3" HorizontalAlignment="Center" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Stretch" Width="100"  Click="buttonClear_Click"/>
-        <Button x:Name="buttonTest" Content="Test" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Stretch" Width="30" Click="buttonTest_Click"/>
+        <Button x:Name="buttonEnvoyer" Content="ENVOYER" Grid.Column="1" HorizontalAlignment="Center" Margin="0,1,0,0" Grid.Row="3" Width="100" Click="buttonEnvoyer_Click"/>
+        <Button x:Name="buttonClear" Content="NETTOYER" Grid.Column="3" HorizontalAlignment="Center" Margin="0,1,0,0" Grid.Row="3" Width="100"  Click="buttonClear_Click"/>
+        <Button x:Name="buttonTest" Content="Test" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="3" Width="30" Click="buttonTest_Click" Margin="0,1,0,0"/>
+        <GroupBox x:Name="Leds" Grid.Column="1" Header="Leds" Grid.Row="5" Background="#FFB1B7B5" BorderBrush="Black" VerticalAlignment="Stretch">
+            <StackPanel x:Name="BOX" HorizontalAlignment="Left" Orientation="Vertical">
+                <CheckBox Content="Led1" HorizontalAlignment="Left" Margin="30,10,0,0"/>
+                <CheckBox Content="Led 2" HorizontalAlignment="Left" Margin="30,10,0,0"/>
+                <CheckBox Content="Led 3" HorizontalAlignment="Left" Margin="30,10,0,0"/>
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox x:Name="Moteurs" Grid.Column="3" Header="Moteurs IR" Grid.Row="5" Background="#FFB1B7B5" BorderBrush="Black" VerticalAlignment="Stretch">
+            <TextBox x:Name="textBoxMoteurs" Margin="10,0,10,0" TextWrapping="Wrap" Background="{x:Null}" BorderBrush="{x:Null}"/>
+        </GroupBox>
+        <GroupBox x:Name="Telemetres" Grid.Column="1" Header="Télémètres IR" Grid.Row="7" Background="#FFB1B7B5" BorderBrush="Black"/>
+
 
     </Grid>
 </Window>

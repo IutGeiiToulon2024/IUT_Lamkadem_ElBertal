@@ -152,7 +152,10 @@ namespace InterfaceRobot
         {
             //textBoxReception.Text += "Reçu : " + textBoxEmission.Text;
             //textBoxEmission.Text = "";
-            serialPort1.WriteLine(textBoxEmission.Text.Substring(0, textBoxEmission.Text.Length-2));
+            //serialPort1.WriteLine(textBoxEmission.Text.Substring(0, textBoxEmission.Text.Length-2));
+            byte[] message = Encoding.ASCII.GetBytes(textBoxEmission.Text) ;
+            UartEncodeAndSendMessage(0x80, textBoxEmission.Text.Length, message) ;
+            // textBoxReception.Text += "n=" + textBoxEmission.Text.Length ;
         }
 
         private void textBoxEmission_KeyUp(object sender, KeyEventArgs e)
@@ -175,7 +178,7 @@ namespace InterfaceRobot
             checksum ^= (byte)(msgPayloadLength >> 8);
             checksum ^= (byte) msgPayloadLength; 
             for (int n=0 ; n<msgPayloadLength ; n++)
-                checksum ^= msgPayload[n];             
+                checksum ^= msgPayload[n];
             return checksum;            
         }
 
@@ -194,6 +197,8 @@ namespace InterfaceRobot
                 trame[5 + i] = msgPayload[i];
             trame[taille - 1] = CalculateChecksum(msgFunction,
                 msgPayloadLength, msgPayload);
+
+            //textBoxReception.Text += "checksum=" + trame[taille - 1];
             serialPort1.Write(trame,0, taille);
         }
 
@@ -244,22 +249,24 @@ namespace InterfaceRobot
                     if (msgDecodedPayloadIndex == msgDecodedPayloadLength)
                     {
                         rcvState = StateReception.CheckSum;
+                        msgDecodedPayloadIndex = 0;
                     }
                    
                     break;
                 case StateReception.CheckSum:
-                    char calculatedChecksum = CalculateChecksum(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload[]);
-
+                    byte calculatedChecksum = CalculateChecksum(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload);
+                    //textBoxReception.Text += "checksum recalculé=" + calculatedChecksum;
+                    //textBoxReception.Text += "checksum reçu=" + c;
                     if (calculatedChecksum == c)
                     {
                         //Success, on a un message valide
-                        ProcessDecodedMessage( ECRIRE ICI);
+                        ProcessDecodedMessage(0x80, msgDecodedPayloadLength, msgDecodedPayload);
                     }
                     else
                     {
-                        ProcessDecodedMessage(0x7, msgDecodedPayloadLength, msgDecodedPayload)
+                        ProcessDecodedMessage(0x7, msgDecodedPayloadLength, msgDecodedPayload);
                     }
-
+                    rcvState = StateReception.Waiting;
                     break;
                 default:
                     rcvState = StateReception.Waiting;
