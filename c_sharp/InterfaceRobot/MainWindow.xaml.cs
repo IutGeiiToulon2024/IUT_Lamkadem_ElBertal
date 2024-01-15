@@ -260,11 +260,12 @@ namespace InterfaceRobot
                     if (calculatedChecksum == c)
                     {
                         //Success, on a un message valide
-                        ProcessDecodedMessage(0x80, msgDecodedPayloadLength, msgDecodedPayload);
+                        ProcessDecodedMessage(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload);
+                        
                     }
                     else
                     {
-                        ProcessDecodedMessage(0x7, msgDecodedPayloadLength, msgDecodedPayload);
+                        textBoxReception.Text += " ERROR ";
                     }
                     rcvState = StateReception.Waiting;
                     break;
@@ -274,17 +275,65 @@ namespace InterfaceRobot
             }
         }
 
+        public enum Fonctions
+        {
+            textTransmission = 0x0080,
+            led1Reglage = 0x0021,
+            led2Reglage = 0x0022,
+            led3Reglage = 0x0023,
+            distTelemetre1 = 0x0031,
+            distTelemetre2 = 0x0032,
+            distTelemetre3 = 0x0033,
+            consigneVitesse1 = 0x0041,
+            consigneVitesse2 = 0x0042
+        }
+
         private void ProcessDecodedMessage(int msgFunction, int msgPayloadLength, byte[] msgPayload)
         {
-            if(msgFunction == 0x80)
+            
+            switch (msgFunction)
             {
-                textBoxReception.Text += Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength);
+               case ((int)Fonctions.textTransmission):
+                    textBoxReception.Text += Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength);
+                    break;
+
+                case ((int)Fonctions.led1Reglage):
+
+                    break;
+
+                case ((int)Fonctions.led2Reglage):
+                    break;
+
+                case ((int)Fonctions.led3Reglage):
+                    break;
+
+                case ((int)Fonctions.distTelemetre1):
+                    
+                    textBoxTelemetres.Text += "Télémètre Droit : " + Encoding.UTF8.GetString();
+                    break;
+
+                case ((int)Fonctions.distTelemetre2):
+                    break;
+
+                case ((int)Fonctions.distTelemetre3):
+                    break;
+
+                case ((int)Fonctions.consigneVitesse1):
+                    break;
+
+                case ((int)Fonctions.consigneVitesse2):
+                    break;
             }
 
-            else if (msgFunction == 0x7)
-            {
-                textBoxReception.Text += " ERROR ";
-            }
+            //if (msgFunction == 0x80)
+            //{
+            //    textBoxReception.Text += Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength);
+            //}
+
+            //else if (msgFunction == 0x7)
+            //{
+            //    textBoxReception.Text += " ERROR ";
+            //}
 
         }
 

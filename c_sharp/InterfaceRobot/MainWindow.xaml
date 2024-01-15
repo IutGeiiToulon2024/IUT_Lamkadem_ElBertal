@@ -45,7 +45,9 @@
         <GroupBox x:Name="Moteurs" Grid.Column="3" Header="Moteurs IR" Grid.Row="5" Background="#FFB1B7B5" BorderBrush="Black" VerticalAlignment="Stretch">
             <TextBox x:Name="textBoxMoteurs" Margin="10,0,10,0" TextWrapping="Wrap" Background="{x:Null}" BorderBrush="{x:Null}"/>
         </GroupBox>
-        <GroupBox x:Name="Telemetres" Grid.Column="1" Header="Télémètres IR" Grid.Row="7" Background="#FFB1B7B5" BorderBrush="Black"/>
+        <GroupBox x:Name="Telemetres" Grid.Column="1" Header="Télémètres IR" Grid.Row="7" Background="#FFB1B7B5" BorderBrush="Black">
+            <TextBox x:Name="textBoxTelemetres" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="TextBox" Width="305"/>
+        </GroupBox>
 
 
     </Grid>
