@@ -46,7 +46,7 @@
             <TextBox x:Name="textBoxMoteurs" Margin="10,0,10,0" TextWrapping="Wrap" Background="{x:Null}" BorderBrush="{x:Null}"/>
         </GroupBox>
         <GroupBox x:Name="Telemetres" Grid.Column="1" Header="Télémètres IR" Grid.Row="7" Background="#FFB1B7B5" BorderBrush="Black">
-            <TextBox x:Name="textBoxTelemetres" HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="TextBox" Width="305"/>
+            <TextBox x:Name="textBoxTelemetres" HorizontalAlignment="Left" Margin="2,0,-2,0" TextWrapping="Wrap" Width="305" Background="{x:Null}" BorderBrush="{x:Null}" AcceptsReturn="True" IsReadOnly="True"/>
         </GroupBox>
 
 

@@ -30,6 +30,7 @@ void UartEncodeAndSendMessage(int msgFunction,
     trame[taille - 1] = UartCalculateChecksum(msgFunction,
             msgPayloadLength, msgPayload);
     SendMessage(trame, taille);
+    
 }
 int msgDecodedFunction = 0;
 int msgDecodedPayloadLength = 0;

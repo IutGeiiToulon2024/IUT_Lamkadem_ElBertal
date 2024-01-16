@@ -53,18 +53,22 @@ int main(void) {
         //        SendMessage((unsigned char*) "Bonjour", 7);
         //        __delay32(40000000);
 
-        
-//        for (int i = 0; i < CB_RX1_GetDataSize(); i++) {
-//            unsigned char c = CB_RX1_Get();
-//            SendMessage(&c, 1);
-//        }
-        
-        unsigned char payload[] = {'B', 'o', 'n', 'j', 'o', 'u', 'r'};
-        
-        UartEncodeAndSendMessage(0x0080, 7, payload);
-        __delay32(40000000);
 
+        //        for (int i = 0; i < CB_RX1_GetDataSize(); i++) {
+        //            unsigned char c = CB_RX1_Get();
+        //            SendMessage(&c, 1);
+        //        }
 
+        //float x = 58;
+        int diz1, unit1, diz2, unit2, diz3, unit3;
+//        diz = (int) x / 10;
+//        unit = x - diz * 10;
+//
+//
+//        unsigned char payload[] = {diz + '0', unit + '0'};
+//
+//        UartEncodeAndSendMessage(0x0080, 2, payload);
+//        __delay32(40000000);
 
         if (ADCIsConversionFinished() == 1) {
             ADCClearConversionFinishedFlag();
@@ -80,6 +84,26 @@ int main(void) {
             volts = ((float) result [1])* 3.3 / 4096 * 3.2;
             robotState.distanceTelemetreDroit = 34 / volts - 5;
 
+            // ---------------------------------------------------Envoi des valeurs sur port serie
+            diz1 = (int) robotState.distanceTelemetreDroit / 10;      // Telemetre Droit
+            unit1 = robotState.distanceTelemetreDroit - diz1 * 10;
+            unsigned char payloadTelemetre1[] = {diz1 + '0', unit1 + '0'};
+            UartEncodeAndSendMessage(0x0031, 2, payloadTelemetre1);
+            
+            diz2 = (int) robotState.distanceTelemetreCentre / 10;      // Telemetre Centre
+            unit2 = robotState.distanceTelemetreCentre - diz2 * 10;
+            unsigned char payloadTelemetre2[] = {diz2 + '0', unit2 + '0'};
+            UartEncodeAndSendMessage(0x0032, 2, payloadTelemetre2);
+            
+            diz3 = (int) robotState.distanceTelemetreGauche / 10;      // Telemetre Gauche
+            unit3 = robotState.distanceTelemetreGauche - diz3 * 10;
+            unsigned char payloadTelemetre3[] = {diz3 + '0', unit3 + '0'};
+            UartEncodeAndSendMessage(0x0033, 2, payloadTelemetre3);
+            
+            __delay32(40000000);
+            
+            
+            // --------------------------------------------------Gestion etat des leds
             if (robotState.distanceTelemetreExtremeDroit < 30) {
                 LED_ORANGE = 1;
             } else {

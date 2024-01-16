@@ -34,11 +34,11 @@ namespace InterfaceRobot
         public MainWindow()
         {
             InitializeComponent();
-            serialPort1 = new ReliableSerialPort("COM14", 115200, Parity.None, 8, StopBits.One);
+            serialPort1 = new ReliableSerialPort("COM12", 115200, Parity.None, 8, StopBits.One);
             serialPort1.OnDataReceivedEvent += SerialPort1_OnDataReceivedEvent;
             serialPort1.Open();
             timerAffichage = new DispatcherTimer();
-            timerAffichage.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            timerAffichage.Interval = new TimeSpan(0, 0, 0, 1, 0);
             timerAffichage.Tick += TimerAffichage_Tick; ;
             timerAffichage.Start();
 
@@ -224,7 +224,11 @@ namespace InterfaceRobot
             {
                 case StateReception.Waiting:
                     if (c == 0xFE)
+                    {
+                        msgDecodedPayloadIndex = 0;
                         rcvState = StateReception.FunctionMSB;
+                    }
+                        
                     break;
                 case StateReception.FunctionMSB:
                     msgDecodedFunction = c << 8 ;
@@ -244,14 +248,16 @@ namespace InterfaceRobot
                     rcvState = StateReception.Payload;
                     break;
                 case StateReception.Payload:
-
-                    msgDecodedPayload[msgDecodedPayloadIndex ++] = c ;
-                    if (msgDecodedPayloadIndex == msgDecodedPayloadLength)
+                    if(msgDecodedPayloadIndex <= msgDecodedPayloadLength)
                     {
-                        rcvState = StateReception.CheckSum;
-                        msgDecodedPayloadIndex = 0;
+                        //textBoxReception.Text += msgDecodedPayloadIndex.ToString();
+                        msgDecodedPayload[msgDecodedPayloadIndex] = c;
+                        if (++msgDecodedPayloadIndex >= msgDecodedPayloadLength)
+                        {
+                            rcvState = StateReception.CheckSum;
+                            msgDecodedPayloadIndex = 0;
+                        }
                     }
-                   
                     break;
                 case StateReception.CheckSum:
                     byte calculatedChecksum = CalculateChecksum(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload);
@@ -308,14 +314,18 @@ namespace InterfaceRobot
                     break;
 
                 case ((int)Fonctions.distTelemetre1):
-                    
-                    textBoxTelemetres.Text += "Télémètre Droit : " + Encoding.UTF8.GetString();
+
+                    // textBoxTelemetres.Text +=  Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength);
+                    textBoxTelemetres.Clear();
+                    textBoxTelemetres.Text += "Télémètre Droit : " + Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength) + " cm\n";
                     break;
 
                 case ((int)Fonctions.distTelemetre2):
+                    textBoxTelemetres.Text += "Télémètre Centre : " + Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength) + " cm\n";
                     break;
 
                 case ((int)Fonctions.distTelemetre3):
+                    textBoxTelemetres.Text += "Télémètre Gauche : " + Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength) + " cm";
                     break;
 
                 case ((int)Fonctions.consigneVitesse1):
