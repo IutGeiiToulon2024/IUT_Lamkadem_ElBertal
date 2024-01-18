@@ -16,6 +16,9 @@
 #define PAYLOAD 5
 #define CHECKSUM 6
 
+
+#define LED1 0x0021
+
 unsigned char UartCalculateChecksum(int, int, unsigned char*) ;
 void UartEncodeAndSendMessage(int, int, unsigned char*) ;
 //void UartDecodeMessage(unsigned char) ;

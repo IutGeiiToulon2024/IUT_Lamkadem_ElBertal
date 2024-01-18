@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using ExtendedSerialPort;
 using System.Windows.Threading;
 using System.Security.RightsManagement;
+using System.Runtime.Remoting.Messaging;
 
 namespace InterfaceRobot
 {
@@ -91,6 +92,8 @@ namespace InterfaceRobot
             //textBoxReception.Text +="Reçu : "+ textBoxEmission.Text +"\n";
             textBoxEmission.Clear();
         }
+
+
 
         bool clear = true;
 
@@ -291,8 +294,30 @@ namespace InterfaceRobot
             distTelemetre2 = 0x0032,
             distTelemetre3 = 0x0033,
             consigneVitesse1 = 0x0041,
-            consigneVitesse2 = 0x0042
+            consigneVitesse2 = 0x0042,
+            RobotState
         }
+
+        public enum StateRobot
+        {
+            STATE_ATTENTE = 0,
+            STATE_ATTENTE_EN_COURS = 1,
+            STATE_AVANCE = 2,
+            STATE_AVANCE_EN_COURS = 3,
+            STATE_TOURNE_GAUCHE = 4,
+            STATE_TOURNE_GAUCHE_EN_COURS = 5,
+            STATE_TOURNE_DROITE = 6,
+            STATE_TOURNE_DROITE_EN_COURS = 7,
+            STATE_TOURNE_SUR_PLACE_GAUCHE = 8,
+            STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS = 9,
+            STATE_TOURNE_SUR_PLACE_DROITE = 10,
+            STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS = 11,
+            STATE_ARRET = 12,
+            STATE_ARRET_EN_COURS = 13,
+            STATE_RECULE = 14,
+            STATE_RECULE_EN_COURS = 15
+        }
+
 
         private void ProcessDecodedMessage(int msgFunction, int msgPayloadLength, byte[] msgPayload)
         {
@@ -317,15 +342,16 @@ namespace InterfaceRobot
 
                     // textBoxTelemetres.Text +=  Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength);
                     textBoxTelemetres.Clear();
-                    textBoxTelemetres.Text += "Télémètre Droit : " + Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength) + " cm\n";
+                    //textBoxTelemetres.Text += "Télémètre Droit : " + Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength) + " cm\n";
+                    textBoxTelemetres.Text += "Télémètre Droit : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm\n";
                     break;
-
+                   
                 case ((int)Fonctions.distTelemetre2):
-                    textBoxTelemetres.Text += "Télémètre Centre : " + Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength) + " cm\n";
+                    textBoxTelemetres.Text += "Télémètre Centre : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm\n";
                     break;
 
                 case ((int)Fonctions.distTelemetre3):
-                    textBoxTelemetres.Text += "Télémètre Gauche : " + Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength) + " cm";
+                    textBoxTelemetres.Text += "Télémètre Gauche : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm";
                     break;
 
                 case ((int)Fonctions.consigneVitesse1):
@@ -333,6 +359,13 @@ namespace InterfaceRobot
 
                 case ((int)Fonctions.consigneVitesse2):
                     break;
+
+                //case ((int)Fonctions.RobotState):
+                //    int instant = (((int)msgPayload[1]) << 24) + (((int)msgPayload[2]) << 16)
+                //    + (((int)msgPayload[3]) << 8) + ((int)msgPayload[4]);
+                //    rtbReception.Text += "\nRobot␣State␣:␣" +
+                //    ((StateRobot)(msgPayload[0])).ToString() + 
+                //    break;
             }
 
             //if (msgFunction == 0x80)
@@ -347,5 +380,14 @@ namespace InterfaceRobot
 
         }
 
+        
+
+        private void checkLed1_Checked(object sender, RoutedEventArgs e)
+        {
+            byte[] etat_led1;
+            etat_led1 = new byte[1];
+            etat_led1[0] = 1;
+            UartEncodeAndSendMessage(0x0021, 1, etat_led1);
+        }
     }
 }

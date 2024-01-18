@@ -34,11 +34,11 @@
         <Button x:Name="buttonEnvoyer" Content="ENVOYER" Grid.Column="1" HorizontalAlignment="Center" Margin="0,1,0,0" Grid.Row="3" Width="100" Click="buttonEnvoyer_Click"/>
         <Button x:Name="buttonClear" Content="NETTOYER" Grid.Column="3" HorizontalAlignment="Center" Margin="0,1,0,0" Grid.Row="3" Width="100"  Click="buttonClear_Click"/>
         <Button x:Name="buttonTest" Content="Test" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="3" Width="30" Click="buttonTest_Click" Margin="0,1,0,0"/>
-        <GroupBox x:Name="Leds" Grid.Column="1" Header="Leds" Grid.Row="5" Background="#FFB1B7B5" BorderBrush="Black" VerticalAlignment="Stretch">
+        <GroupBox Grid.Column="1" Header="Leds" Grid.Row="5" Background="#FFB1B7B5" BorderBrush="Black" VerticalAlignment="Stretch">
             <StackPanel x:Name="BOX" HorizontalAlignment="Left" Orientation="Vertical">
-                <CheckBox Content="Led1" HorizontalAlignment="Left" Margin="30,10,0,0"/>
-                <CheckBox Content="Led 2" HorizontalAlignment="Left" Margin="30,10,0,0"/>
-                <CheckBox Content="Led 3" HorizontalAlignment="Left" Margin="30,10,0,0"/>
+                <CheckBox x:Name="checkLed1" Content="Led1" HorizontalAlignment="Left" Margin="30,10,0,0" Checked="checkLed1_Checked"/>
+                <CheckBox x:Name="checkLed2" Content="Led 2" HorizontalAlignment="Left" Margin="30,10,0,0"/>
+                <CheckBox x:Name="checkLed3" Content="Led 3" HorizontalAlignment="Left" Margin="30,10,0,0"/>
             </StackPanel>
         </GroupBox>
 
