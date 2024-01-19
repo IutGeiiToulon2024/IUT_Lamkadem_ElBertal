@@ -35,7 +35,7 @@ namespace InterfaceRobot
         public MainWindow()
         {
             InitializeComponent();
-            serialPort1 = new ReliableSerialPort("COM12", 115200, Parity.None, 8, StopBits.One);
+            serialPort1 = new ReliableSerialPort("COM20", 115200, Parity.None, 8, StopBits.One);
             serialPort1.OnDataReceivedEvent += SerialPort1_OnDataReceivedEvent;
             serialPort1.Open();
             timerAffichage = new DispatcherTimer();
@@ -380,13 +380,17 @@ namespace InterfaceRobot
 
         }
 
-        
+        byte[] etat_led1 = new byte[1];
 
         private void checkLed1_Checked(object sender, RoutedEventArgs e)
         {
-            byte[] etat_led1;
-            etat_led1 = new byte[1];
             etat_led1[0] = 1;
+            UartEncodeAndSendMessage(0x0021, 1, etat_led1);
+        }
+
+        private void checkLed1_Unchecked(object sender, RoutedEventArgs e)
+        {
+            etat_led1[0] = 0;
             UartEncodeAndSendMessage(0x0021, 1, etat_led1);
         }
     }
