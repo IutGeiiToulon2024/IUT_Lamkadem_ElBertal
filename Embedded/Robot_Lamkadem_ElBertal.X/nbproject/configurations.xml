@@ -6,7 +6,6 @@
                    projectFiles="true">
       <itemPath>timer.h</itemPath>
       <itemPath>robot.h</itemPath>
-      <itemPath>Toolbox.h</itemPath>
       <itemPath>PWM.h</itemPath>
       <itemPath>ADC.h</itemPath>
       <itemPath>IO.h</itemPath>
@@ -16,6 +15,8 @@
       <itemPath>CB_TX1.h</itemPath>
       <itemPath>CB_RX1.h</itemPath>
       <itemPath>UART_Protocol.h</itemPath>
+      <itemPath>QEI.h</itemPath>
+      <itemPath>Utilities.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -29,13 +30,14 @@
       <itemPath>IO.c</itemPath>
       <itemPath>timer.c</itemPath>
       <itemPath>robot.c</itemPath>
-      <itemPath>Toolbox.c</itemPath>
       <itemPath>PWM.c</itemPath>
       <itemPath>ADC.c</itemPath>
       <itemPath>UART.c</itemPath>
       <itemPath>CB_TX1.c</itemPath>
       <itemPath>CB_RX1.c</itemPath>
       <itemPath>UART_Protocol.c</itemPath>
+      <itemPath>QEI.c</itemPath>
+      <itemPath>Utilities.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

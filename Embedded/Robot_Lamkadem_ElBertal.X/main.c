@@ -19,6 +19,7 @@
 #include "CB_TX1.h"
 #include "CB_RX1.h"
 #include "UART_Protocol.h"
+#include "QEI.h"
 #include <libpic30.h>
 
 unsigned int * result;
@@ -44,6 +45,8 @@ int main(void) {
     InitADC1();
     InitPWM();
     InitUART();
+    InitQEI1();
+    InitQEI2();
     /****************************************************************************************************/
     // Boucle Principale
     /****************************************************************************************************/

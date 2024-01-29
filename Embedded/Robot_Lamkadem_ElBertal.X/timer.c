@@ -5,12 +5,13 @@
 #include "robot.h"
 #include "ADC.h"
 #include "main.h"
+#include "QEI.h"
 
 //Initialisation d?un timer 32 bits
-unsigned long timestamp ; 
+unsigned long timestamp ;
+int compteur = 0;
 
-void InitTimer23(void)
-{
+void InitTimer23(void) {
     T3CONbits.TON = 0; // Stop any 16-bit Timer3 operation
     T2CONbits.TON = 0; // Stop any 16/32-bit Timer3 operation
     T2CONbits.T32 = 1; // Enable 32-bit Timer mode
@@ -30,28 +31,26 @@ void InitTimer23(void)
 unsigned char toggle = 0;
 //Interruption du timer 32 bits sur 2-3
 
-void __attribute__((interrupt, no_auto_psv)) _T3Interrupt(void)
-{
+void __attribute__((interrupt, no_auto_psv)) _T3Interrupt(void) {
     IFS0bits.T3IF = 0; // Clear Timer3 Interrupt Flag
 
 }
 
 //Initialisation d?un timer 16 bits
 
-void InitTimer1(void)
-{
+void InitTimer1(void) {
     //Timer1 pour horodater les mesures (1ms)
-   
+
     T1CONbits.TON = 0; // Disable Timer
-//    T1CONbits.TCKPS = 0b01; //Prescaler
+    //    T1CONbits.TCKPS = 0b01; //Prescaler
     //11 = 1:256 prescale value
     //10 = 1:64 prescale value
     //01 = 1:8 prescale value
     //00 = 1:1 prescale value
     T1CONbits.TCS = 0; //clock source = internal clock
-//    PR1 = 0x1388;
-    
-    
+    //    PR1 = 0x1388;
+
+
     IFS0bits.T1IF = 0; // Clear Timer Interrupt Flag
     IEC0bits.T1IE = 1; // Enable Timer interrupt
     T1CONbits.TON = 1; // Enable Timer
@@ -60,18 +59,21 @@ void InitTimer1(void)
 
 //Interruption du timer 1
 
-void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void)
-{
+void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     IFS0bits.T1IF = 0;
     //LED_BLANCHE = !LED_BLANCHE;
     PWMUpdateSpeed();
     ADC1StartConversionSequence();
     //LED_BLEUE = !LED_BLEUE ;
-
+    QEIUpdateData();
+    compteur += 1;
+    if (compteur > 25) {
+        SendPositionData();
+        compteur = 0 ;
+    }
 }
 
-void SetFreqTimer1(float freq)
-{
+void SetFreqTimer1(float freq) {
     T1CONbits.TCKPS = 0b00; //00 = 1:1 prescaler value
     if (FCY / freq > 65535) {
         T1CONbits.TCKPS = 0b01; //01 = 1:8 prescaler value
@@ -88,10 +90,9 @@ void SetFreqTimer1(float freq)
         PR1 = (int) (FCY / freq);
 }
 
-void InitTimer4(void)
-{
+void InitTimer4(void) {
     //Timer4 pour horodater les mesures (1ms)
-   
+
     T4CONbits.TON = 0; // Disable Timer
     T4CONbits.TCS = 0; //clock source = internal clock
     IFS1bits.T4IF = 0; // Clear Timer Interrupt Flag
@@ -102,16 +103,14 @@ void InitTimer4(void)
 
 //Interruption du timer 4
 
-void __attribute__((interrupt, no_auto_psv)) _T4Interrupt(void)
-{
+void __attribute__((interrupt, no_auto_psv)) _T4Interrupt(void) {
     IFS1bits.T4IF = 0;
-    timestamp++ ;
-    OperatingSystemLoop() ;
-    
+    timestamp++;
+    OperatingSystemLoop();
+
 }
 
-void SetFreqTimer4(float freq)
-{
+void SetFreqTimer4(float freq) {
     T4CONbits.TCKPS = 0b00; //00 = 1:1 prescaler value
     if (FCY / freq > 65535) {
         T4CONbits.TCKPS = 0b01; //01 = 1:8 prescaler value
