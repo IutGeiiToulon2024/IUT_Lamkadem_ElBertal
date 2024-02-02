@@ -13,10 +13,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ExtendedSerialPort;
 using System.Windows.Threading;
 using System.Security.RightsManagement;
 using System.Runtime.Remoting.Messaging;
+
+using ExtendedSerialPort;
 
 namespace InterfaceRobot
 {
@@ -370,7 +371,7 @@ namespace InterfaceRobot
                     robot.angleRadianFromOdometry = BitConverter.ToSingle(msgPayload, 12);
                     robot.vitesseLineaireFromOdometry = BitConverter.ToSingle(msgPayload, 16);
                     robot.vitesseAngulaireFromOdometry = BitConverter.ToSingle(msgPayload, 20);
-                    textBoxPosition.Text += "Time : " + robot.timestamp + '\n';
+                    //textBoxPosition.Text += "Time : " + robot.timestamp + '\n';
                     textBoxPosition.Text += "Position X : " + robot.positionXOdo + '\n';
                     textBoxPosition.Text += "Position Y : " + robot.positionYOdo + '\n';
                     textBoxPosition.Text += "angleRadianFromOdometry : " + robot.angleRadianFromOdometry + '\n';

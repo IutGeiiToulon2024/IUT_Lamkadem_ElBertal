@@ -63,6 +63,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ReliableSerialPort.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Robot.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -94,12 +97,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Users\TP_EO_6\Downloads\ExtendedSerialPort %282%29\ExtendedSerialPort\ExtendedSerialPort.csproj">
-      <Project>{21ac599e-e3d5-4181-aa0f-7c2e00cca016}</Project>
-      <Name>ExtendedSerialPort</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
