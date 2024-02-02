@@ -35,7 +35,7 @@ namespace InterfaceRobot
         public MainWindow()
         {
             InitializeComponent();
-            serialPort1 = new ReliableSerialPort("COM20", 115200, Parity.None, 8, StopBits.One);
+            serialPort1 = new ReliableSerialPort("COM21", 115200, Parity.None, 8, StopBits.One);
             serialPort1.OnDataReceivedEvent += SerialPort1_OnDataReceivedEvent;
             serialPort1.Open();
             timerAffichage = new DispatcherTimer();
@@ -295,6 +295,7 @@ namespace InterfaceRobot
             distTelemetre3 = 0x0033,
             consigneVitesse1 = 0x0041,
             consigneVitesse2 = 0x0042,
+            position = 0x0061,
             RobotState
         }
 
@@ -358,6 +359,24 @@ namespace InterfaceRobot
                     break;
 
                 case ((int)Fonctions.consigneVitesse2):
+                    break;
+
+                case ((int)Fonctions.position):
+                    textBoxPosition.Clear();
+                    textBoxPosition.Text += "trame : 0x" + BitConverter.ToInt16(msgPayload, 0).ToString("X2") + '\n';
+                    robot.timestamp = BitConverter.ToInt64(msgPayload, 0) ;
+                    robot.positionXOdo = BitConverter.ToSingle(msgPayload, 4);
+                    robot.positionYOdo = BitConverter.ToSingle(msgPayload, 8);
+                    robot.angleRadianFromOdometry = BitConverter.ToSingle(msgPayload, 12);
+                    robot.vitesseLineaireFromOdometry = BitConverter.ToSingle(msgPayload, 16);
+                    robot.vitesseAngulaireFromOdometry = BitConverter.ToSingle(msgPayload, 20);
+                    textBoxPosition.Text += "Time : " + robot.timestamp + '\n';
+                    textBoxPosition.Text += "Position X : " + robot.positionXOdo + '\n';
+                    textBoxPosition.Text += "Position Y : " + robot.positionYOdo + '\n';
+                    textBoxPosition.Text += "angleRadianFromOdometry : " + robot.angleRadianFromOdometry + '\n';
+                    textBoxPosition.Text += "vitesseLineaireFromOdometry : " + robot.vitesseLineaireFromOdometry + '\n';
+                    textBoxPosition.Text += "vitesseAngulaireFromOdometry : " + robot.vitesseAngulaireFromOdometry + '\n';
+
                     break;
 
                 //case ((int)Fonctions.RobotState):
