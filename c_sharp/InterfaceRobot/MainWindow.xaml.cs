@@ -18,6 +18,7 @@ using System.Security.RightsManagement;
 using System.Runtime.Remoting.Messaging;
 
 using ExtendedSerialPort;
+using WpfOscilloscopeControl;
 
 namespace InterfaceRobot
 {
