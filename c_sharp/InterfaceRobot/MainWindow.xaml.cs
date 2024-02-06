@@ -19,6 +19,7 @@ using System.Runtime.Remoting.Messaging;
 
 using ExtendedSerialPort;
 using WpfOscilloscopeControl;
+using WpfAsservissementDisplay;
 
 namespace InterfaceRobot
 {
@@ -44,6 +45,8 @@ namespace InterfaceRobot
             timerAffichage.Interval = new TimeSpan(0, 0, 0, 1, 0);
             timerAffichage.Tick += TimerAffichage_Tick; ;
             timerAffichage.Start();
+            oscilloSpeed.AddOrUpdateLine(0, 200, "Ligne1");
+            oscilloSpeed.ChangeLineColor(0, Colors.Blue);
 
         }
 
@@ -65,6 +68,8 @@ namespace InterfaceRobot
                 //    textBoxReception.Text += "0x" + c.ToString("X2") + " ";
 
             }
+
+            oscilloSpeed.AddPointToLine(0, 10, 20);
         }
 
         public void SerialPort1_OnDataReceivedEvent(object sender, DataReceivedArgs e)
@@ -150,7 +155,7 @@ namespace InterfaceRobot
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            oscilloSpeed.AddOrUpdateLine(0, 200, "Ligne1");
         }
 
         void SendMessage()

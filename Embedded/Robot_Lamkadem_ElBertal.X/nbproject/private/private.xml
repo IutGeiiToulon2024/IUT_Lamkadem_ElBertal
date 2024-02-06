@@ -5,6 +5,8 @@
         <group>
             <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/UART.c</file>
             <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/main.c</file>
+            <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/Utilities.c</file>
+            <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/timer.c</file>
             <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/QEI.c</file>
         </group>
     </open-files>

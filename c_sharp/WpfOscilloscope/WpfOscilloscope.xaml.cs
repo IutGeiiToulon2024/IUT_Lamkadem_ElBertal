@@ -7,7 +7,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+
 using Utilities;
+using WpfAsservissementDisplay;
 
 namespace WpfOscilloscopeControl
 {
@@ -21,6 +23,8 @@ namespace WpfOscilloscopeControl
         ConcurrentDictionary<int, ConcurrentQueue<Point>> lineDataDictionary = new ConcurrentDictionary< int, ConcurrentQueue<Point>>();
         Dictionary<int, bool> useDisplayTimerRenderingDictionary = new Dictionary<int, bool>();
         DispatcherTimer displayTimer;
+        
+
         public WpfOscilloscope()
         {
             InitializeComponent();
