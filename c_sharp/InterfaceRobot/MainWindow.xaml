@@ -25,42 +25,67 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="30"/>
-                    <ColumnDefinition />
+                    <ColumnDefinition Width="63*" />
+                    <ColumnDefinition Width="389*"/>
                     <ColumnDefinition Width="30"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="452*"/>
                     <ColumnDefinition Width="30"/>
                 </Grid.ColumnDefinitions>
 
-                <GroupBox x:Name="Emission" Header="Emission"  Background="#FF9FB9B0" Foreground="Black" BorderBrush="Black" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1">
+                <GroupBox x:Name="Emission" Header="Emission"  Background="#FF9FB9B0" Foreground="Black" BorderBrush="Black" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
                     <TextBox x:Name="textBoxEmission" Margin="2,0,-2,0" TextWrapping="Wrap" Background="{x:Null}" BorderBrush="{x:Null}" AcceptsReturn="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextChanged="textBoxEmission_TextChanged" KeyUp="textBoxEmission_KeyUp"/>
                 </GroupBox>
-                <GroupBox x:Name="Reception" Header="Reception" BorderBrush="Black" Foreground="Black" Background="#FF9FB9B0" Grid.Row="1" Grid.Column="3" VerticalContentAlignment="Stretch" Grid.ColumnSpan="1">
+                <GroupBox x:Name="Reception" Header="Reception" BorderBrush="Black" Foreground="Black" Background="#FF9FB9B0" Grid.Row="1" Grid.Column="4" VerticalContentAlignment="Stretch" Grid.ColumnSpan="1">
                     <TextBox x:Name="textBoxReception" HorizontalAlignment="Stretch" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" AcceptsReturn="True" IsReadOnly="True" TextChanged="TextBox_TextChanged"/>
                 </GroupBox>
-                <Button x:Name="buttonEnvoyer" Content="ENVOYER" Grid.Column="1" HorizontalAlignment="Center"  Grid.Row="3" Width="100" Click="buttonEnvoyer_Click"/>
-                <Button x:Name="buttonClear" Content="NETTOYER" Grid.Column="3" HorizontalAlignment="Center" Grid.Row="3" Width="100"  Click="buttonClear_Click"/>
-                <Button x:Name="buttonTest" Content="Test" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="3" Width="30" Click="buttonTest_Click"/>
-                <GroupBox Header="Leds" Grid.Column="1" Grid.Row="5" Background="#FFB1B7B5" BorderBrush="Black" Grid.RowSpan="1" Grid.ColumnSpan="1">
+                <Button x:Name="buttonEnvoyer" Content="ENVOYER" Grid.Column="2" HorizontalAlignment="Left"  Grid.Row="2" Width="100" Click="buttonEnvoyer_Click" Margin="113,20,0,0" Grid.RowSpan="2"/>
+                <Button x:Name="buttonClear" Content="NETTOYER" Grid.Column="4" HorizontalAlignment="Center" Grid.Row="2" Width="100"  Click="buttonClear_Click" Margin="0,20,0,0" Grid.RowSpan="2"/>
+                <Button x:Name="buttonTest" Content="Test" Grid.Column="3" HorizontalAlignment="Center" Grid.Row="2" Width="30" Click="buttonTest_Click" Margin="0,20,0,0" Grid.RowSpan="2"/>
+                <GroupBox Header="Leds" Grid.Column="1" Grid.Row="4" Background="#FFB1B7B5" BorderBrush="Black" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="0,20,0,0">
                     <StackPanel x:Name="BOX" HorizontalAlignment="Left" Orientation="Vertical">
                         <CheckBox x:Name="checkLed1" Content="Led1" HorizontalAlignment="Left" Margin="30,10,0,0" Checked="checkLed1_Checked" Unchecked="checkLed1_Unchecked"/>
                         <CheckBox x:Name="checkLed2" Content="Led 2" HorizontalAlignment="Left" Margin="30,10,0,0"/>
                         <CheckBox x:Name="checkLed3" Content="Led 3" HorizontalAlignment="Left" Margin="30,10,0,0"/>
                     </StackPanel>
                 </GroupBox>
-
-                <GroupBox x:Name="Ocilloscope" Header="Oscilloscope" Grid.Column="3" Grid.Row="5" Background="#FFB1B7B5" BorderBrush="Black" Grid.RowSpan="1" Grid.ColumnSpan="1">
-                    <oscillo:WpfOscilloscope x:Name="oscilloSpeed" x:FieldModifier="public"/>
-                </GroupBox>
-                <GroupBox x:Name="Telemetres" Header="Télémètres IR" Grid.Column="1" Grid.Row="7" Background="#FFB1B7B5" BorderBrush="Black" Grid.ColumnSpan="1">
+                <GroupBox x:Name="Telemetres" Header="Télémètres IR" Grid.Column="1" Grid.Row="6" Background="#FFB1B7B5" BorderBrush="Black" Grid.ColumnSpan="2" Margin="0,20,0,0" Grid.RowSpan="2">
                     <TextBox x:Name="textBoxTelemetres" HorizontalAlignment="Left" Margin="2,0,-2,0" TextWrapping="Wrap" Width="305" Background="{x:Null}" BorderBrush="{x:Null}" AcceptsReturn="True" IsReadOnly="True"/>
                 </GroupBox>
-                <GroupBox x:Name="Position" Header="Position" Grid.Column="3" Grid.Row="7" Background="#FFB1B7B5" BorderBrush="Black" Grid.ColumnSpan="1">
+                <GroupBox x:Name="Position" Header="Position" Grid.Column="4" Grid.Row="6" Background="#FFB1B7B5" BorderBrush="Black" Grid.ColumnSpan="1" Margin="0,20,0,0" Grid.RowSpan="2">
                     <TextBox x:Name="textBoxPosition" HorizontalAlignment="Stretch" TextWrapping="Wrap" Width="305" Background="{x:Null}" BorderBrush="{x:Null}" AcceptsReturn="True" IsReadOnly="True"/>
                 </GroupBox>
             </Grid>
         </TabItem>
         <TabItem Header="Oscilloscope">
-
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="10"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="63*" />
+                    <ColumnDefinition Width="389*"/>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="452*"/>
+                    <ColumnDefinition Width="30"/>
+                </Grid.ColumnDefinitions>
+                <GroupBox x:Name="Ocilloscope" Header="Oscilloscope" Grid.Column="1" Grid.Row="1" Background="#FFB1B7B5" BorderBrush="Black" Grid.RowSpan="6" Grid.ColumnSpan="4" Margin="0,20,0,0">
+                    <oscillo:WpfOscilloscope x:Name="oscilloSpeed" x:FieldModifier="public"/>
+                </GroupBox>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Map">
+        </TabItem>
+        <TabItem Header="Donnees d'asservissement">
+            <AsservDisplay:AsservissementRobot2RouesDisplayControl x:Name="asservSpeedDisplay" Background="Black" Loaded="asservSpeedDisplay_Loaded"/>
         </TabItem>
     </TabControl>
 </Window>

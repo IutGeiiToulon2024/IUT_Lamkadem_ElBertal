@@ -68,7 +68,8 @@ namespace InterfaceRobot
                 //    textBoxReception.Text += "0x" + c.ToString("X2") + " ";
 
             }
-
+            asservSpeedDisplay.UpdateIndependantOdometrySpeed(0.1, 20);
+            asservSpeedDisplay.UpdatePolarOdometrySpeed(robot.vitesseLineaireFromOdometry, robot.angleRadianFromOdometry);
             oscilloSpeed.AddPointToLine(0, 10, 20);
         }
 
@@ -99,11 +100,7 @@ namespace InterfaceRobot
             //textBoxReception.Text +="Reçu : "+ textBoxEmission.Text +"\n";
             textBoxEmission.Clear();
         }
-
-
-
         bool clear = true;
-
         private void buttonClear_Click(object sender, RoutedEventArgs e)
         {
             if (clear)
@@ -118,9 +115,7 @@ namespace InterfaceRobot
             }
             textBoxReception.Clear();
         }
-
         bool test = true;
-
         private void buttonTest_Click(object sender, RoutedEventArgs e)
         {
             //if (test)
@@ -146,8 +141,6 @@ namespace InterfaceRobot
             byte[] array = Encoding.ASCII.GetBytes("Bonjour");
             UartEncodeAndSendMessage(0x0080, 7, array) ;
         }
-
-
         private void textBoxEmission_TextChanged(object sender, TextChangedEventArgs e)
         {
 
@@ -303,6 +296,7 @@ namespace InterfaceRobot
             consigneVitesse1 = 0x0041,
             consigneVitesse2 = 0x0042,
             position = 0x0061,
+            test = 0x0070,
             RobotState
         }
 
@@ -363,9 +357,12 @@ namespace InterfaceRobot
                     break;
 
                 case ((int)Fonctions.consigneVitesse1):
+                    textBoxReception.Clear();
+                    textBoxReception.Text += "Moteur D :" + BitConverter.ToInt16(msgPayload, 0).ToString() + "% \n" ;
                     break;
 
                 case ((int)Fonctions.consigneVitesse2):
+                    textBoxReception.Text += "Moteur G :" + BitConverter.ToInt16(msgPayload, 0).ToString() + "%";
                     break;
 
                 case ((int)Fonctions.position):
@@ -383,6 +380,10 @@ namespace InterfaceRobot
                     textBoxPosition.Text += "angleRadianFromOdometry : " + robot.angleRadianFromOdometry + '\n';
                     textBoxPosition.Text += "vitesseLineaireFromOdometry : " + robot.vitesseLineaireFromOdometry + '\n';
                     textBoxPosition.Text += "vitesseAngulaireFromOdometry : " + robot.vitesseAngulaireFromOdometry + '\n';
+
+                    break;
+
+                case ((int)Fonctions.test):
 
                     break;
 
@@ -418,6 +419,11 @@ namespace InterfaceRobot
         {
             etat_led1[0] = 0;
             UartEncodeAndSendMessage(0x0021, 1, etat_led1);
+        }
+
+        private void asservSpeedDisplay_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
