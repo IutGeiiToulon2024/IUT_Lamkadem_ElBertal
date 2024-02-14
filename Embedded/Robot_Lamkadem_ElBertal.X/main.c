@@ -129,8 +129,9 @@ int main(void) {
             payloadVitesseD[1] = (char) ((int) robotState.vitesseDroiteConsigne >> 8);
 
             payloadVitesseG[0] = (char) (int) robotState.vitesseGaucheConsigne;
-            payloadVitesseG[1] = (char) ((int) robotState.vitesseDroiteConsigne >> 8);
-
+            payloadVitesseG[1] = (char) ((int) robotState.vitesseGaucheConsigne >> 8);
+            
+            
             UartEncodeAndSendMessage(0x0041, 2, (char*) payloadVitesseD);
             UartEncodeAndSendMessage(0x0042, 2, (char*) payloadVitesseG);
             
@@ -174,8 +175,8 @@ void OperatingSystemLoop(void) {
                 stateRobot = STATE_AVANCE;
             break;
         case STATE_AVANCE:
-            PWMSetSpeedConsigne(25, MOTEUR_DROIT);
-            PWMSetSpeedConsigne(25, MOTEUR_GAUCHE);
+            PWMSetSpeedConsigne(20, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(20, MOTEUR_GAUCHE);
             stateRobot = STATE_AVANCE_EN_COURS;
             break;
         case STATE_AVANCE_EN_COURS:

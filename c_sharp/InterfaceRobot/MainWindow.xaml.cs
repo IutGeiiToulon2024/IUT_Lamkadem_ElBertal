@@ -20,6 +20,7 @@ using System.Runtime.Remoting.Messaging;
 using ExtendedSerialPort;
 using WpfOscilloscopeControl;
 using WpfAsservissementDisplay;
+using System.Timers;
 
 namespace InterfaceRobot
 {
@@ -32,7 +33,7 @@ namespace InterfaceRobot
     public partial class MainWindow : Window
     {
         ReliableSerialPort serialPort1;
-        DispatcherTimer timerAffichage;
+        Timer timerAffichage;
 
         Robot robot = new Robot();
         public MainWindow()
@@ -41,14 +42,20 @@ namespace InterfaceRobot
             serialPort1 = new ReliableSerialPort("COM21", 115200, Parity.None, 8, StopBits.One);
             serialPort1.OnDataReceivedEvent += SerialPort1_OnDataReceivedEvent;
             serialPort1.Open();
-            timerAffichage = new DispatcherTimer();
-            timerAffichage.Interval = new TimeSpan(0, 0, 0, 1, 0);
-            timerAffichage.Tick += TimerAffichage_Tick; ;
+            timerAffichage = new Timer();
+            timerAffichage.Interval = 50;// new TimeSpan(0, 0, 0, 0, 20);
+            timerAffichage.Elapsed += TimerAffichage_Tick;
             timerAffichage.Start();
-            oscilloSpeed.AddOrUpdateLine(0, 200, "Ligne1");
-            oscilloSpeed.ChangeLineColor(0, Colors.Blue);
 
+            oscilloSpeed.AddOrUpdateLine(0, 200, "Vitesse");
+            oscilloSpeed.ChangeLineColor("Vitesse", Colors.Red);
+            oscilloSpeed.isDisplayActivated = true;
+
+            for( int i = 0; i < 100 ; i++  )
+                oscilloSpeed.AddPointToLine(0, random.NextDouble(), random.NextDouble());
         }
+
+        Random random = new Random();
 
         private void TimerAffichage_Tick(object sender, EventArgs e)
         {
@@ -68,9 +75,14 @@ namespace InterfaceRobot
                 //    textBoxReception.Text += "0x" + c.ToString("X2") + " ";
 
             }
-            asservSpeedDisplay.UpdateIndependantOdometrySpeed(0.1, 20);
+
+//            oscilloSpeed.AddPointToLine(0, robot.timestamp/1000, robot.vitesseLineaireFromOdometry);
+            
+
+
+            asservSpeedDisplay.UpdateIndependantOdometrySpeed(robot.vitesseGaucheFromOdometry, robot.vitesseDroitFromOdometry);
             asservSpeedDisplay.UpdatePolarOdometrySpeed(robot.vitesseLineaireFromOdometry, robot.angleRadianFromOdometry);
-            oscilloSpeed.AddPointToLine(0, 10, 20);
+            asservSpeedDisplay.UpdateIndependantSpeedConsigneValues(robot.consigneG, robot.consigneD);
         }
 
         public void SerialPort1_OnDataReceivedEvent(object sender, DataReceivedArgs e)
@@ -114,6 +126,9 @@ namespace InterfaceRobot
                 clear = true;
             }
             textBoxReception.Clear();
+
+            for (int i = 0; i < 100; i++)
+                oscilloSpeed.AddPointToLine(0, random.NextDouble(), random.NextDouble());
         }
         bool test = true;
         private void buttonTest_Click(object sender, RoutedEventArgs e)
@@ -270,11 +285,13 @@ namespace InterfaceRobot
                     {
                         //Success, on a un message valide
                         ProcessDecodedMessage(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload);
-                        
                     }
                     else
                     {
-                        textBoxReception.Text += " ERROR ";
+                        Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            textBoxReception.Text += " ERROR ";
+                        }));
                     }
                     rcvState = StateReception.Waiting;
                     break;
@@ -296,6 +313,7 @@ namespace InterfaceRobot
             consigneVitesse1 = 0x0041,
             consigneVitesse2 = 0x0042,
             position = 0x0061,
+            mesureVitesse = 0x0062,
             test = 0x0070,
             RobotState
         }
@@ -323,10 +341,10 @@ namespace InterfaceRobot
 
         private void ProcessDecodedMessage(int msgFunction, int msgPayloadLength, byte[] msgPayload)
         {
-            
+
             switch (msgFunction)
             {
-               case ((int)Fonctions.textTransmission):
+                case ((int)Fonctions.textTransmission):
                     textBoxReception.Text += Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength);
                     break;
 
@@ -341,45 +359,75 @@ namespace InterfaceRobot
                     break;
 
                 case ((int)Fonctions.distTelemetre1):
-
-                    // textBoxTelemetres.Text +=  Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength);
-                    textBoxTelemetres.Clear();
-                    //textBoxTelemetres.Text += "Télémètre Droit : " + Encoding.UTF8.GetString(msgPayload, 0, msgPayloadLength) + " cm\n";
-                    textBoxTelemetres.Text += "Télémètre Droit : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm\n";
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        textBoxTelemetres.Clear();
+                        textBoxTelemetres.Text += "Télémètre Droit : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm\n";
+                    }));
                     break;
-                   
+
                 case ((int)Fonctions.distTelemetre2):
-                    textBoxTelemetres.Text += "Télémètre Centre : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm\n";
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        textBoxTelemetres.Text += "Télémètre Centre : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm\n";
+                    }));
                     break;
 
                 case ((int)Fonctions.distTelemetre3):
-                    textBoxTelemetres.Text += "Télémètre Gauche : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm";
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        textBoxTelemetres.Text += "Télémètre Gauche : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm";
+                    }));
                     break;
 
                 case ((int)Fonctions.consigneVitesse1):
-                    textBoxReception.Clear();
-                    textBoxReception.Text += "Moteur D :" + BitConverter.ToInt16(msgPayload, 0).ToString() + "% \n" ;
+                    robot.consigneD = BitConverter.ToInt16(msgPayload, 0);
+
                     break;
 
                 case ((int)Fonctions.consigneVitesse2):
-                    textBoxReception.Text += "Moteur G :" + BitConverter.ToInt16(msgPayload, 0).ToString() + "%";
+                    robot.consigneG = BitConverter.ToInt16(msgPayload, 0);
                     break;
 
                 case ((int)Fonctions.position):
-                    textBoxPosition.Clear();
-                    textBoxPosition.Text += "trame : 0x" + BitConverter.ToInt16(msgPayload, 0).ToString("X2") + '\n';
-                    robot.timestamp = BitConverter.ToInt64(msgPayload, 0) ;
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        textBoxPosition.Clear();
+                        textBoxPosition.Text += "trame : 0x" + BitConverter.ToInt16(msgPayload, 0).ToString("X2") + '\n';
+                    }));
+                    var tab = msgPayload.Skip(0).Take(4).Reverse().ToArray();
+                    robot.timestamp = BitConverter.ToUInt32(tab, 0);
                     robot.positionXOdo = BitConverter.ToSingle(msgPayload, 4);
                     robot.positionYOdo = BitConverter.ToSingle(msgPayload, 8);
                     robot.angleRadianFromOdometry = BitConverter.ToSingle(msgPayload, 12);
                     robot.vitesseLineaireFromOdometry = BitConverter.ToSingle(msgPayload, 16);
                     robot.vitesseAngulaireFromOdometry = BitConverter.ToSingle(msgPayload, 20);
-                    //textBoxPosition.Text += "Time : " + robot.timestamp + '\n';
-                    textBoxPosition.Text += "Position X : " + robot.positionXOdo + '\n';
-                    textBoxPosition.Text += "Position Y : " + robot.positionYOdo + '\n';
-                    textBoxPosition.Text += "angleRadianFromOdometry : " + robot.angleRadianFromOdometry + '\n';
-                    textBoxPosition.Text += "vitesseLineaireFromOdometry : " + robot.vitesseLineaireFromOdometry + '\n';
-                    textBoxPosition.Text += "vitesseAngulaireFromOdometry : " + robot.vitesseAngulaireFromOdometry + '\n';
+
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        textBoxPosition.Text += "Time : " + robot.timestamp + '\n';
+                        textBoxPosition.Text += "Position X : " + robot.positionXOdo + '\n';
+                        textBoxPosition.Text += "Position Y : " + robot.positionYOdo + '\n';
+                        textBoxPosition.Text += "angleRadianFromOdometry : " + robot.angleRadianFromOdometry + '\n';
+                        textBoxPosition.Text += "vitesseLineaireFromOdometry : " + robot.vitesseLineaireFromOdometry + '\n';
+                        textBoxPosition.Text += "vitesseAngulaireFromOdometry : " + robot.vitesseAngulaireFromOdometry + '\n';
+                    }));
+
+                    oscilloSpeed.AddPointToLine(0, random.NextDouble(), random.NextDouble());
+
+
+                    break;
+
+                case ((int)Fonctions.mesureVitesse):
+                    robot.vitesseDroitFromOdometry = BitConverter.ToSingle(msgPayload, 0);
+                    robot.vitesseGaucheFromOdometry = BitConverter.ToSingle(msgPayload, 4);
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        textBoxReception.Clear();
+                        textBoxReception.Text += "Moteur D :" + robot.vitesseDroitFromOdometry.ToString() + "\n";
+                        textBoxReception.Text += "Moteur G :" + robot.vitesseGaucheFromOdometry.ToString() + "\n";
+                    }));
+
 
                     break;
 
@@ -387,12 +435,12 @@ namespace InterfaceRobot
 
                     break;
 
-                //case ((int)Fonctions.RobotState):
-                //    int instant = (((int)msgPayload[1]) << 24) + (((int)msgPayload[2]) << 16)
-                //    + (((int)msgPayload[3]) << 8) + ((int)msgPayload[4]);
-                //    rtbReception.Text += "\nRobot␣State␣:␣" +
-                //    ((StateRobot)(msgPayload[0])).ToString() + 
-                //    break;
+                    //case ((int)Fonctions.RobotState):
+                    //    int instant = (((int)msgPayload[1]) << 24) + (((int)msgPayload[2]) << 16)
+                    //    + (((int)msgPayload[3]) << 8) + ((int)msgPayload[4]);
+                    //    rtbReception.Text += "\nRobot␣State␣:␣" +
+                    //    ((StateRobot)(msgPayload[0])).ToString() + 
+                    //    break;
             }
 
             //if (msgFunction == 0x80)

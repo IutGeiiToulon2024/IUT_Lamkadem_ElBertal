@@ -22,6 +22,12 @@ namespace InterfaceRobot
         public float vitesseLineaireFromOdometry;
         public float vitesseAngulaireFromOdometry;
 
+        public float consigneD;
+        public float consigneG;
+
+        public float vitesseDroitFromOdometry;
+        public float vitesseGaucheFromOdometry;
+
         public Robot()
         {
 

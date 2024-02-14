@@ -11,6 +11,7 @@
 #define DISTROUES 281.2
 //#define PI 3.14159265358979323846
 #define POSITION_DATA 0x0061
+#define MESURE_VIT 0x0062
 
 double delta_d, delta_g, QeiDroitPosition_T_1, QeiDroitPosition, QeiGauchePosition_T_1, QeiGauchePosition;
 
@@ -65,12 +66,19 @@ void QEIUpdateData() {
 }
 
 void SendPositionData() {
-    unsigned char positionPayload[24];
+    unsigned char positionPayload[24] ;
+    unsigned char measureVitesse[8];
+    
     getBytesFromInt32(positionPayload, 0, timestamp);
     getBytesFromFloat(positionPayload, 4, (float) (robotState.xPosFromOdometry));
     getBytesFromFloat(positionPayload, 8, (float) (robotState.yPosFromOdometry));
     getBytesFromFloat(positionPayload, 12, (float) (robotState.angleRadianFromOdometry));
     getBytesFromFloat(positionPayload, 16, (float) (robotState.vitesseLineaireFromOdometry));
     getBytesFromFloat(positionPayload, 20, (float) (robotState.vitesseAngulaireFromOdometry));
+    
+    getBytesFromFloat(measureVitesse, 0, (float) (robotState.vitesseDroitFromOdometry));
+    getBytesFromFloat(measureVitesse, 4, (float) (robotState.vitesseGaucheFromOdometry));
+    
     UartEncodeAndSendMessage(POSITION_DATA, 24, positionPayload);
+    UartEncodeAndSendMessage(MESURE_VIT , 8 , measureVitesse) ;
 }

@@ -73,6 +73,7 @@ namespace WpfOscilloscopeControl
                 lineDataDictionary[lineId] = new ConcurrentQueue<Point>();
 
                 useDisplayTimerRenderingDictionary[lineId] = false;
+                lineDictionary[lineId].AcceptsUnsortedData = true;
                 //sciChart.RenderableSeries.RemoveAt(id);
             }
             else
