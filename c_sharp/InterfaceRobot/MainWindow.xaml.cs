@@ -51,8 +51,7 @@ namespace InterfaceRobot
             oscilloSpeed.ChangeLineColor("Vitesse", Colors.Red);
             oscilloSpeed.isDisplayActivated = true;
 
-            for( int i = 0; i < 100 ; i++  )
-                oscilloSpeed.AddPointToLine(0, random.NextDouble(), random.NextDouble());
+            
         }
 
         Random random = new Random();
@@ -64,21 +63,18 @@ namespace InterfaceRobot
             //    textBoxReception.Text += robot.receivedText;
             //    robot.receivedText = "";
             //}
-            while (robot.byteListReceived.Count > 0)
-            {
-                var c = robot.byteListReceived.Dequeue();
-                DecodeMessage(c);
-                // ASCII :
-                //    textBoxReception.Text += Convert.ToChar(c);
+            //while (robot.byteListReceived.Count > 0)
+            //{
+            //    //var c = robot.byteListReceived.Dequeue();
+            //    // ASCII :
+            //    //    textBoxReception.Text += Convert.ToChar(c);
 
-                // HEXA :
-                //    textBoxReception.Text += "0x" + c.ToString("X2") + " ";
+            //    // HEXA :
+            //    //    textBoxReception.Text += "0x" + c.ToString("X2") + " ";
 
-            }
+            //}
 
-//            oscilloSpeed.AddPointToLine(0, robot.timestamp/1000, robot.vitesseLineaireFromOdometry);
-            
-
+            //oscilloSpeed.AddPointToLine(0, robot.timestamp/1000, robot.vitesseLineaireFromOdometry);
 
             asservSpeedDisplay.UpdateIndependantOdometrySpeed(robot.vitesseGaucheFromOdometry, robot.vitesseDroitFromOdometry);
             asservSpeedDisplay.UpdatePolarOdometrySpeed(robot.vitesseLineaireFromOdometry, robot.angleRadianFromOdometry);
@@ -90,7 +86,8 @@ namespace InterfaceRobot
             //robot.receivedText += Encoding.UTF8.GetString(e.Data, 0, e.Data.Length);
             foreach(byte value in e.Data)
             {
-                robot.byteListReceived.Enqueue(value);
+                DecodeMessage(value);
+                //robot.byteListReceived.Enqueue(value);
             }
         }
 
@@ -126,8 +123,7 @@ namespace InterfaceRobot
                 clear = true;
             }
             textBoxReception.Clear();
-
-            for (int i = 0; i < 100; i++)
+            for (int i = 0;i<100; i++)
                 oscilloSpeed.AddPointToLine(0, random.NextDouble(), random.NextDouble());
         }
         bool test = true;
@@ -413,7 +409,7 @@ namespace InterfaceRobot
                         textBoxPosition.Text += "vitesseAngulaireFromOdometry : " + robot.vitesseAngulaireFromOdometry + '\n';
                     }));
 
-                    oscilloSpeed.AddPointToLine(0, random.NextDouble(), random.NextDouble());
+                    oscilloSpeed.AddPointToLine(0, robot.timestamp/1000, robot.vitesseLineaireFromOdometry);
 
 
                     break;
@@ -421,14 +417,12 @@ namespace InterfaceRobot
                 case ((int)Fonctions.mesureVitesse):
                     robot.vitesseDroitFromOdometry = BitConverter.ToSingle(msgPayload, 0);
                     robot.vitesseGaucheFromOdometry = BitConverter.ToSingle(msgPayload, 4);
-                    Dispatcher.BeginInvoke(new Action(() =>
+                    Dispatcher.Invoke(new Action(() =>
                     {
                         textBoxReception.Clear();
-                        textBoxReception.Text += "Moteur D :" + robot.vitesseDroitFromOdometry.ToString() + "\n";
-                        textBoxReception.Text += "Moteur G :" + robot.vitesseGaucheFromOdometry.ToString() + "\n";
+                        textBoxPosition.Text += "Moteur D :" + robot.vitesseDroitFromOdometry.ToString() + "\n";
+                        textBoxPosition.Text += "Moteur G :" + robot.vitesseGaucheFromOdometry.ToString() + "\n";
                     }));
-
-
                     break;
 
                 case ((int)Fonctions.test):

@@ -51,28 +51,8 @@ int main(void) {
     // Boucle Principale
     /****************************************************************************************************/
 
+    int subSamplingSendCounter = 0;
     while (1) {
-
-        //            SendMessage((unsigned char*) "0.1", 7);
-        //            __delay32(40000000);
-
-
-        //        for (int i = 0; i < CB_RX1_GetDataSize(); i++) {
-        //            unsigned char c = CB_RX1_Get();
-        //            SendMessage(&c, 1);
-        //        }
-
-        //float x = 58;
-        //  int diz1, unit1, diz2, unit2, diz3, unit3;
-        //        diz = (int) x / 10;
-        //        unit = x - diz * 10;
-        //          
-        //
-        //        unsigned char payload[] = {diz + '0', unit + '0'};
-        //
-        //        UartEncodeAndSendMessage(0x0080, 2, payload);
-        //        __delay32(40000000);
-
         unsigned char payloadTelemetre1[2], payloadTelemetre2[2], payloadTelemetre3[2];
         char payloadVitesseD[2], payloadVitesseG[2];
         if (ADCIsConversionFinished() == 1) {
@@ -111,31 +91,35 @@ int main(void) {
             //            unsigned char payloadTelemetre3[] = {diz3 + '0', unit3 + '0'};
             //            UartEncodeAndSendMessage(0x0033, 2, payloadTelemetre3);
 
-            payloadTelemetre1[0] = (char) (int) robotState.distanceTelemetreDroit;
-            payloadTelemetre1[1] = (char) ((int) robotState.distanceTelemetreDroit >> 8);
+            subSamplingSendCounter++;
+            if (subSamplingSendCounter >= 25) {
+                payloadTelemetre1[0] = (char) (int) robotState.distanceTelemetreDroit;
+                payloadTelemetre1[1] = (char) ((int) robotState.distanceTelemetreDroit >> 8);
 
-            payloadTelemetre2[0] = (char) (int) robotState.distanceTelemetreGauche;
-            payloadTelemetre2[1] = (char) ((int) robotState.distanceTelemetreGauche >> 8);
+                payloadTelemetre2[0] = (char) (int) robotState.distanceTelemetreGauche;
+                payloadTelemetre2[1] = (char) ((int) robotState.distanceTelemetreGauche >> 8);
 
-            payloadTelemetre3[0] = (char) (int) robotState.distanceTelemetreCentre;
-            payloadTelemetre3[1] = (char) ((int) robotState.distanceTelemetreCentre >> 8);
+                payloadTelemetre3[0] = (char) (int) robotState.distanceTelemetreCentre;
+                payloadTelemetre3[1] = (char) ((int) robotState.distanceTelemetreCentre >> 8);
 
-            UartEncodeAndSendMessage(0x0031, 2, (unsigned char*) payloadTelemetre1);
-            UartEncodeAndSendMessage(0x0032, 2, (unsigned char*) payloadTelemetre2);
-            UartEncodeAndSendMessage(0x0033, 2, (unsigned char*) payloadTelemetre3);
+                UartEncodeAndSendMessage(0x0031, 2, (unsigned char*) payloadTelemetre1);
+                UartEncodeAndSendMessage(0x0032, 2, (unsigned char*) payloadTelemetre2);
+                UartEncodeAndSendMessage(0x0033, 2, (unsigned char*) payloadTelemetre3);
 
 
-            payloadVitesseD[0] = (char) (int) robotState.vitesseDroiteConsigne;
-            payloadVitesseD[1] = (char) ((int) robotState.vitesseDroiteConsigne >> 8);
+                payloadVitesseD[0] = (char) (int) robotState.vitesseDroiteConsigne;
+                payloadVitesseD[1] = (char) ((int) robotState.vitesseDroiteConsigne >> 8);
 
-            payloadVitesseG[0] = (char) (int) robotState.vitesseGaucheConsigne;
-            payloadVitesseG[1] = (char) ((int) robotState.vitesseGaucheConsigne >> 8);
-            
-            
-            UartEncodeAndSendMessage(0x0041, 2, (char*) payloadVitesseD);
-            UartEncodeAndSendMessage(0x0042, 2, (char*) payloadVitesseG);
-            
-            __delay32(40000000);
+                payloadVitesseG[0] = (char) (int) robotState.vitesseGaucheConsigne;
+                payloadVitesseG[1] = (char) ((int) robotState.vitesseGaucheConsigne >> 8);
+
+
+                UartEncodeAndSendMessage(0x0041, 2, (char*) payloadVitesseD);
+                UartEncodeAndSendMessage(0x0042, 2, (char*) payloadVitesseG);
+                subSamplingSendCounter = 0;
+            }
+
+            //__delay32(40000000);
 
 
             // --------------------------------------------------Gestion etat des leds
@@ -162,7 +146,7 @@ int main(void) {
 unsigned char stateRobot;
 
 void OperatingSystemLoop(void) {
-    
+
     int vitesseD, vitesseG;
     switch (stateRobot) {
         case STATE_ATTENTE:

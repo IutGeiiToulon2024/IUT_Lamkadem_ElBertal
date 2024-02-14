@@ -61,6 +61,7 @@ namespace WpfOscilloscopeControl
                         }
                     }
                 }
+                this.InvalidateVisual();
             }
         }
 
