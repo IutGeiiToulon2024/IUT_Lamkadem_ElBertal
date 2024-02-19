@@ -51,10 +51,20 @@ namespace InterfaceRobot
             oscilloSpeed.ChangeLineColor("Vitesse", Colors.Red);
             oscilloSpeed.isDisplayActivated = true;
 
-            
+            oscilloPos.AddOrUpdateLine(0, 200, "Vitesse");
+            oscilloPos.ChangeLineColor("Vitesse", Colors.Red);
+            oscilloPos.isDisplayActivated = true;
+
         }
 
         Random random = new Random();
+
+        float KpX = 0.42f;
+        float KpTheta = 0.25f;
+        float KiX = 0.67f;
+        float KiTheta = 0.3f;
+        float KdX = 0.71f;
+        float KdTheta = 0.99f;
 
         private void TimerAffichage_Tick(object sender, EventArgs e)
         {
@@ -79,6 +89,9 @@ namespace InterfaceRobot
             asservSpeedDisplay.UpdateIndependantOdometrySpeed(robot.vitesseGaucheFromOdometry, robot.vitesseDroitFromOdometry);
             asservSpeedDisplay.UpdatePolarOdometrySpeed(robot.vitesseLineaireFromOdometry, robot.angleRadianFromOdometry);
             asservSpeedDisplay.UpdateIndependantSpeedConsigneValues(robot.consigneG, robot.consigneD);
+            asservSpeedDisplay.UpdatePolarSpeedCorrectionGains(KpX, KpTheta,
+            KiX, KiTheta,
+            KdX, KdTheta);
         }
 
         public void SerialPort1_OnDataReceivedEvent(object sender, DataReceivedArgs e)
@@ -152,6 +165,9 @@ namespace InterfaceRobot
             byte[] array = Encoding.ASCII.GetBytes("Bonjour");
             UartEncodeAndSendMessage(0x0080, 7, array) ;
         }
+
+
+
         private void textBoxEmission_TextChanged(object sender, TextChangedEventArgs e)
         {
 
@@ -250,7 +266,7 @@ namespace InterfaceRobot
                     break;
                 case StateReception.FunctionLSB:
                     msgDecodedFunction |= c ;
-                    rcvState |= StateReception.PayloadLengthMSB;
+                    rcvState = StateReception.PayloadLengthMSB;
                     break;
                 case StateReception.PayloadLengthMSB:
                     msgDecodedPayloadLength = c << 8 ;
@@ -311,6 +327,7 @@ namespace InterfaceRobot
             position = 0x0061,
             mesureVitesse = 0x0062,
             test = 0x0070,
+            configPID = 0x0090,
             RobotState
         }
 
@@ -409,9 +426,8 @@ namespace InterfaceRobot
                         textBoxPosition.Text += "vitesseAngulaireFromOdometry : " + robot.vitesseAngulaireFromOdometry + '\n';
                     }));
 
-                    oscilloSpeed.AddPointToLine(0, robot.timestamp/1000, robot.vitesseLineaireFromOdometry);
-
-
+                    oscilloSpeed.AddPointToLine(0, robot.timestamp/1000.0, robot.vitesseLineaireFromOdometry);
+                    oscilloPos.AddPointToLine(0, robot.positionXOdo, robot.positionYOdo);
                     break;
 
                 case ((int)Fonctions.mesureVitesse):
@@ -422,6 +438,14 @@ namespace InterfaceRobot
                         textBoxReception.Clear();
                         textBoxPosition.Text += "Moteur D :" + robot.vitesseDroitFromOdometry.ToString() + "\n";
                         textBoxPosition.Text += "Moteur G :" + robot.vitesseGaucheFromOdometry.ToString() + "\n";
+                    }));
+                    break;
+
+                case ((int)Fonctions.configPID):
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        textBoxReception.Clear();
+                        textBoxReception.Text += "Télémètre Droit : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm\n";
                     }));
                     break;
 
@@ -466,6 +490,20 @@ namespace InterfaceRobot
         private void asservSpeedDisplay_Loaded(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void buttonAsserv_Click(object sender, RoutedEventArgs e)
+        {
+            byte[] kpByte = BitConverter.GetBytes(KpX);
+            byte[] kdByte = BitConverter.GetBytes(KdX);
+            byte[] kiByte = BitConverter.GetBytes(KiX);
+
+            byte[] correcteurs = new byte[12];
+            kpByte.CopyTo(correcteurs, 0);
+            kdByte.CopyTo(correcteurs, 4);
+            kiByte.CopyTo(correcteurs, 8);
+
+            UartEncodeAndSendMessage(0x0090, correcteurs.Length, correcteurs);
         }
     }
 }

@@ -2,6 +2,8 @@
 #include "UART_Protocol.h"
 #include "CB_TX1.h"
 #include "IO.h"
+#include "Utilities.h"
+
 unsigned char UartCalculateChecksum(int msgFunction,
         int msgPayloadLength, unsigned char* msgPayload) {
     unsigned char checksum = 0;
@@ -30,58 +32,55 @@ void UartEncodeAndSendMessage(int msgFunction,
     trame[taille - 1] = UartCalculateChecksum(msgFunction,
             msgPayloadLength, msgPayload);
     SendMessage(trame, taille);
-    
+
 }
 int msgDecodedFunction = 0;
 int msgDecodedPayloadLength = 0;
 unsigned char msgDecodedPayload[128];
 int msgDecodedPayloadIndex = 0;
-unsigned char calculatedChecksum = 0 ;
+unsigned char calculatedChecksum = 0;
 
-int rcvState ;
+int rcvState;
 
 void UartDecodeMessage(unsigned char c) {
     //Fonction prenant en entree un octet et servant a reconstituer les trames
-    rcvState = WAITING ;
-    switch (rcvState)
-    {
+    rcvState = WAITING;
+    switch (rcvState) {
         case WAITING:
             if (c == 0xFE)
                 rcvState = FUNCTIONMSB;
             break;
         case FUNCTIONMSB:
-            msgDecodedFunction = c << 8 ;
+            msgDecodedFunction = c << 8;
             rcvState = FUNCTIONLSB;
             break;
         case FUNCTIONLSB:
-            msgDecodedFunction |= c ;
-            rcvState |= PAYLOADLENGTHMSB;
+            msgDecodedFunction |= c;
+            rcvState = PAYLOADLENGTHMSB;
             break;
         case PAYLOADLENGTHMSB:
-            msgDecodedPayloadLength = c << 8 ;
+            msgDecodedPayloadLength = c << 8;
             rcvState = PAYLOADLENGTHLSB;
             break;
         case PAYLOADLENGTHLSB:
-            msgDecodedPayloadLength |= c ;
+            msgDecodedPayloadLength |= c;
             rcvState = PAYLOAD;
             break;
         case PAYLOAD:
-            msgDecodedPayload[msgDecodedPayloadIndex ++] = c ;
-            if (msgDecodedPayloadIndex == msgDecodedPayloadLength)
-            {
+            msgDecodedPayload[msgDecodedPayloadIndex++] = c;
+            if (msgDecodedPayloadIndex == msgDecodedPayloadLength) {
                 rcvState = CHECKSUM;
                 msgDecodedPayloadIndex = 0;
-            }           
+            }
             break;
         case CHECKSUM:
             calculatedChecksum = UartCalculateChecksum(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload);
-            
-            if (calculatedChecksum == c)
-            {
+
+            if (calculatedChecksum == c) {
                 //Success, on a un message valide
                 UartProcessDecodedMessage(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload);
             }
-            
+
             rcvState = WAITING;
             break;
         default:
@@ -90,17 +89,28 @@ void UartDecodeMessage(unsigned char c) {
     }
 }
 
-    void UartProcessDecodedMessage(int function,
+char payloadConfigPID[12];
+float correcteurKp ;
+
+void UartProcessDecodedMessage(int function,
         int payloadLength, unsigned char* payload) {
-                                                                                                    //Fonction appelee apres le decodage pour executer l?action
-        switch(function){                                                                                            //correspondant au message recu
-            case (int)LED1 :
-                if (payload[0]==1)
-                    LED_BLEUE = 1;
-                else
-                    LED_BLEUE = 0;
-                break ;
-        }
+    //Fonction appelee apres le decodage pour executer l?action
+    switch (function) { //correspondant au message recu
+        case (int) LED1:
+            if (payload[0] == 1)
+                LED_BLEUE = 1;
+            else
+                LED_BLEUE = 0;
+            break;
+
+        case (int) CONFIGPID:
+            correcteurKp = getFloat(payload, 0);
+            //float correcteurKd = getFloat(payload, 4) ;
+            //float correcteurKi = getFloat(payload, 8) ;
+            //payloadConfigPID[0] = payload[0];
+            //UartEncodeAndSendMessage(0x0090, 12, (char*) payloadConfigPID);
+            break;
+    }
 }
 
 

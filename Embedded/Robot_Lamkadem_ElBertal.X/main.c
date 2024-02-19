@@ -116,6 +116,8 @@ int main(void) {
 
                 UartEncodeAndSendMessage(0x0041, 2, (char*) payloadVitesseD);
                 UartEncodeAndSendMessage(0x0042, 2, (char*) payloadVitesseG);
+                
+                            
                 subSamplingSendCounter = 0;
             }
 
