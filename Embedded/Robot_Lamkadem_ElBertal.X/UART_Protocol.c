@@ -40,15 +40,16 @@ unsigned char msgDecodedPayload[128];
 int msgDecodedPayloadIndex = 0;
 unsigned char calculatedChecksum = 0;
 
-int rcvState;
+int rcvState = WAITING;
 
 void UartDecodeMessage(unsigned char c) {
     //Fonction prenant en entree un octet et servant a reconstituer les trames
-    rcvState = WAITING;
     switch (rcvState) {
         case WAITING:
-            if (c == 0xFE)
+            if (c == 0xFE){
+                msgDecodedPayloadIndex = 0 ;
                 rcvState = FUNCTIONMSB;
+            }
             break;
         case FUNCTIONMSB:
             msgDecodedFunction = c << 8;
@@ -80,35 +81,37 @@ void UartDecodeMessage(unsigned char c) {
                 //Success, on a un message valide
                 UartProcessDecodedMessage(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload);
             }
-
             rcvState = WAITING;
             break;
-        default:
-            rcvState = WAITING;
-            break;
+//        default:
+//            rcvState = WAITING;
+            //break;
     }
 }
 
 char payloadConfigPID[12];
-float correcteurKp ;
+float correcteurKp, correcteurKd, correcteurKi ;
 
 void UartProcessDecodedMessage(int function,
         int payloadLength, unsigned char* payload) {
     //Fonction appelee apres le decodage pour executer l?action
     switch (function) { //correspondant au message recu
-        case (int) LED1:
+        case LED1:
             if (payload[0] == 1)
                 LED_BLEUE = 1;
             else
                 LED_BLEUE = 0;
             break;
 
-        case (int) CONFIGPID:
+        case CONFIGPIDX:
             correcteurKp = getFloat(payload, 0);
-            //float correcteurKd = getFloat(payload, 4) ;
-            //float correcteurKi = getFloat(payload, 8) ;
-            //payloadConfigPID[0] = payload[0];
-            //UartEncodeAndSendMessage(0x0090, 12, (char*) payloadConfigPID);
+            correcteurKd = getFloat(payload, 4) ;
+            correcteurKi = getFloat(payload, 8) ;
+            break;
+            
+        case CONFIGPIDTHETA:
+            break; 
+        default :
             break;
     }
 }

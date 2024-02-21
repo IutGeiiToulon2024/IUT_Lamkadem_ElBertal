@@ -6,6 +6,8 @@
 #include "ADC.h"
 #include "main.h"
 #include "QEI.h"
+#include "CB_RX1.h"
+#include "UART_Protocol.h"
 
 //Initialisation d?un timer 32 bits
 unsigned long timestamp ;
@@ -68,6 +70,9 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     QEIUpdateData();
     compteur += 1;
     if (compteur > 25) {
+        while (CB_RX1_IsDataAvailable()){
+            UartDecodeMessage(CB_RX1_Get());
+        }
         SendPositionData();
         compteur = 0 ;
     }

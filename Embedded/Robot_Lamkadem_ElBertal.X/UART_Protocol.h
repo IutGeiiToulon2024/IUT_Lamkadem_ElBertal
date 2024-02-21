@@ -18,7 +18,8 @@
 
 
 #define LED1 0x0021
-#define CONFIGPID 0x0090
+#define CONFIGPIDX 0x0091
+#define CONFIGPIDTHETA 0x0092
 
 unsigned char UartCalculateChecksum(int, int, unsigned char*) ;
 void UartEncodeAndSendMessage(int, int, unsigned char*) ;
