@@ -117,7 +117,9 @@ int main(void) {
                 UartEncodeAndSendMessage(0x0041, 2, (char*) payloadVitesseD);
                 UartEncodeAndSendMessage(0x0042, 2, (char*) payloadVitesseG);
                 
-                            
+                UartEncodeAndSendMessage(CONFIGPIDX, 12, robotState.correcteursXPayload);
+                UartEncodeAndSendMessage(CONFIGPIDTHETA, 12, robotState.correcteursThetaPayload);
+                
                 subSamplingSendCounter = 0;
             }
 

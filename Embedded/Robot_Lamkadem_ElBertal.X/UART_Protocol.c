@@ -3,6 +3,7 @@
 #include "CB_TX1.h"
 #include "IO.h"
 #include "Utilities.h"
+#include "robot.h"
 
 unsigned char UartCalculateChecksum(int msgFunction,
         int msgPayloadLength, unsigned char* msgPayload) {
@@ -46,8 +47,8 @@ void UartDecodeMessage(unsigned char c) {
     //Fonction prenant en entree un octet et servant a reconstituer les trames
     switch (rcvState) {
         case WAITING:
-            if (c == 0xFE){
-                msgDecodedPayloadIndex = 0 ;
+            if (c == 0xFE) {
+                msgDecodedPayloadIndex = 0;
                 rcvState = FUNCTIONMSB;
             }
             break;
@@ -83,14 +84,18 @@ void UartDecodeMessage(unsigned char c) {
             }
             rcvState = WAITING;
             break;
-//        default:
-//            rcvState = WAITING;
+            //        default:
+            //            rcvState = WAITING;
             //break;
     }
 }
 
-char payloadConfigPID[12];
-float correcteurKp, correcteurKd, correcteurKi ;
+
+float correcteurKp, correcteurKd, correcteurKi;
+float correcteurThetaKp, correcteurThetaKd, correcteurThetaKi;
+
+unsigned char correcteursXPayload[12];
+unsigned char correcteursThetaPayload[12];
 
 void UartProcessDecodedMessage(int function,
         int payloadLength, unsigned char* payload) {
@@ -105,13 +110,27 @@ void UartProcessDecodedMessage(int function,
 
         case CONFIGPIDX:
             correcteurKp = getFloat(payload, 0);
-            correcteurKd = getFloat(payload, 4) ;
-            correcteurKi = getFloat(payload, 8) ;
-            break;
+            correcteurKd = getFloat(payload, 4);
+            correcteurKi = getFloat(payload, 8);
+
+            getBytesFromFloat(robotState.correcteursXPayload, 0, (float) (correcteurKp));
+            getBytesFromFloat(robotState.correcteursXPayload, 4, (float) (correcteurKd));
+            getBytesFromFloat(robotState.correcteursXPayload, 8, (float) (correcteurKi));
             
+            break;
+
         case CONFIGPIDTHETA:
-            break; 
-        default :
+            correcteurThetaKp = getFloat(payload, 0);
+            correcteurThetaKd = getFloat(payload, 4);
+            correcteurThetaKi = getFloat(payload, 8);
+
+            getBytesFromFloat(robotState.correcteursThetaPayload, 0, (float) (correcteurThetaKp));
+            getBytesFromFloat(robotState.correcteursThetaPayload, 4, (float) (correcteurThetaKd));
+            getBytesFromFloat(robotState.correcteursThetaPayload, 8, (float) (correcteurThetaKi));
+            
+            
+            break;
+        default:
             break;
     }
 }

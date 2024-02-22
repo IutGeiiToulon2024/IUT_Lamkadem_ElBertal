@@ -28,6 +28,14 @@ namespace InterfaceRobot
         public float vitesseDroitFromOdometry;
         public float vitesseGaucheFromOdometry;
 
+        public float correcteurKp ;
+        public float correcteurKi ;
+        public float correcteurKd ;
+
+        public float correcteurThetaKp ;
+        public float correcteurThetaKi ;
+        public float correcteurThetaKd ;
+
         public Robot()
         {
 

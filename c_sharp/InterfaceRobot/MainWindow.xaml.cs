@@ -59,12 +59,7 @@ namespace InterfaceRobot
 
         Random random = new Random();
 
-        float KpX = 0.42f;
-        float KpTheta = 0.25f;
-        float KiX = 0.67f;
-        float KiTheta = 0.3f;
-        float KdX = 0.71f;
-        float KdTheta = 0.99f;
+        
 
         private void TimerAffichage_Tick(object sender, EventArgs e)
         {
@@ -89,9 +84,9 @@ namespace InterfaceRobot
             asservSpeedDisplay.UpdateIndependantOdometrySpeed(robot.vitesseGaucheFromOdometry, robot.vitesseDroitFromOdometry);
             asservSpeedDisplay.UpdatePolarOdometrySpeed(robot.vitesseLineaireFromOdometry, robot.angleRadianFromOdometry);
             asservSpeedDisplay.UpdateIndependantSpeedConsigneValues(robot.consigneG, robot.consigneD);
-            asservSpeedDisplay.UpdatePolarSpeedCorrectionGains(KpX, KpTheta,
-            KiX, KiTheta,
-            KdX, KdTheta);
+            asservSpeedDisplay.UpdatePolarSpeedCorrectionGains(robot.correcteurKp, robot.correcteurThetaKp,
+            robot.correcteurKi, robot.correcteurThetaKi,
+            robot.correcteurKd, robot.correcteurThetaKd);
         }
 
         public void SerialPort1_OnDataReceivedEvent(object sender, DataReceivedArgs e)
@@ -327,7 +322,8 @@ namespace InterfaceRobot
             position = 0x0061,
             mesureVitesse = 0x0062,
             test = 0x0070,
-            configPID = 0x0090,
+            configPIDX = 0x0091,
+            configPIDTheta = 0x0092,
             RobotState
         }
 
@@ -441,11 +437,21 @@ namespace InterfaceRobot
                     }));
                     break;
 
-                case ((int)Fonctions.configPID):
+                case ((int)Fonctions.configPIDX):
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        textBoxReception.Clear();
-                        textBoxReception.Text += "Télémètre Droit : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm\n";
+                        robot.correcteurKp = BitConverter.ToSingle(msgPayload, 0) ;
+                        robot.correcteurKd = BitConverter.ToSingle(msgPayload, 4);
+                        robot.correcteurKi = BitConverter.ToSingle(msgPayload, 8);
+                    }));
+                    break;
+
+                case ((int)Fonctions.configPIDTheta):
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        robot.correcteurThetaKp = BitConverter.ToSingle(msgPayload, 0);
+                        robot.correcteurThetaKd = BitConverter.ToSingle(msgPayload, 4);
+                        robot.correcteurThetaKi = BitConverter.ToSingle(msgPayload, 8);
                     }));
                     break;
 
@@ -494,16 +500,33 @@ namespace InterfaceRobot
 
         private void buttonAsserv_Click(object sender, RoutedEventArgs e)
         {
+            float KpX = (float) random.NextDouble() ;
+            float KpTheta = (float) random.NextDouble() ;
+            float KiX = (float)random.NextDouble() ;
+            float KiTheta = (float)random.NextDouble() ;
+            float KdX = (float)random.NextDouble() ;
+            float KdTheta = (float)random.NextDouble() ;
+
             byte[] kpByte = BitConverter.GetBytes(KpX);
             byte[] kdByte = BitConverter.GetBytes(KdX);
             byte[] kiByte = BitConverter.GetBytes(KiX);
 
-            byte[] correcteurs = new byte[12];
-            kpByte.CopyTo(correcteurs, 0);
-            kdByte.CopyTo(correcteurs, 4);
-            kiByte.CopyTo(correcteurs, 8);
+            byte[] kpThetaByte = BitConverter.GetBytes(KpTheta);
+            byte[] kdThetaByte = BitConverter.GetBytes(KdTheta);
+            byte[] kiThetaByte = BitConverter.GetBytes(KiTheta);
 
-            UartEncodeAndSendMessage(0x0090, correcteurs.Length, correcteurs);
+            byte[] correcteursX = new byte[12];
+            kpByte.CopyTo(correcteursX, 0);
+            kdByte.CopyTo(correcteursX, 4);
+            kiByte.CopyTo(correcteursX, 8);
+
+            byte[] correcteursTheta = new byte[12];
+            kpThetaByte.CopyTo(correcteursTheta, 0);
+            kdThetaByte.CopyTo(correcteursTheta, 4);
+            kiThetaByte.CopyTo(correcteursTheta, 8);
+
+            UartEncodeAndSendMessage(0x0091, correcteursX.Length, correcteursX);
+            UartEncodeAndSendMessage(0x0092, correcteursTheta.Length, correcteursTheta);
         }
     }
 }
