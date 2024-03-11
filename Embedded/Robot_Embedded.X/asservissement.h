@@ -22,12 +22,9 @@ typedef struct _PidCorrector {
     double corrP;
     double corrI;
     double corrD;
-    
-    
 } PidCorrector;
 
 void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki, double Kd, double proportionelleMax, double integralMax, double deriveeMax) ;
-void UpdateAsservissement(void) ;
 
 #endif	/* ASSERVISSEMENT_H */
 
