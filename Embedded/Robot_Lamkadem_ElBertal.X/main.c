@@ -114,11 +114,11 @@ int main(void) {
                 payloadVitesseG[1] = (char) ((int) robotState.vitesseGaucheConsigne >> 8);
 
 
-                UartEncodeAndSendMessage(0x0041, 2, (char*) payloadVitesseD);
-                UartEncodeAndSendMessage(0x0042, 2, (char*) payloadVitesseG);
+                UartEncodeAndSendMessage(0x0041, 2, (unsigned char*) payloadVitesseD);
+                UartEncodeAndSendMessage(0x0042, 2, (unsigned char*) payloadVitesseG);
                 
-                UartEncodeAndSendMessage(CONFIGPIDX, 12, robotState.correcteursXPayload);
-                UartEncodeAndSendMessage(CONFIGPIDTHETA, 12, robotState.correcteursThetaPayload);
+                UartEncodeAndSendMessage(CONFIGPIDX, 12, (unsigned char*)robotState.correcteursXPayload);
+                UartEncodeAndSendMessage(CONFIGPIDTHETA, 12, (unsigned char*)robotState.correcteursThetaPayload);
                 
                 subSamplingSendCounter = 0;
             }

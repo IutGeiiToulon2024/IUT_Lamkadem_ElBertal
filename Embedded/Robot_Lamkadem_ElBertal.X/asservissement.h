@@ -26,8 +26,11 @@ typedef struct _PidCorrector {
     
 } PidCorrector;
 
+
 void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki, double Kd, double proportionelleMax, double integralMax, double deriveeMax) ;
 void UpdateAsservissement(void) ;
+
+void PWMSetSpeedCommandePolaire(double, double);
 
 #endif	/* ASSERVISSEMENT_H */
 

@@ -46,7 +46,7 @@
                             <CheckBox x:Name="checkLed3" Content="Led 3" HorizontalAlignment="Left" Margin="5"/>
                         </StackPanel>
                     </GroupBox>
-                    
+
                     <GroupBox x:Name="Telemetres" Header="Télémètres IR" Background="#FFB1B7B5" BorderBrush="Black" Margin="5">
                         <TextBox x:Name="textBoxTelemetres" HorizontalAlignment="Left" TextWrapping="Wrap" Background="{x:Null}" BorderBrush="{x:Null}" AcceptsReturn="True" IsReadOnly="True"/>
                     </GroupBox>
@@ -56,6 +56,8 @@
                 </StackPanel>
 
                 <oscillo:WpfOscilloscope x:Name="oscilloSpeed" x:FieldModifier="public" Grid.Row="0" Grid.RowSpan="2" Grid.Column="3" Margin="5,5,5,5" />
+                <Slider x:Name="SliderVitesseAngulaire" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Width="191" Maximum="100" Minimum="-100" Margin="0,59,0,0"/>
+                <Slider x:Name="SliderVitesseLineaire" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Width="191" Maximum="100" Minimum="-100" Margin="0,127,0,0"/>
             </Grid>
         </TabItem>
         <TabItem Header="Map">

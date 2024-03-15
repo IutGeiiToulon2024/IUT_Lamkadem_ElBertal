@@ -1,0 +1,1 @@
+ -c -mcpu=$(MP_PROCESSOR_OPTION)      -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)    $(COMPARISON_BUILD)     -mdfp="${DFP_DIR}/xc16"C:\GitHub\IUT_Lamkadem_ElBertal\Embedded\Robot_Lamkadem_ElBertal.X\CB_RX1.c

@@ -456,7 +456,7 @@ namespace InterfaceRobot
                     break;
 
                 case ((int)Fonctions.test):
-
+                    
                     break;
 
                     //case ((int)Fonctions.RobotState):
@@ -524,6 +524,17 @@ namespace InterfaceRobot
             kpThetaByte.CopyTo(correcteursTheta, 0);
             kdThetaByte.CopyTo(correcteursTheta, 4);
             kiThetaByte.CopyTo(correcteursTheta, 8);
+
+            float consigneAngulaire = (float)SliderVitesseAngulaire.Value;
+            float consigneLineaire = (float)SliderVitesseLineaire.Value;
+
+            byte[] ConsigneAng = BitConverter.GetBytes(consigneAngulaire);
+            byte[] ConsigneLine = BitConverter.GetBytes(consigneLineaire);
+
+            byte[] consigne = new byte[8];
+            ConsigneAng.CopyTo(correcteursX, 0);
+            ConsigneLine.CopyTo(correcteursX, 4);
+
 
             UartEncodeAndSendMessage(0x0091, correcteursX.Length, correcteursX);
             UartEncodeAndSendMessage(0x0092, correcteursTheta.Length, correcteursTheta);

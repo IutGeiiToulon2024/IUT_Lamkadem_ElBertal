@@ -9,6 +9,13 @@
             <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/asservissement.h</file>
             <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/timer.c</file>
             <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/robot.h</file>
+            <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/Utilities.c</file>
+            <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/Utilities.h</file>
+            <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/UART_Protocol.c</file>
+            <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/nbproject/Makefile-impl.mk</file>
+            <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/nbproject/Makefile-default.mk</file>
+            <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/QEI.c</file>
+            <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/UART_Protocol.h</file>
         </group>
     </open-files>
 </project-private>

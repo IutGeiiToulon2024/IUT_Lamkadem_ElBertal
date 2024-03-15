@@ -113,9 +113,9 @@ void UartProcessDecodedMessage(int function,
             correcteurKd = getFloat(payload, 4);
             correcteurKi = getFloat(payload, 8);
 
-            getBytesFromFloat(robotState.correcteursXPayload, 0, (float) (correcteurKp));
-            getBytesFromFloat(robotState.correcteursXPayload, 4, (float) (correcteurKd));
-            getBytesFromFloat(robotState.correcteursXPayload, 8, (float) (correcteurKi));
+            getBytesFromFloat((unsigned char*)robotState.correcteursXPayload, 0, (float) (correcteurKp));
+            getBytesFromFloat((unsigned char*)robotState.correcteursXPayload, 4, (float) (correcteurKd));
+            getBytesFromFloat((unsigned char*)robotState.correcteursXPayload, 8, (float) (correcteurKi));
             
             break;
 
@@ -124,9 +124,9 @@ void UartProcessDecodedMessage(int function,
             correcteurThetaKd = getFloat(payload, 4);
             correcteurThetaKi = getFloat(payload, 8);
 
-            getBytesFromFloat(robotState.correcteursThetaPayload, 0, (float) (correcteurThetaKp));
-            getBytesFromFloat(robotState.correcteursThetaPayload, 4, (float) (correcteurThetaKd));
-            getBytesFromFloat(robotState.correcteursThetaPayload, 8, (float) (correcteurThetaKi));
+            getBytesFromFloat((unsigned char*)robotState.correcteursThetaPayload, 0, (float) (correcteurThetaKp));
+            getBytesFromFloat((unsigned char*)robotState.correcteursThetaPayload, 4, (float) (correcteurThetaKd));
+            getBytesFromFloat((unsigned char*)robotState.correcteursThetaPayload, 8, (float) (correcteurThetaKi));
             
             
             break;

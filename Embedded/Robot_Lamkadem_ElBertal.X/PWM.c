@@ -3,6 +3,8 @@
 #include "PWM.h"
 #include "Robot.h"
 #include "Utilities.h"
+#include "QEI.h"
+#include "asservissement.h"
 #include "main.h"
 
 #define PWMPER 40.0
@@ -130,4 +132,9 @@ void PWMUpdateSpeed()
         MOTEUR_GAUCHE_L_PWM_ENABLE = 1; //Pilotage de la pin en mode PWM
     }
     MOTEUR_GAUCHE_DUTY_CYCLE = Abs(robotState.vitesseGaucheCommandeCourante) * PWMPER;
+}
+
+void PWMSetSpeedCommandePolaire(double vitesseLineaire, double vitesseAngulaire){
+    robotState.vitesseDroiteConsigne = vitesseLineaire + vitesseAngulaire*DISTROUES;
+    robotState.vitesseGaucheConsigne =  vitesseLineaire - vitesseAngulaire*DISTROUES;
 }

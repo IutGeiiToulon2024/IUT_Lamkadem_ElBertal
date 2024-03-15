@@ -35,6 +35,7 @@ void UpdateAsservissement() {
     robotState.xCorrectionVitessePourcent =
             Correcteur(&robotState.PidX, robotState.PidX.erreur);
     robotState.thetaCorrectionVitessePourcent = Correcteur (&robotState.PidTheta, robotState.PidTheta.erreur);
-    PWMSetSpeedConsignePolaire(robotState.xCorrectionVitessePourcent,
+    PWMSetSpeedCommandePolaire(robotState.xCorrectionVitessePourcent,
             robotState.thetaCorrectionVitessePourcent);
 }
+
