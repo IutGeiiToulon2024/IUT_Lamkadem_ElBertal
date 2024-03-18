@@ -20,6 +20,8 @@
 #define LED1 0x0021
 #define CONFIGPIDX 0x0091
 #define CONFIGPIDTHETA 0x0092
+#define ASSERVISSEMENTX 0x0093
+#define ASSERVISSEMENTTHETA 0x0094 
 
 unsigned char UartCalculateChecksum(int, int, unsigned char*) ;
 void UartEncodeAndSendMessage(int, int, unsigned char*) ;

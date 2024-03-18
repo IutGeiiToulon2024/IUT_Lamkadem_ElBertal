@@ -24,6 +24,8 @@ typedef struct _PidCorrector {
     double corrD;
     
     
+    
+    
 } PidCorrector;
 
 

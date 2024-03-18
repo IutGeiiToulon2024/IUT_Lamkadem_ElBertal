@@ -31,10 +31,20 @@ namespace InterfaceRobot
         public float correcteurKp ;
         public float correcteurKi ;
         public float correcteurKd ;
+        public float consigneLineaire;
 
         public float correcteurThetaKp ;
         public float correcteurThetaKi ;
         public float correcteurThetaKd ;
+        public float consigneAngulaire;
+
+        public float correctionP;
+        public float correctionI;
+        public float correctionD;
+
+        public float corrPmax;
+        public float corrImax;
+        public float corrDmax;
 
         public Robot()
         {

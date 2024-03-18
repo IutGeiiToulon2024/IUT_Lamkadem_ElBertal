@@ -91,11 +91,11 @@ void UartDecodeMessage(unsigned char c) {
 }
 
 
-float correcteurKp, correcteurKd, correcteurKi;
-float correcteurThetaKp, correcteurThetaKd, correcteurThetaKi;
+float correcteurKp, correcteurKd, correcteurKi, consigneLineaire;
+float correcteurThetaKp, correcteurThetaKd, correcteurThetaKi, consigneAngulaire;
 
-unsigned char correcteursXPayload[12];
-unsigned char correcteursThetaPayload[12];
+unsigned char correcteursXPayload[16];
+unsigned char correcteursThetaPayload[16];
 
 void UartProcessDecodedMessage(int function,
         int payloadLength, unsigned char* payload) {
@@ -112,10 +112,12 @@ void UartProcessDecodedMessage(int function,
             correcteurKp = getFloat(payload, 0);
             correcteurKd = getFloat(payload, 4);
             correcteurKi = getFloat(payload, 8);
+            consigneLineaire = getFloat(payload, 12);
 
             getBytesFromFloat((unsigned char*)robotState.correcteursXPayload, 0, (float) (correcteurKp));
             getBytesFromFloat((unsigned char*)robotState.correcteursXPayload, 4, (float) (correcteurKd));
             getBytesFromFloat((unsigned char*)robotState.correcteursXPayload, 8, (float) (correcteurKi));
+            getBytesFromFloat((unsigned char*)robotState.correcteursXPayload, 12, (float) (consigneLineaire));
             
             break;
 
@@ -123,11 +125,12 @@ void UartProcessDecodedMessage(int function,
             correcteurThetaKp = getFloat(payload, 0);
             correcteurThetaKd = getFloat(payload, 4);
             correcteurThetaKi = getFloat(payload, 8);
+            consigneAngulaire = getFloat(payload, 12);
 
             getBytesFromFloat((unsigned char*)robotState.correcteursThetaPayload, 0, (float) (correcteurThetaKp));
             getBytesFromFloat((unsigned char*)robotState.correcteursThetaPayload, 4, (float) (correcteurThetaKd));
             getBytesFromFloat((unsigned char*)robotState.correcteursThetaPayload, 8, (float) (correcteurThetaKi));
-            
+            getBytesFromFloat((unsigned char*)robotState.correcteursThetaPayload, 12, (float)(consigneAngulaire));
             
             break;
         default:

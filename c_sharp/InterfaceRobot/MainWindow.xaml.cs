@@ -81,6 +81,7 @@ namespace InterfaceRobot
 
             //oscilloSpeed.AddPointToLine(0, robot.timestamp/1000, robot.vitesseLineaireFromOdometry);
 
+            asservSpeedDisplay.UpdatePolarSpeedConsigneValues(robot.consigneLineaire, robot.consigneAngulaire);
             asservSpeedDisplay.UpdateIndependantOdometrySpeed(robot.vitesseGaucheFromOdometry, robot.vitesseDroitFromOdometry);
             asservSpeedDisplay.UpdatePolarOdometrySpeed(robot.vitesseLineaireFromOdometry, robot.angleRadianFromOdometry);
             asservSpeedDisplay.UpdateIndependantSpeedConsigneValues(robot.consigneG, robot.consigneD);
@@ -324,6 +325,9 @@ namespace InterfaceRobot
             test = 0x0070,
             configPIDX = 0x0091,
             configPIDTheta = 0x0092,
+            AsservissementX = 0x0093,
+            AsservissementTHETA = 0x0094,
+
             RobotState
         }
 
@@ -443,6 +447,7 @@ namespace InterfaceRobot
                         robot.correcteurKp = BitConverter.ToSingle(msgPayload, 0) ;
                         robot.correcteurKd = BitConverter.ToSingle(msgPayload, 4);
                         robot.correcteurKi = BitConverter.ToSingle(msgPayload, 8);
+                        robot.consigneLineaire = BitConverter.ToSingle(msgPayload, 12);
                     }));
                     break;
 
@@ -452,11 +457,26 @@ namespace InterfaceRobot
                         robot.correcteurThetaKp = BitConverter.ToSingle(msgPayload, 0);
                         robot.correcteurThetaKd = BitConverter.ToSingle(msgPayload, 4);
                         robot.correcteurThetaKi = BitConverter.ToSingle(msgPayload, 8);
+                        robot.consigneAngulaire = BitConverter.ToSingle(msgPayload, 12);
                     }));
                     break;
 
                 case ((int)Fonctions.test):
                     
+                    break;
+
+                case ((int)Fonctions.AsservissementX):
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+
+                    }));
+                    break;
+
+                case ((int)Fonctions.AsservissementTHETA):
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+
+                    }));
                     break;
 
                     //case ((int)Fonctions.RobotState):
@@ -515,12 +535,12 @@ namespace InterfaceRobot
             byte[] kdThetaByte = BitConverter.GetBytes(KdTheta);
             byte[] kiThetaByte = BitConverter.GetBytes(KiTheta);
 
-            byte[] correcteursX = new byte[12];
+            byte[] correcteursX = new byte[16];
             kpByte.CopyTo(correcteursX, 0);
             kdByte.CopyTo(correcteursX, 4);
             kiByte.CopyTo(correcteursX, 8);
 
-            byte[] correcteursTheta = new byte[12];
+            byte[] correcteursTheta = new byte[16];
             kpThetaByte.CopyTo(correcteursTheta, 0);
             kdThetaByte.CopyTo(correcteursTheta, 4);
             kiThetaByte.CopyTo(correcteursTheta, 8);
@@ -531,9 +551,8 @@ namespace InterfaceRobot
             byte[] ConsigneAng = BitConverter.GetBytes(consigneAngulaire);
             byte[] ConsigneLine = BitConverter.GetBytes(consigneLineaire);
 
-            byte[] consigne = new byte[8];
-            ConsigneAng.CopyTo(correcteursX, 0);
-            ConsigneLine.CopyTo(correcteursX, 4);
+            ConsigneAng.CopyTo(correcteursTheta, 12);
+            ConsigneLine.CopyTo(correcteursX, 12);
 
 
             UartEncodeAndSendMessage(0x0091, correcteursX.Length, correcteursX);
