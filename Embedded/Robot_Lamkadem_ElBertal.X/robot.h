@@ -14,7 +14,6 @@ typedef struct robotStateBITS {
             float vitesseDroiteConsigne;
             float vitesseDroiteCommandeCourante;
 
-
             float distanceTelemetreDroit;
             float distanceTelemetreGauche;
             float distanceTelemetreCentre;
@@ -23,7 +22,7 @@ typedef struct robotStateBITS {
 
             char correcteursXPayload[16];
             char correcteursThetaPayload[16];
-           
+                      
             double vitesseDroitFromOdometry;
             double vitesseGaucheFromOdometry;
             double vitesseLineaireFromOdometry;
@@ -40,8 +39,8 @@ typedef struct robotStateBITS {
             double consigneX ;
             double consigneTheta ;
             
-            double xCorrectionVitessePourcent ;
-            double thetaCorrectionVitessePourcent ;
+            double xCorrectionVitesse ;
+            double thetaCorrectionVitesse ;
             
             PidCorrector PidX ;
             PidCorrector PidTheta ;

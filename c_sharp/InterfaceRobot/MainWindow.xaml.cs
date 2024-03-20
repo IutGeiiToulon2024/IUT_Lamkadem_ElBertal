@@ -86,8 +86,14 @@ namespace InterfaceRobot
             asservSpeedDisplay.UpdatePolarOdometrySpeed(robot.vitesseLineaireFromOdometry, robot.angleRadianFromOdometry);
             asservSpeedDisplay.UpdateIndependantSpeedConsigneValues(robot.consigneG, robot.consigneD);
             asservSpeedDisplay.UpdatePolarSpeedCorrectionGains(robot.correcteurKp, robot.correcteurThetaKp,
-            robot.correcteurKi, robot.correcteurThetaKi,
-            robot.correcteurKd, robot.correcteurThetaKd);
+                               robot.correcteurKi, robot.correcteurThetaKi,
+                               robot.correcteurKd, robot.correcteurThetaKd);
+            asservSpeedDisplay.UpdatePolarSpeedCorrectionValues(robot.correctionPX, robot.correctionPTheta,
+                               robot.correctionIX, robot.correctionITheta,
+                               robot.correctionDX, robot.correctionDTheta);
+            asservSpeedDisplay.UpdatePolarSpeedCorrectionLimits(robot.corrPmaxX, robot.corrPmaxTheta,
+                               robot.corrImaxX, robot.corrImaxTheta,
+                               robot.corrDmaxX, robot.corrDmaxTheta);
         }
 
         public void SerialPort1_OnDataReceivedEvent(object sender, DataReceivedArgs e)
@@ -326,7 +332,7 @@ namespace InterfaceRobot
             configPIDX = 0x0091,
             configPIDTheta = 0x0092,
             AsservissementX = 0x0093,
-            AsservissementTHETA = 0x0094,
+            AsservissementTheta = 0x0094,
 
             RobotState
         }
@@ -468,14 +474,24 @@ namespace InterfaceRobot
                 case ((int)Fonctions.AsservissementX):
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
-
+                        robot.correctionPX = BitConverter.ToSingle(msgPayload, 0);
+                        robot.corrPmaxX = BitConverter.ToSingle(msgPayload, 4);
+                        robot.correctionIX = BitConverter.ToSingle(msgPayload, 8);
+                        robot.corrImaxX = BitConverter.ToSingle(msgPayload, 12);
+                        robot.correctionDX = BitConverter.ToSingle(msgPayload, 16);
+                        robot.corrDmaxX = BitConverter.ToSingle(msgPayload, 20);
                     }));
                     break;
 
-                case ((int)Fonctions.AsservissementTHETA):
+                case ((int)Fonctions.AsservissementTheta):
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
-
+                        robot.correctionPTheta = BitConverter.ToSingle(msgPayload, 0);
+                        robot.corrPmaxTheta = BitConverter.ToSingle(msgPayload, 4);
+                        robot.correctionITheta = BitConverter.ToSingle(msgPayload, 8);
+                        robot.corrImaxTheta = BitConverter.ToSingle(msgPayload, 12);
+                        robot.correctionDTheta = BitConverter.ToSingle(msgPayload, 16);
+                        robot.corrDmaxTheta = BitConverter.ToSingle(msgPayload, 20);
                     }));
                     break;
 

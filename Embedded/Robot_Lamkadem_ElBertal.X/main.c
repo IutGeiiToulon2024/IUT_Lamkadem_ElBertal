@@ -56,6 +56,8 @@ int main(void) {
     while (1) {
         unsigned char payloadTelemetre1[2], payloadTelemetre2[2], payloadTelemetre3[2];
         char payloadVitesseD[2], payloadVitesseG[2];
+        char payloadAsservissementX[24], payloadAsservissementTheta[24];
+        
         if (ADCIsConversionFinished() == 1) {
             ADCClearConversionFinishedFlag();
             unsigned int * result = ADCGetResult();
@@ -120,10 +122,10 @@ int main(void) {
 
                 UartEncodeAndSendMessage(CONFIGPIDX, 16, (unsigned char*) robotState.correcteursXPayload);
                 UartEncodeAndSendMessage(CONFIGPIDTHETA, 16, (unsigned char*) robotState.correcteursThetaPayload);
-
-                UartEncodeAndSendMessage(ASSERVISSEMENTX, 16, (unsigned char*) robotState.asservissementXPayload);
-                UartEncodeAndSendMessage(ASSERVISSEMENTTHETA, 16, (unsigned char*) robotState.asservissementThetaPayload);
-
+                
+                SendPidX();
+                SendPidTheta();
+                
                 subSamplingSendCounter = 0;
             }
 
@@ -152,7 +154,7 @@ int main(void) {
 } // fin main
 
 unsigned char stateRobot;
-int modeAuto = 0;
+int modeAuto = 1;
 
 void OperatingSystemLoop(void) {
     if (modeAuto == 1) {
