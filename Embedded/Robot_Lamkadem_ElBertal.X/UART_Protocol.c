@@ -94,9 +94,6 @@ void UartDecodeMessage(unsigned char c) {
 float correcteurKp, correcteurKd, correcteurKi, consigneLineaire;
 float correcteurThetaKp, correcteurThetaKd, correcteurThetaKi, consigneAngulaire;
 
-unsigned char correcteursXPayload[16];
-unsigned char correcteursThetaPayload[16];
-
 void UartProcessDecodedMessage(int function,
         int payloadLength, unsigned char* payload) {
     //Fonction appelee apres le decodage pour executer l?action
@@ -114,11 +111,14 @@ void UartProcessDecodedMessage(int function,
             correcteurKi = getFloat(payload, 8);
             consigneLineaire = getFloat(payload, 12);
 
-            getBytesFromFloat((unsigned char*)robotState.correcteursXPayload, 0, (float) (correcteurKp));
-            getBytesFromFloat((unsigned char*)robotState.correcteursXPayload, 4, (float) (correcteurKd));
-            getBytesFromFloat((unsigned char*)robotState.correcteursXPayload, 8, (float) (correcteurKi));
-            getBytesFromFloat((unsigned char*)robotState.correcteursXPayload, 12, (float) (consigneLineaire));
-            
+            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 0, (float) (correcteurKp));
+            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 4, (float) (correcteurKd));
+            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 8, (float) (correcteurKi));
+            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 12, (float) (consigneLineaire));
+            robotState.consigneX = consigneLineaire;
+//            if (consigneLineaire > 10) {
+//                int x = 1;
+//            }
             break;
 
         case CONFIGPIDTHETA:
@@ -127,11 +127,12 @@ void UartProcessDecodedMessage(int function,
             correcteurThetaKi = getFloat(payload, 8);
             consigneAngulaire = getFloat(payload, 12);
 
-            getBytesFromFloat((unsigned char*)robotState.correcteursThetaPayload, 0, (float) (correcteurThetaKp));
-            getBytesFromFloat((unsigned char*)robotState.correcteursThetaPayload, 4, (float) (correcteurThetaKd));
-            getBytesFromFloat((unsigned char*)robotState.correcteursThetaPayload, 8, (float) (correcteurThetaKi));
-            getBytesFromFloat((unsigned char*)robotState.correcteursThetaPayload, 12, (float)(consigneAngulaire));
-            
+            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 0, (float) (correcteurThetaKp));
+            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 4, (float) (correcteurThetaKd));
+            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 8, (float) (correcteurThetaKi));
+            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 12, (float) (consigneAngulaire));
+            robotState.consigneTheta = consigneAngulaire;
+
             break;
         default:
             break;

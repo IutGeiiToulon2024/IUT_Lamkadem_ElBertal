@@ -4,6 +4,9 @@
 #include "Utilities.h"
 #include "UART_Protocol.h"
 
+#define FREQ_ECH_QEI 250.0
+#define DISTROUES 0.281 
+
 void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki, double Kd, double proportionelleMax, double integralMax, double deriveeMax) {
     PidCorr->Kp = Kp;
     PidCorr->erreurProportionelleMax = proportionelleMax; //On limite la correction due au Kp
@@ -32,8 +35,8 @@ double Correcteur(volatile PidCorrector* PidCorr, double erreur) {
 
 
 void UpdateAsservissement() {
-    robotState.consigneX = getFloat((unsigned char*) robotState.correcteursXPayload, 12);
-    robotState.consigneTheta = getFloat((unsigned char*) robotState.correcteursThetaPayload, 12);
+    //robotState.consigneX = getFloat((unsigned char*) robotState.correcteursXPayload, 12);
+    //robotState.consigneTheta = getFloat((unsigned char*) robotState.correcteursThetaPayload, 12);
 
     robotState.PidX.erreur = robotState.consigneX - robotState.vitesseLineaireFromOdometry;
     robotState.PidTheta.erreur = robotState.consigneTheta - robotState.vitesseAngulaireFromOdometry;
@@ -48,24 +51,24 @@ void UpdateAsservissement() {
 
 void SendPidX() {
     unsigned char asservissementXPayload[24];
-    getBytesFromFloat(asservissementXPayload, 0, (float) (robotState.PidX.corrP));
-    getBytesFromFloat(asservissementXPayload, 4, (float) (robotState.PidX.erreurProportionelleMax));
-    getBytesFromFloat(asservissementXPayload, 8, (float) (robotState.PidX.corrI));
-    getBytesFromFloat(asservissementXPayload, 12, (float) (robotState.PidX.erreurIntegraleMax));
-    getBytesFromFloat(asservissementXPayload, 16, (float) (robotState.PidX.corrD));
-    getBytesFromFloat(asservissementXPayload, 20, (float) (robotState.PidX.erreurDeriveeMax));
+    getBytesFromFloat((unsigned char*)asservissementXPayload, 0, (float) (robotState.PidX.corrP));
+    getBytesFromFloat((unsigned char*)asservissementXPayload, 4, (float) (robotState.PidX.erreurProportionelleMax));
+    getBytesFromFloat((unsigned char*)asservissementXPayload, 8, (float) (robotState.PidX.corrI));
+    getBytesFromFloat((unsigned char*)asservissementXPayload, 12, (float) (robotState.PidX.erreurIntegraleMax));
+    getBytesFromFloat((unsigned char*)asservissementXPayload, 16, (float) (robotState.PidX.corrD));
+    getBytesFromFloat((unsigned char*)asservissementXPayload, 20, (float) (robotState.PidX.erreurDeriveeMax));
     
-    UartEncodeAndSendMessage(ASSERVISSEMENTX, 24, (unsigned char*) asservissementXPayload);        
+    UartEncodeAndSendMessage(ASSERVISSEMENTX, 24, (unsigned char*)asservissementXPayload);        
 }
 
 void SendPidTheta() {
     unsigned char asservissementThetaPayload[24];
-    getBytesFromFloat(asservissementThetaPayload, 0, (float) (robotState.PidTheta.corrP));
-    getBytesFromFloat(asservissementThetaPayload, 4, (float) (robotState.PidTheta.erreurProportionelleMax));
-    getBytesFromFloat(asservissementThetaPayload, 8, (float) (robotState.PidTheta.corrI));
-    getBytesFromFloat(asservissementThetaPayload, 12, (float) (robotState.PidTheta.erreurIntegraleMax));
-    getBytesFromFloat(asservissementThetaPayload, 16, (float) (robotState.PidTheta.corrD));
-    getBytesFromFloat(asservissementThetaPayload, 20, (float) (robotState.PidTheta.erreurDeriveeMax));
+    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 0, (float) (robotState.PidTheta.corrP));
+    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 4, (float) (robotState.PidTheta.erreurProportionelleMax));
+    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 8, (float) (robotState.PidTheta.corrI));
+    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 12, (float) (robotState.PidTheta.erreurIntegraleMax));
+    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 16, (float) (robotState.PidTheta.corrD));
+    getBytesFromFloat((unsigned char*)asservissementThetaPayload, 20, (float) (robotState.PidTheta.erreurDeriveeMax));
     
-    UartEncodeAndSendMessage(ASSERVISSEMENTTHETA, 24, (unsigned char*) asservissementThetaPayload);
+    UartEncodeAndSendMessage(ASSERVISSEMENTTHETA, 24, (unsigned char*)asservissementThetaPayload);
 }

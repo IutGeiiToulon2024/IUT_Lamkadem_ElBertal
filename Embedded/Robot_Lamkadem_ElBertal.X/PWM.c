@@ -8,6 +8,8 @@
 #include "main.h"
 
 #define PWMPER 40.0
+#define FREQ_ECH_QEI 250.0
+#define DISTROUES 0.281 
 float  acceleration = 5;
 
 void InitPWM(void)

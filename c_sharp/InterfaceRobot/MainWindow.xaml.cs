@@ -480,6 +480,8 @@ namespace InterfaceRobot
                         robot.corrImaxX = BitConverter.ToSingle(msgPayload, 12);
                         robot.correctionDX = BitConverter.ToSingle(msgPayload, 16);
                         robot.corrDmaxX = BitConverter.ToSingle(msgPayload, 20);
+                        textBoxReception.Clear();
+                        textBoxReception.Text += "donnees asserv :" + robot.correctionPX.ToString() + "\n";
                     }));
                     break;
 
