@@ -276,18 +276,25 @@ namespace InterfaceRobot
                     break;
                 case StateReception.PayloadLengthLSB:
                     msgDecodedPayloadLength |= c ;
-                    msgDecodedPayload = new byte[msgDecodedPayloadLength];
-                    rcvState = StateReception.Payload;
+                    if (msgDecodedPayloadLength == 0)
+                        rcvState = StateReception.CheckSum;
+                    else if (msgDecodedPayloadLength >= 256)
+                        rcvState = StateReception.Waiting;
+                    else
+                    {
+                        msgDecodedPayload = new byte[msgDecodedPayloadLength];
+                        rcvState = StateReception.Payload;
+                        msgDecodedPayloadIndex = 0;
+                    }
                     break;
                 case StateReception.Payload:
                     if(msgDecodedPayloadIndex <= msgDecodedPayloadLength)
                     {
                         //textBoxReception.Text += msgDecodedPayloadIndex.ToString();
-                        msgDecodedPayload[msgDecodedPayloadIndex] = c;
-                        if (++msgDecodedPayloadIndex >= msgDecodedPayloadLength)
+                        msgDecodedPayload[msgDecodedPayloadIndex++] = c;
+                        if (msgDecodedPayloadIndex >= msgDecodedPayloadLength)
                         {
                             rcvState = StateReception.CheckSum;
-                            msgDecodedPayloadIndex = 0;
                         }
                     }
                     break;
@@ -333,6 +340,7 @@ namespace InterfaceRobot
             configPIDTheta = 0x0092,
             AsservissementX = 0x0093,
             AsservissementTheta = 0x0094,
+            consignes = 0x0095,
 
             RobotState
         }
@@ -471,7 +479,7 @@ namespace InterfaceRobot
                     
                     break;
 
-                case ((int)Fonctions.AsservissementX):
+                case (int)Fonctions.AsservissementX:
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
                         robot.correctionPX = BitConverter.ToSingle(msgPayload, 0);
@@ -481,7 +489,9 @@ namespace InterfaceRobot
                         robot.correctionDX = BitConverter.ToSingle(msgPayload, 16);
                         robot.corrDmaxX = BitConverter.ToSingle(msgPayload, 20);
                         textBoxReception.Clear();
-                        textBoxReception.Text += "donnees asserv :" + robot.correctionPX.ToString() + "\n";
+                        textBoxReception.Text += "donnees Pmax :" + robot.corrPmaxX.ToString() + "\n";
+                        textBoxReception.Text += "donnees Imax :" + robot.corrImaxX.ToString() + "\n";
+                        textBoxReception.Text += "donnees Dmax :" + robot.corrDmaxX.ToString() + "\n";
                     }));
                     break;
 
@@ -494,6 +504,14 @@ namespace InterfaceRobot
                         robot.corrImaxTheta = BitConverter.ToSingle(msgPayload, 12);
                         robot.correctionDTheta = BitConverter.ToSingle(msgPayload, 16);
                         robot.corrDmaxTheta = BitConverter.ToSingle(msgPayload, 20);
+                    }));
+                    break;
+
+                case ((int)Fonctions.consignes):
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        robot.consigneAngulaire = BitConverter.ToSingle(msgPayload, 0);
+                        robot.consigneLineaire = BitConverter.ToSingle(msgPayload, 4);
                     }));
                     break;
 
@@ -545,23 +563,44 @@ namespace InterfaceRobot
             float KdX = (float)random.NextDouble() ;
             float KdTheta = (float)random.NextDouble() ;
 
+            float limitPX = (float)random.NextDouble() ;
+            float limitIX = (float)random.NextDouble() ;
+            float limitDX = (float)random.NextDouble() ;
+
+            float limitPTheta = (float)random.NextDouble() ;
+            float limitITheta = (float)random.NextDouble();
+            float limitDTheta = (float)random.NextDouble();
+
             byte[] kpByte = BitConverter.GetBytes(KpX);
             byte[] kdByte = BitConverter.GetBytes(KdX);
             byte[] kiByte = BitConverter.GetBytes(KiX);
+            byte[] limitPXbyte = BitConverter.GetBytes(limitPX);
+            byte[] limitIXbyte = BitConverter.GetBytes(limitIX);
+            byte[] limitDXbyte = BitConverter.GetBytes(limitDX);
 
             byte[] kpThetaByte = BitConverter.GetBytes(KpTheta);
             byte[] kdThetaByte = BitConverter.GetBytes(KdTheta);
             byte[] kiThetaByte = BitConverter.GetBytes(KiTheta);
+            byte[] limitPThetabyte = BitConverter.GetBytes(limitPTheta);
+            byte[] limitIThetabyte = BitConverter.GetBytes(limitITheta);
+            byte[] limitDThetabyte = BitConverter.GetBytes(limitDTheta);
 
-            byte[] correcteursX = new byte[16];
+            byte[] correcteursX = new byte[24];
             kpByte.CopyTo(correcteursX, 0);
             kdByte.CopyTo(correcteursX, 4);
             kiByte.CopyTo(correcteursX, 8);
+            limitPXbyte.CopyTo(correcteursX, 12);
+            limitIXbyte.CopyTo(correcteursX, 16);
+            limitDXbyte.CopyTo(correcteursX, 20);
 
-            byte[] correcteursTheta = new byte[16];
+            byte[] correcteursTheta = new byte[24];
             kpThetaByte.CopyTo(correcteursTheta, 0);
             kdThetaByte.CopyTo(correcteursTheta, 4);
             kiThetaByte.CopyTo(correcteursTheta, 8);
+            limitPThetabyte.CopyTo(correcteursTheta, 12);
+            limitIThetabyte.CopyTo(correcteursTheta, 16);
+            limitDThetabyte.CopyTo(correcteursTheta, 20);
+
 
             float consigneAngulaire = (float)SliderVitesseAngulaire.Value;
             float consigneLineaire = (float)SliderVitesseLineaire.Value;
@@ -569,12 +608,15 @@ namespace InterfaceRobot
             byte[] ConsigneAng = BitConverter.GetBytes(consigneAngulaire);
             byte[] ConsigneLine = BitConverter.GetBytes(consigneLineaire);
 
-            ConsigneAng.CopyTo(correcteursTheta, 12);
-            ConsigneLine.CopyTo(correcteursX, 12);
+            byte[] consignes = new byte[8];
+
+            ConsigneAng.CopyTo(consignes, 0);
+            ConsigneLine.CopyTo(consignes, 4);
 
 
             UartEncodeAndSendMessage(0x0091, correcteursX.Length, correcteursX);
             UartEncodeAndSendMessage(0x0092, correcteursTheta.Length, correcteursTheta);
+            UartEncodeAndSendMessage(0x0095, consignes.Length, consignes);
         }
     }
 }

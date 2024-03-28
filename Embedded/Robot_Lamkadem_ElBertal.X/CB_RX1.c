@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "CB_RX1.h"
 #include"UART_Protocol.h"
-#define CBRX1_BUFFER_SIZE 128
+#define CBRX1_BUFFER_SIZE 256
 int cbRx1Head;
 int cbRx1Tail;
 unsigned char cbRx1Buffer[CBRX1_BUFFER_SIZE];

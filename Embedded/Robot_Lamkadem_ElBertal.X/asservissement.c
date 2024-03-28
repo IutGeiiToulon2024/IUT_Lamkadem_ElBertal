@@ -72,3 +72,9 @@ void SendPidTheta() {
     
     UartEncodeAndSendMessage(ASSERVISSEMENTTHETA, 24, (unsigned char*)asservissementThetaPayload);
 }
+
+void SendCommandeErreur() {
+    unsigned char CommandeErreurPayload[12];
+    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 0, (float) (robotState.xCorrectionVitesse));
+    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 0, (float) (robotState.thetaCorrectionVitesse));
+}

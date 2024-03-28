@@ -68,6 +68,7 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     ADC1StartConversionSequence();
     //LED_BLEUE = !LED_BLEUE ;
     QEIUpdateData();
+    UpdateAsservissement();
     compteur += 1;
     if (compteur > 25) {
         while (CB_RX1_IsDataAvailable()){

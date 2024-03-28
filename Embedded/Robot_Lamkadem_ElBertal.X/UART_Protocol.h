@@ -22,6 +22,7 @@
 #define CONFIGPIDTHETA 0x0092
 #define ASSERVISSEMENTX 0x0093
 #define ASSERVISSEMENTTHETA 0x0094 
+#define CONSIGNES 0x0095
 
 unsigned char UartCalculateChecksum(int, int, unsigned char*) ;
 void UartEncodeAndSendMessage(int, int, unsigned char*) ;

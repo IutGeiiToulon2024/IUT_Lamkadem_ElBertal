@@ -21,6 +21,7 @@
 #include "UART_Protocol.h"
 #include "QEI.h"
 #include "asservissement.h"
+#include "Utilities.h"
 #include <libpic30.h>
 
 unsigned int * result;
@@ -55,8 +56,8 @@ int main(void) {
     int subSamplingSendCounter = 0;
     while (1) {
         unsigned char payloadTelemetre1[2], payloadTelemetre2[2], payloadTelemetre3[2];
-        char payloadVitesseD[2], payloadVitesseG[2];
-        char payloadAsservissementX[24], payloadAsservissementTheta[24];
+        unsigned char payloadVitesse[8];
+//        char payloadAsservissementX[24], payloadAsservissementTheta[24];
         
         if (ADCIsConversionFinished() == 1) {
             ADCClearConversionFinishedFlag();
@@ -110,18 +111,14 @@ int main(void) {
                 UartEncodeAndSendMessage(0x0033, 2, (unsigned char*) payloadTelemetre3);
 
 
-                payloadVitesseD[0] = (char) (int) robotState.vitesseDroiteConsigne;
-                payloadVitesseD[1] = (char) ((int) robotState.vitesseDroiteConsigne >> 8);
+                getBytesFromFloat(payloadVitesse, 0, robotState.vitesseDroiteConsigne);
+                getBytesFromFloat(payloadVitesse, 4, robotState.vitesseGaucheConsigne);
+                
+                UartEncodeAndSendMessage(0x0041, 8, (unsigned char*) payloadVitesse);
 
-                payloadVitesseG[0] = (char) (int) robotState.vitesseGaucheConsigne;
-                payloadVitesseG[1] = (char) ((int) robotState.vitesseGaucheConsigne >> 8);
-
-
-                UartEncodeAndSendMessage(0x0041, 2, (unsigned char*) payloadVitesseD);
-                UartEncodeAndSendMessage(0x0042, 2, (unsigned char*) payloadVitesseG);
-
-                UartEncodeAndSendMessage(CONFIGPIDX, 16, (unsigned char*) robotState.correcteursXPayload);
-                UartEncodeAndSendMessage(CONFIGPIDTHETA, 16, (unsigned char*) robotState.correcteursThetaPayload);
+                UartEncodeAndSendMessage(CONFIGPIDX, 24, (unsigned char*) robotState.correcteursXPayload);
+                UartEncodeAndSendMessage(CONFIGPIDTHETA, 24, (unsigned char*) robotState.correcteursThetaPayload);
+                UartEncodeAndSendMessage(CONSIGNES, 8, (unsigned char*) robotState.consignes);
                 
                 SendPidX();
                 SendPidTheta();

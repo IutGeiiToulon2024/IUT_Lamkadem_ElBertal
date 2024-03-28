@@ -4,6 +4,7 @@
 #include "IO.h"
 #include "Utilities.h"
 #include "robot.h"
+#include "asservissement.h"
 
 unsigned char UartCalculateChecksum(int msgFunction,
         int msgPayloadLength, unsigned char* msgPayload) {
@@ -91,8 +92,8 @@ void UartDecodeMessage(unsigned char c) {
 }
 
 
-float correcteurKp, correcteurKd, correcteurKi, consigneLineaire;
-float correcteurThetaKp, correcteurThetaKd, correcteurThetaKi, consigneAngulaire;
+float correcteurKp, correcteurKd, correcteurKi, consigneLineaire, limitPX, limitIX, limitDX;
+float correcteurThetaKp, correcteurThetaKd, correcteurThetaKi, consigneAngulaire, limitPTheta, limitITheta, limitDTheta;
 
 void UartProcessDecodedMessage(int function,
         int payloadLength, unsigned char* payload) {
@@ -109,31 +110,48 @@ void UartProcessDecodedMessage(int function,
             correcteurKp = getFloat(payload, 0);
             correcteurKd = getFloat(payload, 4);
             correcteurKi = getFloat(payload, 8);
-            consigneLineaire = getFloat(payload, 12);
+            limitPX = getFloat(payload, 12);
+            limitIX = getFloat(payload, 16);
+            limitDX = getFloat(payload, 20);
 
             getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 0, (float) (correcteurKp));
             getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 4, (float) (correcteurKd));
             getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 8, (float) (correcteurKi));
-            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 12, (float) (consigneLineaire));
-            robotState.consigneX = consigneLineaire;
-//            if (consigneLineaire > 10) {
-//                int x = 1;
-//            }
+            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 12, (float) (limitPX));
+            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 16, (float) (limitIX));
+            getBytesFromFloat((unsigned char*) robotState.correcteursXPayload, 20, (float) (limitDX));
+            
+            SetupPidAsservissement(&robotState.PidX, (double)correcteurKp, (double)correcteurKi, (double)correcteurKd,(double)limitPX, (double)limitPX, (double)limitPX);
             break;
 
         case CONFIGPIDTHETA:
             correcteurThetaKp = getFloat(payload, 0);
             correcteurThetaKd = getFloat(payload, 4);
             correcteurThetaKi = getFloat(payload, 8);
-            consigneAngulaire = getFloat(payload, 12);
-
+            limitPTheta = getFloat(payload, 12);
+            limitITheta = getFloat(payload, 16);
+            limitDTheta = getFloat(payload, 20);
+            
             getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 0, (float) (correcteurThetaKp));
             getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 4, (float) (correcteurThetaKd));
             getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 8, (float) (correcteurThetaKi));
-            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 12, (float) (consigneAngulaire));
-            robotState.consigneTheta = consigneAngulaire;
-
+            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 12, (float) (limitPTheta));
+            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 16, (float) (limitITheta));
+            getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 20, (float) (limitDTheta));
+            
+            SetupPidAsservissement(&robotState.PidTheta, (double)correcteurKp, (double)correcteurKi, (double)correcteurKd,(double)limitPTheta, (double)limitITheta, (double)limitDTheta);
             break;
+            
+        case CONSIGNES: 
+            consigneAngulaire = getFloat(payload, 0);
+            consigneLineaire = getFloat(payload, 4);
+            getBytesFromFloat((unsigned char*) robotState.consignes, 0, (float) (consigneAngulaire));
+            getBytesFromFloat((unsigned char*) robotState.consignes, 4, (float) (consigneLineaire));
+            
+            robotState.consigneTheta = consigneAngulaire;
+            robotState.consigneX = consigneLineaire;
+            break;
+            
         default:
             break;
     }
