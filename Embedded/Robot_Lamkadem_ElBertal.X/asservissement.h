@@ -32,6 +32,7 @@ void UpdateAsservissement(void) ;
 void SendPidX(void);
 void SendPidTheta(void);
 void PWMSetSpeedCommandePolaire(double, double);
+void SendCommandeErreur(void);
 
 #endif	/* ASSERVISSEMENT_H */
 

@@ -148,8 +148,8 @@ void UartProcessDecodedMessage(int function,
             getBytesFromFloat((unsigned char*) robotState.consignes, 0, (float) (consigneAngulaire));
             getBytesFromFloat((unsigned char*) robotState.consignes, 4, (float) (consigneLineaire));
             
-            robotState.consigneTheta = consigneAngulaire;
-            robotState.consigneX = consigneLineaire;
+            robotState.consigneVitesseAngulaire = consigneAngulaire;
+            robotState.consigneVitesseLineaire = consigneLineaire;
             break;
             
         default:

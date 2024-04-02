@@ -55,7 +55,7 @@ int main(void) {
 
     int subSamplingSendCounter = 0;
     while (1) {
-        unsigned char payloadTelemetre1[2], payloadTelemetre2[2], payloadTelemetre3[2];
+        unsigned char payloadTelemetre1[2], payloadTelemetre2[2], payloadTelemetre3[2],payloadTelemetre4[2], payloadTelemetre5[2];
         unsigned char payloadVitesse[8];
 //        char payloadAsservissementX[24], payloadAsservissementTheta[24];
         
@@ -79,6 +79,10 @@ int main(void) {
                 robotState.distanceTelemetreGauche = 100;
             if (robotState.distanceTelemetreCentre > 100)
                 robotState.distanceTelemetreCentre = 100;
+            if (robotState.distanceTelemetreExtremeGauche > 100)
+                robotState.distanceTelemetreExtremeGauche = 100;
+            if (robotState.distanceTelemetreExtremeDroit > 100)
+                robotState.distanceTelemetreExtremeDroit = 100;
             // ---------------------------------------------------Envoi des valeurs sur port serie
             //            diz1 = (int) robotState.distanceTelemetreDroit / 10;      // Telemetre Droit
             //            unit1 = robotState.distanceTelemetreDroit - diz1 * 10;
@@ -105,10 +109,18 @@ int main(void) {
 
                 payloadTelemetre3[0] = (char) (int) robotState.distanceTelemetreCentre;
                 payloadTelemetre3[1] = (char) ((int) robotState.distanceTelemetreCentre >> 8);
+                
+                payloadTelemetre4[0] = (char) (int) robotState.distanceTelemetreExtremeDroit;
+                payloadTelemetre4[1] = (char) ((int) robotState.distanceTelemetreExtremeDroit >> 8);
+                
+                payloadTelemetre5[0] = (char) (int) robotState.distanceTelemetreExtremeGauche;
+                payloadTelemetre5[1] = (char) ((int) robotState.distanceTelemetreExtremeGauche >> 8);
 
                 UartEncodeAndSendMessage(0x0031, 2, (unsigned char*) payloadTelemetre1);
                 UartEncodeAndSendMessage(0x0032, 2, (unsigned char*) payloadTelemetre2);
                 UartEncodeAndSendMessage(0x0033, 2, (unsigned char*) payloadTelemetre3);
+                UartEncodeAndSendMessage(0x0034, 2, (unsigned char*) payloadTelemetre4);
+                UartEncodeAndSendMessage(0x0035, 2, (unsigned char*) payloadTelemetre5);
 
 
                 getBytesFromFloat(payloadVitesse, 0, robotState.vitesseDroiteConsigne);
@@ -122,6 +134,8 @@ int main(void) {
                 
                 SendPidX();
                 SendPidTheta();
+                
+                SendCommandeErreur();
                 
                 subSamplingSendCounter = 0;
             }
@@ -151,10 +165,8 @@ int main(void) {
 } // fin main
 
 unsigned char stateRobot;
-int modeAuto = 1;
 
 void OperatingSystemLoop(void) {
-    if (modeAuto == 1) {
         int vitesseD, vitesseG;
         switch (stateRobot) {
             case STATE_ATTENTE:
@@ -191,6 +203,8 @@ void OperatingSystemLoop(void) {
                 SetNextRobotStateInAutomaticMode();
                 break;
             case STATE_TOURNE_SUR_PLACE_GAUCHE:
+//                robotState.consigneVitesseLineaire = 0;
+//                robotState.consigneVitesseAngulaire = -3;
                 PWMSetSpeedConsigne(15, MOTEUR_DROIT);
                 PWMSetSpeedConsigne(-15, MOTEUR_GAUCHE);
                 stateRobot = STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS;
@@ -234,7 +248,6 @@ void OperatingSystemLoop(void) {
                 stateRobot = STATE_ATTENTE;
                 break;
         }
-    }
 }
 unsigned char nextStateRobot = 0;
 

@@ -47,8 +47,8 @@ namespace InterfaceRobot
             timerAffichage.Elapsed += TimerAffichage_Tick;
             timerAffichage.Start();
 
-            oscilloSpeed.AddOrUpdateLine(0, 200, "Vitesse");
-            oscilloSpeed.ChangeLineColor("Vitesse", Colors.Red);
+            oscilloSpeed.AddOrUpdateLine(0, 200, "position");
+            oscilloSpeed.ChangeLineColor("position", Colors.Red);
             oscilloSpeed.isDisplayActivated = true;
 
             oscilloPos.AddOrUpdateLine(0, 200, "Vitesse");
@@ -94,6 +94,9 @@ namespace InterfaceRobot
             asservSpeedDisplay.UpdatePolarSpeedCorrectionLimits(robot.corrPmaxX, robot.corrPmaxTheta,
                                robot.corrImaxX, robot.corrImaxTheta,
                                robot.corrDmaxX, robot.corrDmaxTheta);
+            asservSpeedDisplay.UpdatePolarSpeedCommandValues(robot.commandeX, robot.commandeTheta);
+            asservSpeedDisplay.UpdatePolarSpeedErrorValues(robot.erreurX, robot.erreurTheta);
+
         }
 
         public void SerialPort1_OnDataReceivedEvent(object sender, DataReceivedArgs e)
@@ -331,6 +334,8 @@ namespace InterfaceRobot
             distTelemetre1 = 0x0031,
             distTelemetre2 = 0x0032,
             distTelemetre3 = 0x0033,
+            distTelemetre4 = 0x0034,
+            distTelemetre5 = 0x0035,
             consigneVitesse1 = 0x0041,
             consigneVitesse2 = 0x0042,
             position = 0x0061,
@@ -341,6 +346,7 @@ namespace InterfaceRobot
             AsservissementX = 0x0093,
             AsservissementTheta = 0x0094,
             consignes = 0x0095,
+            commandeerreur = 0x0096,
 
             RobotState
         }
@@ -393,19 +399,34 @@ namespace InterfaceRobot
                     }));
                     break;
 
-                case ((int)Fonctions.distTelemetre2):
+                case ((int)Fonctions.distTelemetre3):
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
                         textBoxTelemetres.Text += "Télémètre Centre : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm\n";
                     }));
                     break;
 
-                case ((int)Fonctions.distTelemetre3):
+                case ((int)Fonctions.distTelemetre2):
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        textBoxTelemetres.Text += "Télémètre Gauche : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm";
+                        textBoxTelemetres.Text += "Télémètre Gauche : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm\n";
                     }));
                     break;
+
+                case ((int)Fonctions.distTelemetre4):
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        textBoxTelemetres.Text += "Télémètre Extreme Droit : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm\n";
+                    }));
+                    break;
+
+                case ((int)Fonctions.distTelemetre5):
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        textBoxTelemetres.Text += "Télémètre Extreme Gauche : " + BitConverter.ToInt16(msgPayload, 0).ToString() + " cm";
+                    }));
+                    break;
+
 
                 case ((int)Fonctions.consigneVitesse1):
                     robot.consigneD = BitConverter.ToInt16(msgPayload, 0);
@@ -440,9 +461,10 @@ namespace InterfaceRobot
                         textBoxPosition.Text += "vitesseAngulaireFromOdometry : " + robot.vitesseAngulaireFromOdometry + '\n';
                     }));
 
-                    oscilloSpeed.AddPointToLine(0, robot.timestamp/1000.0, robot.vitesseLineaireFromOdometry);
-                    oscilloPos.AddPointToLine(0, robot.positionXOdo, robot.positionYOdo);
+                    oscilloSpeed.AddPointToLine(0, robot.positionXOdo, robot.positionYOdo);
+                    oscilloPos.AddPointToLine(0, robot.timestamp / 1000.0, robot.vitesseLineaireFromOdometry);
                     break;
+                //
 
                 case ((int)Fonctions.mesureVitesse):
                     robot.vitesseDroitFromOdometry = BitConverter.ToSingle(msgPayload, 0);
@@ -515,6 +537,17 @@ namespace InterfaceRobot
                     }));
                     break;
 
+                case ((int)Fonctions.commandeerreur):
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        robot.commandeX = BitConverter.ToSingle(msgPayload, 0);
+                        robot.commandeTheta = BitConverter.ToSingle(msgPayload, 4);
+                        robot.erreurX = BitConverter.ToSingle(msgPayload, 8);
+                        robot.erreurTheta = BitConverter.ToSingle(msgPayload, 12);
+                    }));
+                    break;
+                    
+
                     //case ((int)Fonctions.RobotState):
                     //    int instant = (((int)msgPayload[1]) << 24) + (((int)msgPayload[2]) << 16)
                     //    + (((int)msgPayload[3]) << 8) + ((int)msgPayload[4]);
@@ -556,20 +589,21 @@ namespace InterfaceRobot
 
         private void buttonAsserv_Click(object sender, RoutedEventArgs e)
         {
-            float KpX = (float) random.NextDouble() ;
-            float KpTheta = (float) random.NextDouble() ;
-            float KiX = (float)random.NextDouble() ;
-            float KiTheta = (float)random.NextDouble() ;
-            float KdX = (float)random.NextDouble() ;
-            float KdTheta = (float)random.NextDouble() ;
+            //(float) random.NextDouble() ;
+            float KpX = 0 ;
+            float KpTheta = 0 ;
+            float KiX = 0 ;
+            float KiTheta = 0 ;
+            float KdX = 0 ;
+            float KdTheta = 0 ;
 
-            float limitPX = (float)random.NextDouble() ;
-            float limitIX = (float)random.NextDouble() ;
-            float limitDX = (float)random.NextDouble() ;
+            float limitPX = 100 ;
+            float limitIX = 100 ;
+            float limitDX = 100 ;
 
-            float limitPTheta = (float)random.NextDouble() ;
-            float limitITheta = (float)random.NextDouble();
-            float limitDTheta = (float)random.NextDouble();
+            float limitPTheta = 100 ;
+            float limitITheta = 100 ;
+            float limitDTheta = 100 ;
 
             byte[] kpByte = BitConverter.GetBytes(KpX);
             byte[] kdByte = BitConverter.GetBytes(KdX);

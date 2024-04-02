@@ -37,8 +37,8 @@ typedef struct robotStateBITS {
             double yPosFromOdometry;
             double angleRadianFromOdometry;
             
-            double consigneX ;
-            double consigneTheta ;
+            double consigneVitesseLineaire ;
+            double consigneVitesseAngulaire ;
             
             double xCorrectionVitesse ;
             double thetaCorrectionVitesse ;

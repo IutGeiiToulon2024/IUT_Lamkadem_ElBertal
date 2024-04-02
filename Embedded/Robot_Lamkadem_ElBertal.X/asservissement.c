@@ -38,8 +38,8 @@ void UpdateAsservissement() {
     //robotState.consigneX = getFloat((unsigned char*) robotState.correcteursXPayload, 12);
     //robotState.consigneTheta = getFloat((unsigned char*) robotState.correcteursThetaPayload, 12);
 
-    robotState.PidX.erreur = robotState.consigneX - robotState.vitesseLineaireFromOdometry;
-    robotState.PidTheta.erreur = robotState.consigneTheta - robotState.vitesseAngulaireFromOdometry;
+    robotState.PidX.erreur = robotState.consigneVitesseLineaire - robotState.vitesseLineaireFromOdometry;
+    robotState.PidTheta.erreur = robotState.consigneVitesseAngulaire - robotState.vitesseAngulaireFromOdometry;
 
 
     robotState.xCorrectionVitesse = Correcteur(&robotState.PidX, robotState.PidX.erreur);
@@ -74,7 +74,11 @@ void SendPidTheta() {
 }
 
 void SendCommandeErreur() {
-    unsigned char CommandeErreurPayload[12];
+    unsigned char CommandeErreurPayload[16];
     getBytesFromFloat((unsigned char*)CommandeErreurPayload, 0, (float) (robotState.xCorrectionVitesse));
-    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 0, (float) (robotState.thetaCorrectionVitesse));
+    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 4, (float) (robotState.thetaCorrectionVitesse));
+    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 8, (float) (robotState.PidX.erreur));
+    getBytesFromFloat((unsigned char*)CommandeErreurPayload, 12, (float) (robotState.PidTheta.erreur));
+    
+    UartEncodeAndSendMessage(COMMANDEERREUR, 16, (unsigned char*)CommandeErreurPayload);
 }

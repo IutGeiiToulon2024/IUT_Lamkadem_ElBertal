@@ -62,6 +62,12 @@ namespace InterfaceRobot
         public float corrImaxTheta;
         public float corrDmaxTheta;
 
+        public float commandeX;
+        public float commandeTheta;
+
+        public float erreurX;
+        public float erreurTheta;
+
         public Robot()
         {
 
