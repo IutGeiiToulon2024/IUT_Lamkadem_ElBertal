@@ -139,11 +139,12 @@ void UartProcessDecodedMessage(int function,
             getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 16, (float) (limitITheta));
             getBytesFromFloat((unsigned char*) robotState.correcteursThetaPayload, 20, (float) (limitDTheta));
             
-            SetupPidAsservissement(&robotState.PidTheta, (double)correcteurKp, (double)correcteurKi, (double)correcteurKd,(double)limitPTheta, (double)limitITheta, (double)limitDTheta);
+            SetupPidAsservissement(&robotState.PidTheta, (double)correcteurThetaKp, (double)correcteurThetaKi, (double)correcteurThetaKd,(double)limitPTheta, (double)limitITheta, (double)limitDTheta);
             break;
             
         case CONSIGNES: 
-            consigneAngulaire = getFloat(payload, 0);
+            //consigneAngulaire = getFloat(payload, 0);
+            consigneAngulaire = 0 ;
             consigneLineaire = getFloat(payload, 4);
             getBytesFromFloat((unsigned char*) robotState.consignes, 0, (float) (consigneAngulaire));
             getBytesFromFloat((unsigned char*) robotState.consignes, 4, (float) (consigneLineaire));

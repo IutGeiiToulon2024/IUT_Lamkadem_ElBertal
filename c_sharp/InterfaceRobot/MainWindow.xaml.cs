@@ -83,7 +83,7 @@ namespace InterfaceRobot
 
             asservSpeedDisplay.UpdatePolarSpeedConsigneValues(robot.consigneLineaire, robot.consigneAngulaire);
             asservSpeedDisplay.UpdateIndependantOdometrySpeed(robot.vitesseGaucheFromOdometry, robot.vitesseDroitFromOdometry);
-            asservSpeedDisplay.UpdatePolarOdometrySpeed(robot.vitesseLineaireFromOdometry, robot.angleRadianFromOdometry);
+            asservSpeedDisplay.UpdatePolarOdometrySpeed(robot.vitesseLineaireFromOdometry, robot.vitesseAngulaireFromOdometry);                   // robot.angleRadianFromOdometry);
             asservSpeedDisplay.UpdateIndependantSpeedConsigneValues(robot.consigneG, robot.consigneD);
             asservSpeedDisplay.UpdatePolarSpeedCorrectionGains(robot.correcteurKp, robot.correcteurThetaKp,
                                robot.correcteurKi, robot.correcteurThetaKi,
@@ -590,10 +590,10 @@ namespace InterfaceRobot
         private void buttonAsserv_Click(object sender, RoutedEventArgs e)
         {
             //(float) random.NextDouble() ;
-            float KpX = 0 ;
-            float KpTheta = 0 ;
-            float KiX = 0 ;
-            float KiTheta = 0 ;
+            float KpX = (float)1.5 ;
+            float KpTheta = (float)1.2 ;
+            float KiX = 100 ;
+            float KiTheta = 40 ;
             float KdX = 0 ;
             float KdTheta = 0 ;
 

@@ -70,10 +70,7 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     QEIUpdateData();
     UpdateAsservissement();
     compteur += 1;
-    if (compteur > 25) {
-        while (CB_RX1_IsDataAvailable()){
-            UartDecodeMessage(CB_RX1_Get());
-        }
+    if (compteur > 10) {        
         SendPositionData();
         compteur = 0 ;
     }

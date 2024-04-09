@@ -39,6 +39,7 @@ void UpdateAsservissement() {
     //robotState.consigneTheta = getFloat((unsigned char*) robotState.correcteursThetaPayload, 12);
 
     robotState.PidX.erreur = robotState.consigneVitesseLineaire - robotState.vitesseLineaireFromOdometry;
+    //robotState.PidX.erreur = 0;
     robotState.PidTheta.erreur = robotState.consigneVitesseAngulaire - robotState.vitesseAngulaireFromOdometry;
 
 

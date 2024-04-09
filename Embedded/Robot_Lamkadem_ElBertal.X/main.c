@@ -55,10 +55,14 @@ int main(void) {
 
     int subSamplingSendCounter = 0;
     while (1) {
-        unsigned char payloadTelemetre1[2], payloadTelemetre2[2], payloadTelemetre3[2],payloadTelemetre4[2], payloadTelemetre5[2];
+        unsigned char payloadTelemetre1[2], payloadTelemetre2[2], payloadTelemetre3[2], payloadTelemetre4[2], payloadTelemetre5[2];
         unsigned char payloadVitesse[8];
-//        char payloadAsservissementX[24], payloadAsservissementTheta[24];
-        
+
+        while (CB_RX1_IsDataAvailable()) {
+            UartDecodeMessage(CB_RX1_Get());
+        }
+        //        char payloadAsservissementX[24], payloadAsservissementTheta[24];
+
         if (ADCIsConversionFinished() == 1) {
             ADCClearConversionFinishedFlag();
             unsigned int * result = ADCGetResult();
@@ -100,7 +104,7 @@ int main(void) {
             //            UartEncodeAndSendMessage(0x0033, 2, payloadTelemetre3);
 
             subSamplingSendCounter++;
-            if (subSamplingSendCounter >= 25) {
+            if (subSamplingSendCounter >= 10) {
                 payloadTelemetre1[0] = (char) (int) robotState.distanceTelemetreDroit;
                 payloadTelemetre1[1] = (char) ((int) robotState.distanceTelemetreDroit >> 8);
 
@@ -109,10 +113,10 @@ int main(void) {
 
                 payloadTelemetre3[0] = (char) (int) robotState.distanceTelemetreCentre;
                 payloadTelemetre3[1] = (char) ((int) robotState.distanceTelemetreCentre >> 8);
-                
+
                 payloadTelemetre4[0] = (char) (int) robotState.distanceTelemetreExtremeDroit;
                 payloadTelemetre4[1] = (char) ((int) robotState.distanceTelemetreExtremeDroit >> 8);
-                
+
                 payloadTelemetre5[0] = (char) (int) robotState.distanceTelemetreExtremeGauche;
                 payloadTelemetre5[1] = (char) ((int) robotState.distanceTelemetreExtremeGauche >> 8);
 
@@ -125,18 +129,18 @@ int main(void) {
 
                 getBytesFromFloat(payloadVitesse, 0, robotState.vitesseDroiteConsigne);
                 getBytesFromFloat(payloadVitesse, 4, robotState.vitesseGaucheConsigne);
-                
+
                 UartEncodeAndSendMessage(0x0041, 8, (unsigned char*) payloadVitesse);
 
                 UartEncodeAndSendMessage(CONFIGPIDX, 24, (unsigned char*) robotState.correcteursXPayload);
                 UartEncodeAndSendMessage(CONFIGPIDTHETA, 24, (unsigned char*) robotState.correcteursThetaPayload);
                 UartEncodeAndSendMessage(CONSIGNES, 8, (unsigned char*) robotState.consignes);
-                
+
                 SendPidX();
                 SendPidTheta();
-                
+
                 SendCommandeErreur();
-                
+
                 subSamplingSendCounter = 0;
             }
 
@@ -167,87 +171,79 @@ int main(void) {
 unsigned char stateRobot;
 
 void OperatingSystemLoop(void) {
-        int vitesseD, vitesseG;
-        switch (stateRobot) {
-            case STATE_ATTENTE:
-                timestamp = 0;
-                PWMSetSpeedConsigne(0, MOTEUR_DROIT);
-                PWMSetSpeedConsigne(0, MOTEUR_GAUCHE);
-                stateRobot = STATE_ATTENTE_EN_COURS;
-            case STATE_ATTENTE_EN_COURS:
-                if (timestamp > 1000)
-                    stateRobot = STATE_AVANCE;
-                break;
-            case STATE_AVANCE:
-                PWMSetSpeedConsigne(20, MOTEUR_DROIT);
-                PWMSetSpeedConsigne(20, MOTEUR_GAUCHE);
-                stateRobot = STATE_AVANCE_EN_COURS;
-                break;
-            case STATE_AVANCE_EN_COURS:
-                SetNextRobotStateInAutomaticMode();
-                break;
-            case STATE_TOURNE_GAUCHE:
-                PWMSetSpeedConsigne(13, MOTEUR_DROIT);
-                PWMSetSpeedConsigne(-7, MOTEUR_GAUCHE);
-                stateRobot = STATE_TOURNE_GAUCHE_EN_COURS;
-                break;
-            case STATE_TOURNE_GAUCHE_EN_COURS:
-                SetNextRobotStateInAutomaticMode();
-                break;
-            case STATE_TOURNE_DROITE:
-                PWMSetSpeedConsigne(-7, MOTEUR_DROIT);
-                PWMSetSpeedConsigne(13, MOTEUR_GAUCHE);
-                stateRobot = STATE_TOURNE_DROITE_EN_COURS;
-                break;
-            case STATE_TOURNE_DROITE_EN_COURS:
-                SetNextRobotStateInAutomaticMode();
-                break;
-            case STATE_TOURNE_SUR_PLACE_GAUCHE:
-//                robotState.consigneVitesseLineaire = 0;
-//                robotState.consigneVitesseAngulaire = -3;
-                PWMSetSpeedConsigne(15, MOTEUR_DROIT);
-                PWMSetSpeedConsigne(-15, MOTEUR_GAUCHE);
-                stateRobot = STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS;
-                break;
-            case STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS:
-                SetNextRobotStateInAutomaticMode();
-                break;
-            case STATE_TOURNE_SUR_PLACE_DROITE:
-                PWMSetSpeedConsigne(-15, MOTEUR_DROIT);
-                PWMSetSpeedConsigne(15, MOTEUR_GAUCHE);
-                stateRobot = STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS;
-                break;
-            case STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS:
-                SetNextRobotStateInAutomaticMode();
-                break;
-            case STATE_RALENTIS:
-                if (robotState.distanceTelemetreGauche > 50) {
-                    vitesseD = 20;
-                } else if (robotState.distanceTelemetreGauche < 20) {
-                    vitesseD = -15;
-                } else {
-                    vitesseD = 1 / 3 * robotState.distanceTelemetreGauche + 10 / 3;
-                }
+    int vitesseD, vitesseG;
+    switch (stateRobot) {
+        case STATE_ATTENTE:
+            timestamp = 0;
+            PWMSetSpeedCommandePolaire(0,0);
+            stateRobot = STATE_ATTENTE_EN_COURS;
+        case STATE_ATTENTE_EN_COURS:
+            if (timestamp > 1000)
+                stateRobot = STATE_AVANCE;
+            break;
+        case STATE_AVANCE:
+            PWMSetSpeedCommandePolaire(1,0);
+            stateRobot = STATE_AVANCE_EN_COURS;
+            break;
+        case STATE_AVANCE_EN_COURS:
+            SetNextRobotStateInAutomaticMode();
+            break;
+        case STATE_TOURNE_GAUCHE:
+            PWMSetSpeedCommandePolaire(0.5,2);
+            stateRobot = STATE_TOURNE_GAUCHE_EN_COURS;
+            break;
+        case STATE_TOURNE_GAUCHE_EN_COURS:
+            SetNextRobotStateInAutomaticMode();
+            break;
+        case STATE_TOURNE_DROITE:
+            PWMSetSpeedCommandePolaire(0.5,-2);
+            stateRobot = STATE_TOURNE_DROITE_EN_COURS;
+            break;
+        case STATE_TOURNE_DROITE_EN_COURS:
+            SetNextRobotStateInAutomaticMode();
+            break;
+        case STATE_TOURNE_SUR_PLACE_GAUCHE:
+            //                robotState.consigneVitesseLineaire = 0;
+            //                robotState.consigneVitesseAngulaire = -3;            
+            PWMSetSpeedCommandePolaire(0,2);
+            stateRobot = STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS;
+            break;
+        case STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS:
+            SetNextRobotStateInAutomaticMode();
+            break;
+        case STATE_TOURNE_SUR_PLACE_DROITE:          
+            PWMSetSpeedCommandePolaire(0,-2);
+            stateRobot = STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS;
+            break;
+        case STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS:
+            SetNextRobotStateInAutomaticMode();
+            break;
+        case STATE_RALENTIS:
+            if (robotState.distanceTelemetreGauche > 50) {
+                vitesseD = 20;
+            } else if (robotState.distanceTelemetreGauche < 20) {
+                vitesseD = -15;
+            } else {
+                vitesseD = 1 / 3 * robotState.distanceTelemetreGauche + 10 / 3;
+            }
 
-                if (robotState.distanceTelemetreDroit > 50) {
-                    vitesseG = 20;
-                } else if (robotState.distanceTelemetreDroit < 20) {
-                    vitesseG = -15;
-                } else {
-                    vitesseG = 1 / 3 * robotState.distanceTelemetreDroit + 10 / 3;
-                }
-
-                PWMSetSpeedConsigne(vitesseD, MOTEUR_DROIT);
-                PWMSetSpeedConsigne(vitesseG, MOTEUR_GAUCHE);
-                stateRobot = STATE_RALENTIS_EN_COURS;
-                break;
-            case STATE_RALENTIS_EN_COURS:
-                SetNextRobotStateInAutomaticMode();
-                break;
-            default:
-                stateRobot = STATE_ATTENTE;
-                break;
-        }
+            if (robotState.distanceTelemetreDroit > 50) {
+                vitesseG = 20;
+            } else if (robotState.distanceTelemetreDroit < 20) {
+                vitesseG = -15;
+            } else {
+                vitesseG = 1 / 3 * robotState.distanceTelemetreDroit + 10 / 3;
+            }          
+            PWMSetSpeedCommandePolaire(0,0);
+            stateRobot = STATE_RALENTIS_EN_COURS;
+            break;
+        case STATE_RALENTIS_EN_COURS:
+            SetNextRobotStateInAutomaticMode();
+            break;
+        default:
+            stateRobot = STATE_ATTENTE;
+            break;
+    }
 }
 unsigned char nextStateRobot = 0;
 

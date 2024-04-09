@@ -21,6 +21,10 @@
       <itemPath>robot.h</itemPath>
       <itemPath>timer.h</itemPath>
     </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="true">
+    </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
                    projectFiles="true">
@@ -44,11 +48,6 @@
       <itemPath>UART_Protocol.c</itemPath>
       <itemPath>Utilities.c</itemPath>
     </logicalFolder>
-    <logicalFolder name="ExternalFiles"
-                   displayName="Important Files"
-                   projectFiles="false">
-      <itemPath>Makefile</itemPath>
-    </logicalFolder>
   </logicalFolder>
   <sourceRootList>
     <Elem>.</Elem>
@@ -63,7 +62,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>ICD4Tool</platformTool>
         <languageToolchain>XC16</languageToolchain>
-        <languageToolchainVersion>2.00</languageToolchainVersion>
+        <languageToolchainVersion>2.10</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>
