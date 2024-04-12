@@ -347,7 +347,7 @@ namespace InterfaceRobot
             AsservissementTheta = 0x0094,
             consignes = 0x0095,
             commandeerreur = 0x0096,
-
+            ghost = 0x0011,
             RobotState
         }
 
@@ -546,7 +546,16 @@ namespace InterfaceRobot
                         robot.erreurTheta = BitConverter.ToSingle(msgPayload, 12);
                     }));
                     break;
-                    
+
+                case ((int)Fonctions.ghost):
+                    Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        robot.posX = BitConverter.ToSingle(msgPayload, 0);
+                        robot.posY = BitConverter.ToSingle(msgPayload, 4);
+                        robot.thetaRobot = BitConverter.ToSingle(msgPayload, 8);
+                    }));
+                    break;
+
 
                     //case ((int)Fonctions.RobotState):
                     //    int instant = (((int)msgPayload[1]) << 24) + (((int)msgPayload[2]) << 16)
@@ -651,6 +660,36 @@ namespace InterfaceRobot
             UartEncodeAndSendMessage(0x0091, correcteursX.Length, correcteursX);
             UartEncodeAndSendMessage(0x0092, correcteursTheta.Length, correcteursTheta);
             UartEncodeAndSendMessage(0x0095, consignes.Length, consignes);
+        }
+
+        int position;
+
+        private void button01_Click(object sender, RoutedEventArgs e)
+        {
+            position = 0x01;
+            byte[] posGhost = BitConverter.GetBytes(position);
+            UartEncodeAndSendMessage(0x0010, posGhost.Length, posGhost);
+        }
+
+        private void button10_Click(object sender, RoutedEventArgs e)
+        {
+            position = 0x10;
+            byte[] posGhost = BitConverter.GetBytes(position);
+            UartEncodeAndSendMessage(0x0010, posGhost.Length, posGhost);
+        }
+
+        private void button11_Click(object sender, RoutedEventArgs e)
+        {
+            position = 0x11;
+            byte[] posGhost = BitConverter.GetBytes(position);
+            UartEncodeAndSendMessage(0x0010, posGhost.Length, posGhost);
+        }
+
+        private void button00_Click(object sender, RoutedEventArgs e)
+        {
+            position = 0x00;
+            byte[] posGhost = BitConverter.GetBytes(position);
+            UartEncodeAndSendMessage(0x0010, posGhost.Length, posGhost);
         }
     }
 }

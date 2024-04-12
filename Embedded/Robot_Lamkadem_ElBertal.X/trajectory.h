@@ -8,7 +8,31 @@
 #ifndef TRAJECTORY_H
 #define	TRAJECTORY_H
 
-void ghost() ;
+#define VitesseMaxAngulaire 3
+#define ToleranceAngulaire 0.5
+
+typedef enum {
+    IDLE,
+    ROTATION,
+    DEPLACEMENTLINEAIRE,
+} StateGhost;
+
+typedef struct {
+    float thetaWaypoint;
+    float thetaRobot;
+    float thetaRest;
+    float thetaArret;
+    float accelerationAngulaire;
+    float vitesseLineaire;
+    float vitesseAngulaire;
+    float posX;
+    float posY;
+
+    StateGhost state;
+
+} GhostPosition;
+
+void ghost();
 
 #endif	/* TRAJECTORY_H */
 

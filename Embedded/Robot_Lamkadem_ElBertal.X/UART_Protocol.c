@@ -5,6 +5,7 @@
 #include "Utilities.h"
 #include "robot.h"
 #include "asservissement.h"
+#include "trajectory.h"
 
 unsigned char UartCalculateChecksum(int msgFunction,
         int msgPayloadLength, unsigned char* msgPayload) {
@@ -151,6 +152,12 @@ void UartProcessDecodedMessage(int function,
             
             robotState.consigneVitesseAngulaire = consigneAngulaire;
             robotState.consigneVitesseLineaire = consigneLineaire;
+            break;
+            
+        case RECEIVE_POS_GHOST:
+            GhostPosition.posX = getFloat(payload, 0);
+            GhostPosition.posY = getFloat(payload, 4);
+            //GhostPosition.thetaWaypoint = atan() // voir comment trouver l'angle de la cible et l'angle retant. a quoi sa correspnd et comment les determiner (photo 12/04))
             break;
             
         default:

@@ -43,9 +43,7 @@ typedef struct robotStateBITS {
             double xCorrectionVitesse ;
             double thetaCorrectionVitesse ;
             
-            double thetaRest ;
-            double thetaWaypoint ;
-            double thetaArret ;
+            double accelerationAngulaire ;
             
             PidCorrector PidX ;
             PidCorrector PidTheta ;
