@@ -24,6 +24,8 @@
 #define ASSERVISSEMENTTHETA 0x0094 
 #define CONSIGNES 0x0095
 #define COMMANDEERREUR 0x0096
+#define SEND_GHOST 0x0011
+#define RECEIVE_POS_GHOST 0x0010
 
 unsigned char UartCalculateChecksum(int, int, unsigned char*) ;
 void UartEncodeAndSendMessage(int, int, unsigned char*) ;

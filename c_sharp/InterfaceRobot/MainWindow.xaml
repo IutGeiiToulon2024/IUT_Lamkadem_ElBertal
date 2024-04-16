@@ -76,10 +76,10 @@
 
                 <oscillo:WpfOscilloscope x:Name="oscilloGhost" x:FieldModifier="public" Margin="10,5,10,5" Grid.Row="0" />
                 <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center">
-                    <Button x:Name="buttonPos01" Content="0;1" HorizontalAlignment="Left"  Width="50" Click="buttonEnvoyer_Click" Margin="5"/>
-                    <Button x:Name="buttonPos10" Content="1;0"  HorizontalAlignment="Left" Width="50"  Click="buttonClear_Click" Margin="5"/>
-                    <Button x:Name="buttonPos11" Content="1;1" HorizontalAlignment="Right" Width="50" Click="buttonTest_Click" Margin="5"/>
-                    <Button x:Name="buttonPos00" Content="0;0" HorizontalAlignment="Right" Width="50" Click="buttonAsserv_Click" Margin="5"/>
+                    <Button x:Name="buttonPos01" Content="0;1" HorizontalAlignment="Left"  Width="50" Click="button01_Click" Margin="5"/>
+                    <Button x:Name="buttonPos10" Content="1;0"  HorizontalAlignment="Left" Width="50"  Click="button10_Click" Margin="5"/>
+                    <Button x:Name="buttonPos11" Content="1;1" HorizontalAlignment="Right" Width="50" Click="button11_Click" Margin="5"/>
+                    <Button x:Name="buttonPos00" Content="0;0" HorizontalAlignment="Right" Width="50" Click="button00_Click" Margin="5"/>
 
                 </StackPanel>
             </Grid>

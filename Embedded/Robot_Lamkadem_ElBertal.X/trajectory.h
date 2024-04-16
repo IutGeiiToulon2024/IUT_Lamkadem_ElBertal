@@ -20,7 +20,7 @@ typedef enum {
 typedef struct {
     float thetaWaypoint;
     float thetaRobot;
-    float thetaRest;
+    float thetaRestant;
     float thetaArret;
     float accelerationAngulaire;
     float vitesseLineaire;
@@ -33,6 +33,7 @@ typedef struct {
 } GhostPosition;
 
 void ghost();
+void SendGhost();
 
 #endif	/* TRAJECTORY_H */
 

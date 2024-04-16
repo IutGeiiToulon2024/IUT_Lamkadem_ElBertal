@@ -68,6 +68,10 @@ namespace InterfaceRobot
         public float erreurX;
         public float erreurTheta;
 
+        public float posX;
+        public float posY;
+        public float thetaRobot;
+
         public Robot()
         {
 
