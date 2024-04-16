@@ -84,7 +84,7 @@ namespace InterfaceRobot
             asservSpeedDisplay.UpdatePolarSpeedConsigneValues(robot.consigneLineaire, robot.consigneAngulaire);
             asservSpeedDisplay.UpdateIndependantOdometrySpeed(robot.vitesseGaucheFromOdometry, robot.vitesseDroitFromOdometry);
             asservSpeedDisplay.UpdatePolarOdometrySpeed(robot.vitesseLineaireFromOdometry, robot.vitesseAngulaireFromOdometry);                   // robot.angleRadianFromOdometry);
-            asservSpeedDisplay.UpdateIndependantSpeedConsigneValues(robot.consigneG, robot.consigneD);
+            asservSpeedDisplay.UpdateIndependantSpeedConsigneValues(robot.consigneG, 0.0);
             asservSpeedDisplay.UpdatePolarSpeedCorrectionGains(robot.correcteurKp, robot.correcteurThetaKp,
                                robot.correcteurKi, robot.correcteurThetaKi,
                                robot.correcteurKd, robot.correcteurThetaKd);
@@ -553,6 +553,9 @@ namespace InterfaceRobot
                         robot.posX = BitConverter.ToSingle(msgPayload, 0);
                         robot.posY = BitConverter.ToSingle(msgPayload, 4);
                         robot.thetaRobot = BitConverter.ToSingle(msgPayload, 8);
+
+                        oscilloGhost.AddPointToLine(0, robot.posX, robot.posY);
+
                     }));
                     break;
 

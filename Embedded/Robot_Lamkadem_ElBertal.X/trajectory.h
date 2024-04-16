@@ -8,8 +8,11 @@
 #ifndef TRAJECTORY_H
 #define	TRAJECTORY_H
 
-#define VitesseMaxAngulaire 3
-#define ToleranceAngulaire 0.5
+#define VIT_MAX_ANG 3
+#define TOLERANCE_ANG 0.5
+#define TOLERANCE_DIST 0.1
+#define ACCELERATION_LIN 0.1
+#define VIT_MAX_LIN 1
 
 typedef enum {
     IDLE,
@@ -27,13 +30,20 @@ typedef struct {
     float vitesseAngulaire;
     float posX;
     float posY;
-
+    float waypointX ;
+    float waypointY ;
+    float distanceToTarget ;
+    float distance ;
+    
     StateGhost state;
 
 } GhostPosition;
 
+extern volatile GhostPosition ghostPosition;
+
 void ghost();
 void SendGhost();
+void InitTrajectory() ;
 
 #endif	/* TRAJECTORY_H */
 

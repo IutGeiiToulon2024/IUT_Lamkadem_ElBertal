@@ -58,6 +58,8 @@
                 <oscillo:WpfOscilloscope x:Name="oscilloSpeed" x:FieldModifier="public" Grid.Row="0" Grid.RowSpan="2" Grid.Column="3" Margin="5,5,5,5" />
                 <Slider x:Name="SliderVitesseAngulaire" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Width="191" Maximum="3" Minimum="-3" Margin="0,59,0,0"/>
                 <Slider x:Name="SliderVitesseLineaire" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Width="191" Maximum="3" Minimum="-3" Margin="0,127,0,0"/>
+                <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="29,147,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Height="23" Width="82"><Run Language="fr-fr" Text="Vitesse Lineaire"/></TextBlock>
+                <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="29,76,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Height="23" Width="96"><Run Text="Vitesse "/><Run Language="fr-fr" Text="Angulaire"/></TextBlock>
             </Grid>
         </TabItem>
         <TabItem Header="Map">

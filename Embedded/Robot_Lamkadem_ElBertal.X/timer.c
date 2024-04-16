@@ -8,6 +8,7 @@
 #include "QEI.h"
 #include "CB_RX1.h"
 #include "UART_Protocol.h"
+#include "trajectory.h"
 
 //Initialisation d?un timer 32 bits
 unsigned long timestamp ;
@@ -74,6 +75,7 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
         SendPositionData();
         compteur = 0 ;
     }
+    SendGhost() ;
 }
 
 void SetFreqTimer1(float freq) {
