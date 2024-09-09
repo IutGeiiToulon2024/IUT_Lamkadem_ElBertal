@@ -103,9 +103,9 @@ void UartProcessDecodedMessage(int function,
     switch (function) { //correspondant au message recu
         case LED1:
             if (payload[0] == 1)
-                LED_BLEUE = 1;
+                LED_BLEUE_1 = 1;
             else
-                LED_BLEUE = 0;
+                LED_BLEUE_1 = 0;
             break;
 
         case CONFIGPIDX:

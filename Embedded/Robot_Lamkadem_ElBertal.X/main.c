@@ -149,19 +149,19 @@ int main(void) {
 
             // --------------------------------------------------Gestion etat des leds
             //            if (robotState.distanceTelemetreExtremeDroit < 30) {
-            //                LED_ORANGE = 1;
+            //                LED_ORANGE_1 = 1;
             //            } else {
-            //                LED_ORANGE = 0;
+            //                LED_ORANGE_1 = 0;
             //            }
             //            if (robotState.distanceTelemetreExtremeGauche < 30) {
-            //                LED_BLANCHE = 1;
+            //                LED_BLANCHE_1 = 1;
             //            } else {
-            //                LED_BLANCHE = 0;
+            //                LED_BLANCHE_1 = 0;
             //            }
             //            if (robotState.distanceTelemetreCentre < 30) {
-            //                LED_BLEUE = 1;
+            //                LED_BLEUE_1 = 1;
             //            } else {
-            //                LED_BLEUE = 0;
+            //                LED_BLEUE_1 = 0;
             //            }
         }
     }
