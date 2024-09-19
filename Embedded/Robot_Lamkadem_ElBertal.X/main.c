@@ -66,15 +66,15 @@ int main(void) {
         if (ADCIsConversionFinished() == 1) {
             ADCClearConversionFinishedFlag();
             unsigned int * result = ADCGetResult();
-            float volts = ((float) result [0])* 3.3 / 4096 * 3.2;
+            float volts = ((float) result [4])* 3.3 / 4096 * 3.2;
             robotState.distanceTelemetreExtremeDroit = 34 / volts - 5;
-            volts = ((float) result [3])* 3.3 / 4096 * 3.2;
+            volts = ((float) result [0])* 3.3 / 4096 * 3.2;
             robotState.distanceTelemetreExtremeGauche = 34 / volts - 5;
-            volts = ((float) result [4])* 3.3 / 4096 * 3.2;
+            volts = ((float) result [1])* 3.3 / 4096 * 3.2;
             robotState.distanceTelemetreGauche = 34 / volts - 5;
             volts = ((float) result [2])* 3.3 / 4096 * 3.2;
             robotState.distanceTelemetreCentre = 34 / volts - 5;
-            volts = ((float) result [1])* 3.3 / 4096 * 3.2;
+            volts = ((float) result [3])* 3.3 / 4096 * 3.2;
             robotState.distanceTelemetreDroit = 34 / volts - 5;
 
             if (robotState.distanceTelemetreDroit > 100)

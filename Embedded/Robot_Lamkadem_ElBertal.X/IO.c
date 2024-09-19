@@ -19,15 +19,14 @@ void InitIO() {
     // Configuration des sorties
 
     //******* LED ***************************
-    _TRISJ6 = 0; // LED Orange 1
-    _TRISJ5 = 0; //LED Blanche 1
-    _TRISJ4 = 0; // LED Bleue 1
+    _TRISJ6 = 0; // LED Blanche 1
+    _TRISJ5 = 0; //LED Bleue 1
+    _TRISJ4 = 0; // LED Orange 1
     _TRISJ11 = 0; // LED Rouge 1
     _TRISH10 = 0; // LED Verte 1
-
-    _TRISA0 = 0; // LED Orange 2
-    _TRISA9 = 0; //LED Blanche 2
-    _TRISA15 = 0; // LED Bleue 2
+    _TRISA0 = 0; // LED Blanche 2
+    _TRISA9 = 0; //LED Bleue 2
+    _TRISK15 = 0; // LED Orange 2
     _TRISA10 = 0; // LED Rouge 2
     _TRISH3 = 0; // LED Verte 2
 
@@ -50,7 +49,13 @@ void InitIO() {
     UnlockIO(); // On unlock les registres d'entrées/sorties, ainsi que les registres des PPS
 
     //Assignation des remappable pins
-
+    _U1RXR = 78;
+    _RP79R = 0b00001; //Remappe la sortie Tx1 vers RP36R (macro de RPOR1BITS.RP36R)
+    _QEA2R = 97; //assign QEI A to pin RP97
+    _QEB2R = 113; //assign QEI B to pin RP96
+    _QEA1R = 126; //assign QEI A to pin RP70
+    _QEB1R = 124; //assign QEI B to pin RP69
+    
     LockIO(); // On lock les registres d'entrées/sorties, ainsi que les registres des PPS
 }
 
