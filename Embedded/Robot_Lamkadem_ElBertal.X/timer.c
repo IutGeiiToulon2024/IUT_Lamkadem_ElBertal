@@ -9,6 +9,7 @@
 #include "CB_RX1.h"
 #include "UART_Protocol.h"
 #include "trajectory.h"
+#include "ChipConfig.h"
 
 //Initialisation d?un timer 32 bits
 unsigned long timestamp ;

@@ -12,9 +12,9 @@
         public double IntegralLimit { get; private set; }
         public double DerivationLimit { get; private set; }
 
-        public double correctionP { get; private set; }
-        public double correctionI { get; private set; }
-        public double correctionD { get; private set; }
+        public double CorrectionP { get; private set; }
+        public double CorrectionI { get; private set; }
+        public double CorrectionD { get; private set; }
 
         public AsservissementPID(/*double fEch, */double kp, double ki, double kd, double proportionalLimit, double integralLimit, double derivationLimit)
         {
@@ -48,22 +48,22 @@
             {
                 //Le principe de calcul est le suivant :
                 //On veut borner les corrections sur chaque terme à une valeur donnée, par exemple ProportionalLimit pour la contribution de P à la correction
-                //Sachant que correctionP = Kp*erreur, il faut donc borner au préalable erreur à ProportionalLimit / Kp
+                //Sachant que CorrectionP = Kp*erreur, il faut donc borner au préalable erreur à ProportionalLimit / Kp
 
                 double erreurBornee = Toolbox.LimitToInterval(error, -ProportionalLimit / Kp, ProportionalLimit / Kp);
-                correctionP = Kp * erreurBornee;
+                CorrectionP = Kp * erreurBornee;
 
 
                 IntegraleErreur += error * ElapsedTimeBetweenCalculation; // / SampleFreq;
                 IntegraleErreur = Toolbox.LimitToInterval(IntegraleErreur, -IntegralLimit / Ki, IntegralLimit / Ki); //On touche à Integrale directement car on ne veut pas laisser l'intégrale grandir à l'infini
-                correctionI = Ki * IntegraleErreur;
+                CorrectionI = Ki * IntegraleErreur;
 
                 double derivee = (error - errorT_1) / ElapsedTimeBetweenCalculation; // * SampleFreq;
                 double deriveeBornee = Toolbox.LimitToInterval(derivee, -DerivationLimit / Kd, DerivationLimit / Kd);
                 errorT_1 = error;
-                correctionD = deriveeBornee * Kd;
+                CorrectionD = deriveeBornee * Kd;
 
-                return correctionP + correctionI + correctionD;
+                return CorrectionP + CorrectionI + CorrectionD;
             }
             else return 0;
         }

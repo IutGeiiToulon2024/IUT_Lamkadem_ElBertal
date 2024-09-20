@@ -72,15 +72,15 @@ double talon = 20;
 //    }
 //}
 
-//void PWMSetSpeedConsigne(float vitesseEnPourcents, int numMoteur) {
-//    if (modeAuto == 1) {
-//        if (numMoteur == MOTEUR_GAUCHE) {
-//            robotState.vitesseGaucheConsigne = vitesseEnPourcents;
-//        } else if (numMoteur == MOTEUR_DROIT) {
-//            robotState.vitesseDroiteConsigne = vitesseEnPourcents;
-//        }
-//    }
-//}
+void PWMSetSpeedConsigne(float vitesseEnPourcents, int numMoteur) {
+    if (modeAuto == 1) {
+        if (numMoteur == MOTEUR_GAUCHE) {
+            robotState.vitesseGaucheConsigne = vitesseEnPourcents;
+        } else if (numMoteur == MOTEUR_DROIT) {
+            robotState.vitesseDroiteConsigne = -vitesseEnPourcents;
+        }
+    }
+}
 
 void PWMUpdateSpeed() {
     // Cette fonction est appelee sur timer et permet de suivre des rampes d acceleration
@@ -120,7 +120,7 @@ void PWMUpdateSpeed() {
 void PWMSetSpeedCommandePolaire(double vitesseLineaire, double vitesseAngulaire) {
     if (modeAuto == 0) {
         robotState.vitesseDroiteConsigne = SPEED_TO_PERCENT * (vitesseLineaire + vitesseAngulaire*DISTROUES);
-        robotState.vitesseGaucheConsigne = SPEED_TO_PERCENT * (vitesseLineaire - vitesseAngulaire*DISTROUES);
+        robotState.vitesseGaucheConsigne = SPEED_TO_PERCENT * (vitesseLineaire - vitesseAngulaire*DISTROUES); // divise distroues par 2 si problème !
         PWMUpdateSpeed();
     }
 }

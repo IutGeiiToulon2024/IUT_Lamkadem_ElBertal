@@ -66,13 +66,13 @@ int main(void) {
         if (ADCIsConversionFinished() == 1) {
             ADCClearConversionFinishedFlag();
             unsigned int * result = ADCGetResult();
-            float volts = ((float) result [4])* 3.3 / 4096 * 3.2;
+            float volts = ((float) result [4])* 3.3 / 4096 ;
             robotState.distanceTelemetreExtremeDroit = 34 / volts - 5;
-            volts = ((float) result [0])* 3.3 / 4096 * 3.2;
+            volts = ((float) result [0])* 3.3 / 4096 ;
             robotState.distanceTelemetreExtremeGauche = 34 / volts - 5;
-            volts = ((float) result [1])* 3.3 / 4096 * 3.2;
+            volts = ((float) result [1])* 3.3 / 4096 ;
             robotState.distanceTelemetreGauche = 34 / volts - 5;
-            volts = ((float) result [2])* 3.3 / 4096 * 3.2;
+            volts = ((float) result [2])* 3.3 / 4096 ;
             robotState.distanceTelemetreCentre = 34 / volts - 5;
             volts = ((float) result [3])* 3.3 / 4096 * 3.2;
             robotState.distanceTelemetreDroit = 34 / volts - 5;
@@ -148,24 +148,33 @@ int main(void) {
 
 
             // --------------------------------------------------Gestion etat des leds
-            //            if (robotState.distanceTelemetreExtremeDroit < 30) {
-            //                LED_ORANGE_1 = 1;
-            //            } else {
-            //                LED_ORANGE_1 = 0;
-            //            }
-            //            if (robotState.distanceTelemetreExtremeGauche < 30) {
-            //                LED_BLANCHE_1 = 1;
-            //            } else {
-            //                LED_BLANCHE_1 = 0;
-            //            }
-            //            if (robotState.distanceTelemetreCentre < 30) {
-            //                LED_BLEUE_1 = 1;
-            //            } else {
-            //                LED_BLEUE_1 = 0;
-            //            }
+            if (robotState.distanceTelemetreDroit < 20) {
+                LED_VERTE_1 = 1;
+            } else {
+                LED_VERTE_1 = 0;
+            }
+            if (robotState.distanceTelemetreExtremeDroit < 20) {
+                LED_ROUGE_1 = 1;
+            } else {
+                LED_ROUGE_1 = 0;
+            }
+            if (robotState.distanceTelemetreCentre < 20) {
+                LED_ORANGE_1 = 1;
+            } else {
+                LED_ORANGE_1 = 0;
+            }
+            if (robotState.distanceTelemetreGauche < 20) {
+                LED_BLEUE_1 = 1;
+            } else {
+                LED_BLEUE_1 = 0;
+            }
+            if (robotState.distanceTelemetreExtremeGauche < 20) {
+                LED_BLANCHE_1 = 1;
+            } else {
+                LED_BLANCHE_1 = 0;
+            }
         }
     }
-
 } // fin main
 
 unsigned char stateRobot;
@@ -175,28 +184,36 @@ void OperatingSystemLoop(void) {
     switch (stateRobot) {
         case STATE_ATTENTE:
             timestamp = 0;
-            PWMSetSpeedCommandePolaire(0,0);
+            //PWMSetSpeedCommandePolaire(0, 0);
+            PWMSetSpeedConsigne(0, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(0, MOTEUR_GAUCHE);
             stateRobot = STATE_ATTENTE_EN_COURS;
         case STATE_ATTENTE_EN_COURS:
             if (timestamp > 1000)
                 stateRobot = STATE_AVANCE;
             break;
         case STATE_AVANCE:
-            PWMSetSpeedCommandePolaire(1,0);
+            //PWMSetSpeedCommandePolaire(1, 0);
+            PWMSetSpeedConsigne(25, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(25, MOTEUR_GAUCHE);
             stateRobot = STATE_AVANCE_EN_COURS;
             break;
         case STATE_AVANCE_EN_COURS:
             SetNextRobotStateInAutomaticMode();
             break;
         case STATE_TOURNE_GAUCHE:
-            PWMSetSpeedCommandePolaire(0.5,2);
+            //PWMSetSpeedCommandePolaire(0.5, 2);
+            PWMSetSpeedConsigne(13, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(-7, MOTEUR_GAUCHE);
             stateRobot = STATE_TOURNE_GAUCHE_EN_COURS;
             break;
         case STATE_TOURNE_GAUCHE_EN_COURS:
             SetNextRobotStateInAutomaticMode();
             break;
         case STATE_TOURNE_DROITE:
-            PWMSetSpeedCommandePolaire(0.5,-2);
+            //PWMSetSpeedCommandePolaire(0.5, -2);
+            PWMSetSpeedConsigne(15, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(-15, MOTEUR_GAUCHE);
             stateRobot = STATE_TOURNE_DROITE_EN_COURS;
             break;
         case STATE_TOURNE_DROITE_EN_COURS:
@@ -205,14 +222,18 @@ void OperatingSystemLoop(void) {
         case STATE_TOURNE_SUR_PLACE_GAUCHE:
             //                robotState.consigneVitesseLineaire = 0;
             //                robotState.consigneVitesseAngulaire = -3;            
-            PWMSetSpeedCommandePolaire(0,2);
+            //PWMSetSpeedCommandePolaire(0, 2);
+            PWMSetSpeedConsigne(15, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(-15, MOTEUR_GAUCHE);
             stateRobot = STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS;
             break;
         case STATE_TOURNE_SUR_PLACE_GAUCHE_EN_COURS:
             SetNextRobotStateInAutomaticMode();
             break;
-        case STATE_TOURNE_SUR_PLACE_DROITE:          
-            PWMSetSpeedCommandePolaire(0,-2);
+        case STATE_TOURNE_SUR_PLACE_DROITE:
+            //PWMSetSpeedCommandePolaire(0, -2);
+            PWMSetSpeedConsigne(-15, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(15, MOTEUR_GAUCHE);
             stateRobot = STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS;
             break;
         case STATE_TOURNE_SUR_PLACE_DROITE_EN_COURS:
@@ -233,8 +254,8 @@ void OperatingSystemLoop(void) {
                 vitesseG = -15;
             } else {
                 vitesseG = 1 / 3 * robotState.distanceTelemetreDroit + 10 / 3;
-            }          
-            PWMSetSpeedCommandePolaire(0,0);
+            }
+            //PWMSetSpeedCommandePolaire(0, 0);
             stateRobot = STATE_RALENTIS_EN_COURS;
             break;
         case STATE_RALENTIS_EN_COURS:
