@@ -74,7 +74,7 @@ int main(void) {
             robotState.distanceTelemetreGauche = 34 / volts - 5;
             volts = ((float) result [2])* 3.3 / 4096 ;
             robotState.distanceTelemetreCentre = 34 / volts - 5;
-            volts = ((float) result [3])* 3.3 / 4096 * 3.2;
+            volts = ((float) result [3])* 3.3 / 4096 ;
             robotState.distanceTelemetreDroit = 34 / volts - 5;
 
             if (robotState.distanceTelemetreDroit > 100)
@@ -212,8 +212,8 @@ void OperatingSystemLoop(void) {
             break;
         case STATE_TOURNE_DROITE:
             //PWMSetSpeedCommandePolaire(0.5, -2);
-            PWMSetSpeedConsigne(15, MOTEUR_DROIT);
-            PWMSetSpeedConsigne(-15, MOTEUR_GAUCHE);
+            PWMSetSpeedConsigne(-7, MOTEUR_DROIT);
+            PWMSetSpeedConsigne(13, MOTEUR_GAUCHE);
             stateRobot = STATE_TOURNE_DROITE_EN_COURS;
             break;
         case STATE_TOURNE_DROITE_EN_COURS:

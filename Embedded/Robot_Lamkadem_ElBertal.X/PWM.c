@@ -75,9 +75,9 @@ double talon = 20;
 void PWMSetSpeedConsigne(float vitesseEnPourcents, int numMoteur) {
     if (modeAuto == 1) {
         if (numMoteur == MOTEUR_GAUCHE) {
-            robotState.vitesseGaucheConsigne = vitesseEnPourcents;
+            robotState.vitesseGaucheConsigne = -vitesseEnPourcents;
         } else if (numMoteur == MOTEUR_DROIT) {
-            robotState.vitesseDroiteConsigne = -vitesseEnPourcents;
+            robotState.vitesseDroiteConsigne = vitesseEnPourcents;
         }
     }
 }
