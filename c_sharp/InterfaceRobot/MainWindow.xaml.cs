@@ -21,7 +21,7 @@ using ExtendedSerialPort;
 using WpfOscilloscopeControl;
 using WpfAsservissementDisplay;
 using System.Timers;
-using SciChart.Charting.Visuals;
+//using SciChart.Charting.Visuals;
 
 namespace InterfaceRobot
 {
@@ -40,7 +40,7 @@ namespace InterfaceRobot
         public MainWindow()
         {
             InitializeComponent();
-            serialPort1 = new ReliableSerialPort("COM13", 115200, Parity.None, 8, StopBits.One);
+            serialPort1 = new ReliableSerialPort("COM3", 115200, Parity.None, 8, StopBits.One);
             serialPort1.OnDataReceivedEvent += SerialPort1_OnDataReceivedEvent;
             serialPort1.Open();
             timerAffichage = new Timer();

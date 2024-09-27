@@ -66,7 +66,7 @@ int main(void) {
         if (ADCIsConversionFinished() == 1) {
             ADCClearConversionFinishedFlag();
             unsigned int * result = ADCGetResult();
-            float volts = ((float) result [4])* 3.3 / 4096 ;
+            float volts = ((float) result [3])* 3.3 / 4096 ;
             robotState.distanceTelemetreExtremeDroit = 34 / volts - 5;
             volts = ((float) result [0])* 3.3 / 4096 ;
             robotState.distanceTelemetreExtremeGauche = 34 / volts - 5;
@@ -74,7 +74,7 @@ int main(void) {
             robotState.distanceTelemetreGauche = 34 / volts - 5;
             volts = ((float) result [2])* 3.3 / 4096 ;
             robotState.distanceTelemetreCentre = 34 / volts - 5;
-            volts = ((float) result [3])* 3.3 / 4096 ;
+            volts = ((float) result [4])* 3.3 / 4096 ;
             robotState.distanceTelemetreDroit = 34 / volts - 5;
 
             if (robotState.distanceTelemetreDroit > 100)
@@ -148,12 +148,12 @@ int main(void) {
 
 
             // --------------------------------------------------Gestion etat des leds
-            if (robotState.distanceTelemetreDroit < 20) {
+            if (robotState.distanceTelemetreExtremeDroit < 20) {
                 LED_VERTE_1 = 1;
             } else {
                 LED_VERTE_1 = 0;
             }
-            if (robotState.distanceTelemetreExtremeDroit < 20) {
+            if (robotState.distanceTelemetreDroit < 20) {
                 LED_ROUGE_1 = 1;
             } else {
                 LED_ROUGE_1 = 0;
@@ -275,13 +275,13 @@ void SetNextRobotStateInAutomaticMode() {
             robotState.distanceTelemetreDroit < 25) &&
             robotState.distanceTelemetreCentre > 25 &&
             robotState.distanceTelemetreGauche > 25 &&
-            robotState.distanceTelemetreExtremeGauche > 25) //Obstacle à droite
+            robotState.distanceTelemetreExtremeGauche > 28) //Obstacle à droite
         positionObstacle = OBSTACLE_A_DROITE;
     else if (robotState.distanceTelemetreExtremeDroit > 25 &&
             robotState.distanceTelemetreDroit > 25 &&
             robotState.distanceTelemetreCentre > 25 &&
             (robotState.distanceTelemetreGauche < 25 ||
-            robotState.distanceTelemetreExtremeGauche < 25)) //Obstacle à gauche
+            robotState.distanceTelemetreExtremeGauche < 28)) //Obstacle à gauche
         positionObstacle = OBSTACLE_A_GAUCHE;
     else if (robotState.distanceTelemetreCentre < 25) //Obstacle en face
         positionObstacle = OBSTACLE_EN_FACE;
