@@ -40,7 +40,7 @@ namespace InterfaceRobot
         public MainWindow()
         {
             InitializeComponent();
-            serialPort1 = new ReliableSerialPort("COM3", 115200, Parity.None, 8, StopBits.One);
+            serialPort1 = new ReliableSerialPort("COM13", 115200, Parity.None, 8, StopBits.One);
             serialPort1.OnDataReceivedEvent += SerialPort1_OnDataReceivedEvent;
             serialPort1.Open();
             timerAffichage = new Timer();
@@ -603,9 +603,9 @@ namespace InterfaceRobot
         private void buttonAsserv_Click(object sender, RoutedEventArgs e)
         {
             //(float) random.NextDouble() ;
-            float KpX = (float)1.5 ;
-            float KpTheta = (float)1.2 ;
-            float KiX = 100 ;
+            float KpX = (float)3.2 ;
+            float KpTheta = (float)3.5; //1.2 ;
+            float KiX = 40 ;
             float KiTheta = 40 ;
             float KdX = 0 ;
             float KdTheta = 0 ;
