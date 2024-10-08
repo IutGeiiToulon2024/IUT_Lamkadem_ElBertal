@@ -48,12 +48,12 @@ namespace InterfaceRobot
             timerAffichage.Elapsed += TimerAffichage_Tick;
             timerAffichage.Start();
 
-            oscilloSpeed.AddOrUpdateLine(0, 200, "position");
-            oscilloSpeed.ChangeLineColor("position", Colors.Red);
+            oscilloSpeed.AddOrUpdateLine(0, 200, "Vitesse");
+            oscilloSpeed.ChangeLineColor("Vitesse", Colors.Red);
             oscilloSpeed.isDisplayActivated = true;
 
-            oscilloPos.AddOrUpdateLine(0, 200, "Vitesse");
-            oscilloPos.ChangeLineColor("Vitesse", Colors.Red);
+            oscilloPos.AddOrUpdateLine(0, 200, "Position");
+            oscilloPos.ChangeLineColor("Position", Colors.RoyalBlue);
             oscilloPos.isDisplayActivated = true;
 
         }
@@ -181,7 +181,7 @@ namespace InterfaceRobot
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            oscilloSpeed.AddOrUpdateLine(0, 200, "Ligne1");
+            //oscilloSpeed.AddOrUpdateLine(0, 200, "Ligne1");
         }
 
         void SendMessage()
@@ -462,8 +462,8 @@ namespace InterfaceRobot
                         textBoxPosition.Text += "vitesseAngulaireFromOdometry : " + robot.vitesseAngulaireFromOdometry + '\n';
                     }));
 
-                    oscilloSpeed.AddPointToLine(0, robot.positionXOdo, robot.positionYOdo);
-                    oscilloPos.AddPointToLine(0, robot.timestamp / 1000.0, robot.vitesseLineaireFromOdometry);
+                    oscilloPos.AddPointToLine(0, robot.positionXOdo, robot.positionYOdo);
+                    oscilloSpeed.AddPointToLine(0, robot.timestamp / 1000.0, robot.vitesseLineaireFromOdometry);
                     break;
                 //
 
