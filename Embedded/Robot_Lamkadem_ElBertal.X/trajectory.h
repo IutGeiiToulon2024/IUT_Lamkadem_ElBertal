@@ -25,6 +25,7 @@ typedef struct {
     float thetaRobot;
     float thetaRestant;
     float thetaArret;
+    float incrementAng;
     float accelerationAngulaire;
     float vitesseLineaire;
     float vitesseAngulaire;

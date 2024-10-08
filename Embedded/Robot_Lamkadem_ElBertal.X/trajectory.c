@@ -4,6 +4,7 @@
 #include "UART_Protocol.h"
 #include "math.h"
 #include "timer.h"
+#include "QEI.h"
 
 volatile GhostPosition ghostPosition;
 
@@ -33,7 +34,9 @@ void ghost() {
         case ROTATION:
             ghostPosition.thetaRestant = ghostPosition.thetaWaypoint - ModuloByAngle(ghostPosition.thetaWaypoint, ghostPosition.thetaRobot);
             ghostPosition.thetaArret = pow(ghostPosition.vitesseAngulaire, 2) / (2 * ghostPosition.accelerationAngulaire);
-            if (ghostPosition.thetaRestant > 0) {
+            ghostPosition.incrementAng = ghostPosition.vitesseAngulaire * 1/FREQ_ECH_QEI;
+            if (((ghostPosition.thetaRestant >= 0 && ghostPosition.thetaArret >= 0) || (ghostPosition.thetaRestant <= 0 && ghostPosition.thetaArret <= 0))
+                    && Abs(ghostPosition.thetaRestant) >= Abs(ghostPosition.thetaArret))   {
                 if (ghostPosition.vitesseAngulaire < 0) {
                     ghostPosition.vitesseAngulaire -= ghostPosition.accelerationAngulaire;
                 } else {
@@ -105,7 +108,7 @@ void ghost() {
             ghostPosition.posY += ghostPosition.vitesseLineaire * sin(ghostPosition.thetaRobot) * deltaTime;
             lastUpdateTime = timestamp;
             break;
-}
+    }
 }
 
 void SendGhost() {

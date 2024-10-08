@@ -8,7 +8,7 @@
 #include "UART_Protocol.h"
 #include <math.h>  // <cmath> en C++
 
-#define FREQ_ECH_QEI 250.0
+
 #define DISTROUES 0.281 
 //#define PI 3.14159265358979323846
 #define POSITION_DATA 0x0061
