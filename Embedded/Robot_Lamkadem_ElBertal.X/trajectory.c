@@ -16,6 +16,8 @@ void InitTrajectory(void) {
     ghostPosition.vitesseAngulaire = 0.0;
     ghostPosition.waypointX = 0.0;
     ghostPosition.waypointY = 0.0;
+    ghostPosition.lastWaypointX = 0.0;
+    ghostPosition.lastWaypointY = 0.0;
     ghostPosition.thetaWaypoint = 0.0;
     ghostPosition.distanceToTarget = 0.0;
     ghostPosition.state = IDLE;
@@ -32,9 +34,14 @@ void ghost() {
             break;
 
         case ROTATION:
-            ghostPosition.thetaRestant = ghostPosition.thetaWaypoint - ModuloByAngle(ghostPosition.thetaWaypoint, ghostPosition.thetaRobot);
+            ghostPosition.waypoint = atan2((ghostPosition.waypointY - ghostPosition.posY), (ghostPosition.waypointX - ghostPosition.posX));
+            ghostPosition.thetaRestant = ModuloByAngle(ghostPosition.thetaGhost, ghostPosition.waypoint) - ghostPosition.thetaGhost;
             ghostPosition.thetaArret = pow(ghostPosition.vitesseAngulaire, 2) / (2 * ghostPosition.accelerationAngulaire);
             ghostPosition.incrementAng = ghostPosition.vitesseAngulaire * 1/FREQ_ECH_QEI;
+            if (ghostPosition.vitesseAngulaire < 0)
+            {
+                ghostPosition.thetaArret = -ghostPosition.thetaArret;
+            }
             if (((ghostPosition.thetaRestant >= 0 && ghostPosition.thetaArret >= 0) || (ghostPosition.thetaRestant <= 0 && ghostPosition.thetaArret <= 0))
                     && Abs(ghostPosition.thetaRestant) >= Abs(ghostPosition.thetaArret))   {
                 if (ghostPosition.thetaRestant > 0){
@@ -63,9 +70,27 @@ void ghost() {
                     ghostPosition.vitesseAngulaire = 0;
                 }
             }
-//            else {
-//                
-//            }
+            else {
+                if (ghostPosition.thetaRestant > 0)
+                {
+                    ghostPosition.vitesseAngulaire -= ghostPosition.accelerationAngulaire;
+
+                }
+                else if(ghostPosition.thetaRestant < 0)
+                {
+                    ghostPosition.vitesseAngulaire += ghostPosition.accelerationAngulaire;
+                }
+                else 
+                {
+                    ghostPosition.vitesseAngulaire = 0;
+                }
+                if (Abs(ghostPosition.thetaRestant) < Abs(ghostPosition.incrementAng))
+                {
+                    ghostPosition.incrementAng = ghostPosition.thetaRestant;
+                }
+            }
+            
+            ghostPosition.thetaGhost = ghostPosition.thetaGhost + ghostPosition.incrementAng;
             
             if (Abs(ghostPosition.thetaRestant) < TOLERANCE_ANG) {
                 ghostPosition.vitesseAngulaire = 0;

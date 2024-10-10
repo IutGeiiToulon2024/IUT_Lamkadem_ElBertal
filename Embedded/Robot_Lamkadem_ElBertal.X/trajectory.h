@@ -25,6 +25,7 @@ typedef struct {
     float thetaRobot;
     float thetaRestant;
     float thetaArret;
+    float thetaGhost ;
     float incrementAng;
     float accelerationAngulaire;
     float vitesseLineaire;
@@ -33,8 +34,11 @@ typedef struct {
     float posY;
     float waypointX ;
     float waypointY ;
+    float waypoint ;
     float distanceToTarget ;
     float distance ;
+    float lastWaypointX ;
+    float lastWaypointY ;
     
     StateGhost state;
 
