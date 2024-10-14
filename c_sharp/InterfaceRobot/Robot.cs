@@ -71,6 +71,7 @@ namespace InterfaceRobot
         public float posX;
         public float posY;
         public float thetaRobot;
+        public float ghostSpeed;
 
         public Robot()
         {

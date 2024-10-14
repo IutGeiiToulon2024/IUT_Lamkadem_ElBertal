@@ -15,22 +15,24 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
                     <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="63*" />
-                    <ColumnDefinition Width="186*"/>
-                    <ColumnDefinition Width="249*"/>
-                    <ColumnDefinition Width="497*"/>
+                    <ColumnDefinition Width="100*" />
+                    <ColumnDefinition Width="100*"/>
+                    <ColumnDefinition Width="250*"/>
+                    <ColumnDefinition Width="250*"/>
                 </Grid.ColumnDefinitions>
 
-                <GroupBox x:Name="Emission" Header="Emission"  Background="#FF9FB9B0" Foreground="Black" BorderBrush="Black" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,5,4,5" >
+                <GroupBox x:Name="Emission" Header="Emission"  Background="#FF9FB9B0" Foreground="Black" BorderBrush="Black" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="1" Margin="5,5,5,5" >
                     <TextBox x:Name="textBoxEmission" Margin="2,0,-2,0" TextWrapping="Wrap" Background="{x:Null}" BorderBrush="{x:Null}" AcceptsReturn="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextChanged="textBoxEmission_TextChanged" KeyUp="textBoxEmission_KeyUp"/>
                 </GroupBox>
-                <GroupBox x:Name="Reception" Header="Reception" BorderBrush="Black" Foreground="Black" Background="#FF9FB9B0" Grid.Row="0" Grid.Column="2" VerticalContentAlignment="Stretch" Margin="6,5,5,5" >
-                    <TextBox x:Name="textBoxReception" HorizontalAlignment="Stretch" Margin="0,0,0,0" TextWrapping="Wrap" VerticalAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" AcceptsReturn="True" IsReadOnly="True" TextChanged="TextBox_TextChanged"/>
+                <GroupBox x:Name="Reception" Header="Reception" BorderBrush="Black" Foreground="Black" Background="#FF9FB9B0" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="1" VerticalContentAlignment="Stretch" Margin="5,5,5,5" >
+                    <TextBox x:Name="textBoxReception" TextWrapping="Wrap" Background="{x:Null}" BorderBrush="{x:Null}" AcceptsReturn="True" IsReadOnly="True" TextChanged="TextBox_TextChanged" Margin="-1,0,1,0"/>
                 </GroupBox>
-                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" Grid.RowSpan="1" Margin="0,0,0,0">
+                <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" Grid.RowSpan="1" Margin="0,0,0,0">
                     <Button x:Name="buttonEnvoyer" Content="ENVOYER" HorizontalAlignment="Left"  Width="100" Click="buttonEnvoyer_Click" Margin="5"/>
                     <Button x:Name="buttonClear" Content="NETTOYER"  HorizontalAlignment="Left" Width="100"  Click="buttonClear_Click" Margin="5"/>
                     <Button x:Name="buttonTest" Content="Test" HorizontalAlignment="Right" Width="100" Click="buttonTest_Click" Margin="5"/>
@@ -38,7 +40,7 @@
 
                 </StackPanel>
 
-                <StackPanel Orientation="Vertical" Grid.ColumnSpan="2" Margin="0,0,0,0" Grid.RowSpan="2" Grid.Row="1">
+                <StackPanel Orientation="Vertical" Grid.ColumnSpan="2" Margin="0,0,0,0" Grid.RowSpan="1" Grid.Row="1" Grid.Column="0">
                     <GroupBox Header="Leds" Background="#FFB1B7B5" BorderBrush="Black" Margin="5">
                         <StackPanel x:Name="BOX" HorizontalAlignment="Left" Orientation="Horizontal">
                             <CheckBox x:Name="checkLed1" Content="Led 1" HorizontalAlignment="Left" Margin="5" Checked="checkLed1_Checked" Unchecked="checkLed1_Unchecked"/>
@@ -55,19 +57,36 @@
                     </GroupBox>
                 </StackPanel>
 
-                <oscillo:WpfOscilloscope x:Name="oscilloSpeed" x:FieldModifier="public" Grid.Row="0" Grid.RowSpan="1" Grid.Column="3" Margin="5,5,5,5" />
-                <oscillo:WpfOscilloscope x:Name="oscilloPos" x:FieldModifier="public" Grid.Row="1" Grid.RowSpan="1" Grid.Column="3" Margin="5,5,5,5"/>
-                <Slider x:Name="SliderVitesseAngulaire" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Width="191" Maximum="3" Minimum="-3" Margin="0,200,0,0"/>
-                <Slider x:Name="SliderVitesseLineaire" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Width="191" Maximum="3" Minimum="-3" Margin="0,250,0,0"/>
-                <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="0,250,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Height="23" Width="82"><Run Language="fr-fr" Text="Vitesse Lineaire"/></TextBlock>
-                <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="0,200,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Height="23" Width="96"><Run Text="Vitesse "/><Run Language="fr-fr" Text="Angulaire"/></TextBlock>
-                <AsservDisplay:AsservissementRobot2RouesDisplayControl x:Name="asservSpeedDisplay" Background="Black" Loaded="asservSpeedDisplay_Loaded" Grid.Row="1" Grid.Column="2" Margin="5,5,5,5"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="2" Grid.ColumnSpan="1" Margin="0,0,0,0" Grid.Row="4" Grid.RowSpan="1">
+                    <Button x:Name="buttonPos01" Content="0;1" HorizontalAlignment="Left"  Width="50" Click="button01_Click" Margin="5"/>
+                    <Button x:Name="buttonPos10" Content="1;0"  HorizontalAlignment="Left" Width="50"  Click="button10_Click" Margin="5"/>
+                    <Button x:Name="buttonPos11" Content="1;1" HorizontalAlignment="Right" Width="50" Click="button11_Click" Margin="5"/>
+                    <Button x:Name="buttonPos00" Content="0;0" HorizontalAlignment="Right" Width="50" Click="button00_Click" Margin="5"/>
+
+                </StackPanel>
+
+                <AsservDisplay:AsservissementRobot2RouesDisplayControl x:Name="asservSpeedDisplay" Background="Black" Loaded="asservSpeedDisplay_Loaded" Grid.Row="2" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,5,5,5"/>
+                <oscillo:WpfOscilloscope x:Name="oscilloSpeed" x:FieldModifier="public" Grid.Row="0" Grid.RowSpan="2" Grid.Column="3" Margin="5,5,5,5" />
+                <oscillo:WpfOscilloscope x:Name="oscilloPos" x:FieldModifier="public" Grid.Row="2" Grid.RowSpan="2" Grid.Column="3" Margin="5,5,5,5"/>
+                <oscillo:WpfOscilloscope x:Name="oscilloGhostPos" x:FieldModifier="public" Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="1" Margin="5,5,5,5" />
+                <oscillo:WpfOscilloscope x:Name="oscilloGhostSpeed" x:FieldModifier="public" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="1" Margin="5,5,5,5" />
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="3" Grid.ColumnSpan="1" Margin="0,0,0,0" Grid.Row="4" Grid.RowSpan="1">
+                    <TextBlock Grid.Column="3" HorizontalAlignment="Left" Margin="0,0,0,0" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Top" Height="23" Width="96"><Run Text="Vitesse "/><Run Language="fr-fr" Text="Angulaire"/></TextBlock>
+                    <TextBlock Grid.Column="3" HorizontalAlignment="Left" Margin="-90,30,0,0"  Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Top" Height="23" Width="82"><Run Language="fr-fr" Text="Vitesse Lineaire"/></TextBlock>
+                    <Slider x:Name="SliderVitesseAngulaire" HorizontalAlignment="Right" VerticalAlignment="Top" Width="191" Maximum="3" Minimum="-3" Margin="50,0,0,0"/>
+                    <Slider x:Name="SliderVitesseLineaire" Grid.Column="3" HorizontalAlignment="Right" Grid.Row="4" VerticalAlignment="Top" Width="191" Maximum="3" Minimum="-3" Margin="-190,30,0,0"/>
+
+
+                </StackPanel>
+
+
             </Grid>
         </TabItem>
         <TabItem Header="Map">
             <Grid>
                 <GroupBox x:Name="Ocilloscope" Header="Oscilloscope" Grid.Column="1" Grid.Row="1" Background="#FFB1B7B5" BorderBrush="Black" Grid.RowSpan="6" Grid.ColumnSpan="4">
-                    
+
                 </GroupBox>
             </Grid>
         </TabItem>
@@ -82,18 +101,11 @@
                     <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
 
-                <oscillo:WpfOscilloscope x:Name="oscilloGhost" x:FieldModifier="public" Margin="10,5,10,5" Grid.Row="0" Grid.ColumnSpan="2" />
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="1" Margin="197,406,0,0" Grid.RowSpan="2">
-                    <Button x:Name="buttonPos01" Content="0;1" HorizontalAlignment="Left"  Width="50" Click="button01_Click" Margin="5"/>
-                    <Button x:Name="buttonPos10" Content="1;0"  HorizontalAlignment="Left" Width="50"  Click="button10_Click" Margin="5"/>
-                    <Button x:Name="buttonPos11" Content="1;1" HorizontalAlignment="Right" Width="50" Click="button11_Click" Margin="5"/>
-                    <Button x:Name="buttonPos00" Content="0;0" HorizontalAlignment="Right" Width="50" Click="button00_Click" Margin="5"/>
 
-                </StackPanel>
             </Grid>
         </TabItem>
         <TabItem Header="Donnees d'asservissement">
-            
+
         </TabItem>
     </TabControl>
 </Window>

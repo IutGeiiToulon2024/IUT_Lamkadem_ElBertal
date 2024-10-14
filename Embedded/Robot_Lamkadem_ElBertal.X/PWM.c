@@ -12,7 +12,7 @@
 #define DISTROUES 0.281 
 #define SPEED_TO_PERCENT 40
 float acceleration = 5;
-int modeAuto = 1;
+int modeAuto = 0;
 
 void InitPWM(void) {
     PTCON2bits.PCLKDIV = 0b000; //Divide by 1
@@ -29,7 +29,7 @@ void InitPWM(void) {
     /* Enable PWM Module */
     PTCONbits.PTEN = 1;
 }
-double talon = 20;
+double talon = 50;
 
 //void PWMSetSpeed(float vitesseEnPourcents, int numMoteur)
 //{
@@ -75,9 +75,9 @@ double talon = 20;
 void PWMSetSpeedConsigne(float vitesseEnPourcents, int numMoteur) {
     if (modeAuto == 1) {
         if (numMoteur == MOTEUR_GAUCHE) {
-            robotState.vitesseGaucheConsigne = vitesseEnPourcents;
+            robotState.vitesseGaucheConsigne = -vitesseEnPourcents;
         } else if (numMoteur == MOTEUR_DROIT) {
-            robotState.vitesseDroiteConsigne = vitesseEnPourcents;
+            robotState.vitesseDroiteConsigne = -vitesseEnPourcents;
         }
     }
 }

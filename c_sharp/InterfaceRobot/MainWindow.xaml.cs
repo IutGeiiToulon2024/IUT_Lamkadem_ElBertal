@@ -554,9 +554,10 @@ namespace InterfaceRobot
                         robot.posX = BitConverter.ToSingle(msgPayload, 0);
                         robot.posY = BitConverter.ToSingle(msgPayload, 4);
                         robot.thetaRobot = BitConverter.ToSingle(msgPayload, 8);
+                        robot.ghostSpeed = BitConverter.ToSingle(msgPayload, 12);
 
-                        oscilloGhost.AddPointToLine(0, robot.posX, robot.posY);
-
+                        oscilloGhostPos.AddPointToLine(0, robot.posX, robot.posY);
+                        oscilloGhostSpeed.AddPointToLine(0, robot.timestamp / 1000.0, robot.ghostSpeed);
                     }));
                     break;
 
