@@ -23,8 +23,8 @@ void InitTrajectory(void) {
     ghostPosition.state = IDLE;
 }
 
-double lastUpdateTime = 0;
-double deltaTime = 0;
+double lastUpdateTime = 0 ;
+double deltaTime = 0 ;
 
 void ghost() {
     switch (ghostPosition.state) {
@@ -37,47 +37,71 @@ void ghost() {
             ghostPosition.waypoint = atan2((ghostPosition.waypointY - ghostPosition.posY), (ghostPosition.waypointX - ghostPosition.posX));
             ghostPosition.thetaRestant = ModuloByAngle(ghostPosition.thetaGhost, ghostPosition.waypoint) - ghostPosition.thetaGhost;
             ghostPosition.thetaArret = pow(ghostPosition.vitesseAngulaire, 2) / (2 * ghostPosition.accelerationAngulaire);
-            ghostPosition.incrementAng = ghostPosition.vitesseAngulaire * 1 / FREQ_ECH_QEI;
-            if (ghostPosition.vitesseAngulaire < 0) {
+            ghostPosition.incrementAng = ghostPosition.vitesseAngulaire * 1/FREQ_ECH_QEI;
+            if (ghostPosition.vitesseAngulaire < 0)
+            {
                 ghostPosition.thetaArret = -ghostPosition.thetaArret;
             }
             if (((ghostPosition.thetaRestant >= 0 && ghostPosition.thetaArret >= 0) || (ghostPosition.thetaRestant <= 0 && ghostPosition.thetaArret <= 0))
-                    && Abs(ghostPosition.thetaRestant) >= Abs(ghostPosition.thetaArret)) {
+                    && Abs(ghostPosition.thetaRestant) >= Abs(ghostPosition.thetaArret))   {
+                if (ghostPosition.thetaRestant > 0){
+                    if(ghostPosition.thetaRestant < ghostPosition.thetaArret)
+                    {
+                        if (ghostPosition.vitesseAngulaire < VIT_MAX_ANG) {
+                            ghostPosition.vitesseAngulaire += ghostPosition.accelerationAngulaire;
+                        } 
+                        else {
+                            ghostPosition.vitesseAngulaire = VIT_MAX_ANG;
+                        }
+                    }   
+                }
+                else if  (ghostPosition.thetaRestant < 0)
+                {
+                    if(ghostPosition.thetaRestant > ghostPosition.thetaArret)
+                    {
+                        if (ghostPosition.vitesseAngulaire>-VIT_MAX_ANG) {
+                            ghostPosition.vitesseAngulaire -= ghostPosition.accelerationAngulaire;
+                        } else {
+                            ghostPosition.vitesseAngulaire = -VIT_MAX_ANG;
+                        }
+                    }
+                }
+                else {
+                    ghostPosition.vitesseAngulaire = 0;
+                }
+            }
+            else {
+                if (ghostPosition.thetaRestant > 0)
+                {
+                    ghostPosition.vitesseAngulaire -= ghostPosition.accelerationAngulaire;
 
-                if (ghostPosition.thetaRestant > 0) {
-                    ghostPosition.vitesseAngulaire = Min(ghostPosition.vitesseAngulaire + ghostPosition.accelerationAngulaire / FREQ_ECH_QEI, VIT_MAX_ANG);
-                } else if (ghostPosition.thetaRestant < 0) {
-                    ghostPosition.vitesseAngulaire = Max(ghostPosition.vitesseAngulaire - ghostPosition.accelerationAngulaire / FREQ_ECH_QEI, -VIT_MAX_ANG);
                 }
-                //                else {
-                //                    ghostPosition.vitesseAngulaire = 0;
-                //                }
-            } else {
-                if (ghostPosition.thetaRestant > 0 && ghostPosition.vitesseAngulaire > 0) {
-                    ghostPosition.vitesseAngulaire = Max(ghostPosition.vitesseAngulaire - ghostPosition.accelerationAngulaire / FREQ_ECH_QEI, 0);
-                } else if (ghostPosition.thetaRestant > 0 && ghostPosition.vitesseAngulaire < 0) {
-                    ghostPosition.vitesseAngulaire = Min(ghostPosition.vitesseAngulaire + ghostPosition.accelerationAngulaire / FREQ_ECH_QEI, 0);
-                }  else if (ghostPosition.thetaRestant < 0 && ghostPosition.vitesseAngulaire>0) {
-                    ghostPosition.vitesseAngulaire = Max(ghostPosition.vitesseAngulaire - ghostPosition.accelerationAngulaire / FREQ_ECH_QEI, 0);
-                }  else if (ghostPosition.thetaRestant < 0 && ghostPosition.vitesseAngulaire<0) {
-                    ghostPosition.vitesseAngulaire = Min(ghostPosition.vitesseAngulaire + ghostPosition.accelerationAngulaire / FREQ_ECH_QEI, 0);
+                else if(ghostPosition.thetaRestant < 0)
+                {
+                    ghostPosition.vitesseAngulaire += ghostPosition.accelerationAngulaire;
                 }
-                if (Abs(ghostPosition.thetaRestant) < Abs(ghostPosition.incrementAng)) {
+                else 
+                {
+                    ghostPosition.vitesseAngulaire = 0;
+                }
+                if (Abs(ghostPosition.thetaRestant) < Abs(ghostPosition.incrementAng))
+                {
                     ghostPosition.incrementAng = ghostPosition.thetaRestant;
                 }
             }
-
+            
             ghostPosition.thetaGhost = ghostPosition.thetaGhost + ghostPosition.incrementAng;
-
+            
             if (Abs(ghostPosition.thetaRestant) < TOLERANCE_ANG) {
                 ghostPosition.vitesseAngulaire = 0;
                 ghostPosition.thetaRobot = ghostPosition.thetaWaypoint;
-                ghostPosition.state = IDLE;
+                ghostPosition.state = DEPLACEMENTLINEAIRE;
             }
             break;
         case DEPLACEMENTLINEAIRE:
-            ghostPosition.distance = sqrt(pow((ghostPosition.waypointY - ghostPosition.posY), 2) + pow((ghostPosition.waypointX - ghostPosition.posX), 2));
-            if (ghostPosition.distance < TOLERANCE_DIST) {
+            ghostPosition.distance = sqrt(pow((ghostPosition.waypointY-ghostPosition.posY),2) + pow((ghostPosition.waypointX-ghostPosition.posX ), 2));
+             if (ghostPosition.distance < TOLERANCE_DIST) 
+             {
                 ghostPosition.state = IDLE;
                 ghostPosition.vitesseLineaire = 0.0;
                 ghostPosition.waypointX = ghostPosition.posX;
@@ -85,18 +109,23 @@ void ghost() {
                 return;
             }
             ghostPosition.distanceToTarget = ghostPosition.distance;
-
+           
             double distanceDecel = pow(ghostPosition.vitesseLineaire, 2) / (2 * ACCELERATION_LIN);
-            double distanceAccel = (pow(VIT_MAX_LIN, 2) - pow(ghostPosition.vitesseLineaire, 2)) / (2 * ACCELERATION_LIN);
+            double distanceAccel = (pow(VIT_MAX_LIN, 2) - pow(ghostPosition.vitesseLineaire, 2))  / (2 * ACCELERATION_LIN);
             double deltaTime = timestamp - lastUpdateTime;
 
-            if (ghostPosition.distance <= (distanceDecel + TOLERANCE_DIST)) {
+            if (ghostPosition.distance <= (distanceDecel + TOLERANCE_DIST)) 
+            {
                 ghostPosition.vitesseLineaire -= ACCELERATION_LIN * deltaTime;
-                ghostPosition.vitesseLineaire = fmax(ghostPosition.vitesseLineaire, 0);
-            } else if (ghostPosition.distance > distanceDecel + distanceAccel) {
+                ghostPosition.vitesseLineaire = fmax(ghostPosition.vitesseLineaire, 0); 
+            } 
+            else if (ghostPosition.distance > distanceDecel + distanceAccel) 
+            {
                 ghostPosition.vitesseLineaire += ACCELERATION_LIN * deltaTime;
                 ghostPosition.vitesseLineaire = fmin(ghostPosition.vitesseLineaire, VIT_MAX_LIN);
-            } else {
+            } 
+            else 
+            {
                 double vMedian = sqrt(VIT_MAX_LIN * ghostPosition.distance + ghostPosition.vitesseLineaire / 2);
                 ghostPosition.vitesseLineaire += ACCELERATION_LIN * deltaTime;
                 ghostPosition.vitesseLineaire = fmin(ghostPosition.vitesseLineaire, vMedian);
@@ -113,6 +142,5 @@ void SendGhost() {
     getBytesFromFloat(GhostPayload, 0, ghostPosition.posX);
     getBytesFromFloat(GhostPayload, 4, ghostPosition.posY);
     getBytesFromFloat(GhostPayload, 8, ghostPosition.thetaRobot);
-    getBytesFromFloat(GhostPayload, 12, ghostPosition.vitesseAngulaire);
-    UartEncodeAndSendMessage(SEND_GHOST, 16, GhostPayload);
+    UartEncodeAndSendMessage(SEND_GHOST, 12, GhostPayload);
 }
