@@ -44,7 +44,7 @@ int main(void) {
     InitTimer23(); // Initialisation des timers
     InitTimer1();
     InitTimer4();
-    InitADC1();
+    InitADC1();      
     InitPWM();
     InitUART();
     InitQEI1();
@@ -52,6 +52,11 @@ int main(void) {
     /****************************************************************************************************/
     // Boucle Principale
     /****************************************************************************************************/
+    
+    InitTrajectoryGenerator();
+    
+    SetupPidAsservissement(&robotState.PidX, 3.2f, 40.0f, 0.0f,100.0f, 100.0f, 100.0f);
+    SetupPidAsservissement(&robotState.PidTheta, 3.5f, 40.0f, 0.0f,100.0f, 100.0f, 100.0f);
 
     int subSamplingSendCounter = 0;
     while (1) {

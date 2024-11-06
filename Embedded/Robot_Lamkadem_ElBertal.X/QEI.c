@@ -9,7 +9,7 @@
 #include <math.h>  // <cmath> en C++
 
 
-#define DISTROUES 0.281 
+#define DISTROUES 0.216 
 //#define PI 3.14159265358979323846
 #define POSITION_DATA 0x0061
 #define MESURE_VIT 0x0062

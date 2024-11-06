@@ -70,13 +70,14 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) {
     ADC1StartConversionSequence();
     //LED_BLEUE = !LED_BLEUE ;
     QEIUpdateData();
+    UpdateTrajectory();
     UpdateAsservissement();
     compteur += 1;
     if (compteur > 10) {        
         SendPositionData();
         compteur = 0 ;
     }
-    SendGhost() ;
+    SendGhostData() ;
 }
 
 void SetFreqTimer1(float freq) {

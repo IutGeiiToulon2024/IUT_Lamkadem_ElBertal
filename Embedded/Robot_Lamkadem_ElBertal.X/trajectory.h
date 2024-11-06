@@ -8,47 +8,50 @@
 #ifndef TRAJECTORY_H
 #define	TRAJECTORY_H
 
-#define VIT_MAX_ANG 3
-#define TOLERANCE_ANG 0.5
-#define TOLERANCE_DIST 0.1
-#define ACCELERATION_LIN 0.1
-#define VIT_MAX_LIN 1
 
+
+#define GHOST_DATA 0x0010
+
+// Parametres de trajectoire
+#define MAX_LINEAR_SPEED 1 // m/s
+#define MAX_LINEAR_ACCEL 0.2 // m/s^2
+
+#define MAX_ANGULAR_SPEED 2 * PI // rad/s
+#define MAX_ANGULAR_ACCEL 2 * PI // rad/s^2
+
+#define ANGLE_TOLERANCE 0.05 // radians
+#define DISTANCE_TOLERANCE 0.1 // metres
+
+
+// Etat de controle de la trajectoire
 typedef enum {
     IDLE,
-    ROTATION,
-    DEPLACEMENTLINEAIRE,
-} StateGhost;
+    ROTATING,
+    ADVANCING,
+    LASTROTATE
+} TrajectoryState;
 
+// Position et vitesse du Ghost
 typedef struct {
-    float thetaWaypoint;
-    float thetaRobot;
-    float thetaRestant;
-    float thetaArret;
-    float thetaGhost ;
-    float incrementAng;
-    float accelerationAngulaire;
-    float vitesseLineaire;
-    float vitesseAngulaire;
-    float posX;
-    float posY;
-    float waypointX ;
-    float waypointY ;
-    float waypoint ;
-    float distanceToTarget ;
-    float distance ;
-    float lastWaypointX ;
-    float lastWaypointY ;
-    
-    StateGhost state;
-
+    TrajectoryState state;
+    double x;
+    double y;
+    double theta;
+    double linearSpeed;
+    double angularSpeed;
+    double targetX;
+    double targetY;
+    double angleToTarget;
+    double distanceToTarget;   
 } GhostPosition;
 
-extern volatile GhostPosition ghostPosition;
 
-void ghost();
-void SendGhost();
-void InitTrajectory() ;
+extern volatile GhostPosition ghostposition;
+
+void UpdateTrajectory();
+void SendGhostData();
+void InitTrajectoryGenerator(void);
+void rotationTarget(double currentTime);
 
 #endif	/* TRAJECTORY_H */
 
