@@ -9,7 +9,7 @@
 
 #define PWMPER 24.0
 #define FREQ_ECH_QEI 250.0
-#define DISTROUES 0.281 
+#define DISTROUES 0.216
 #define SPEED_TO_PERCENT 40
 float acceleration = 5;
 int modeAuto = 0;

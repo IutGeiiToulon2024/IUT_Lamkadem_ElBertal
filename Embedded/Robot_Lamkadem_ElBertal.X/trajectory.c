@@ -11,11 +11,11 @@ extern unsigned long timestamp;
 
 volatile GhostPosition ghostPosition;
 
-double maxAngularSpeed = 1; // rad/s
-double angularAccel = 2; // rad/s^2
-double maxLinearSpeed = 0.5; // m/s
-double minMaxLinenearSpeed = 0.2; // m/s
-double linearAccel = 0.2; // m/s^2
+double maxAngularSpeed = 2; // rad/s
+double angularAccel = 4; // rad/s^2
+double maxLinearSpeed = 1; // m/s
+double minMaxLinenearSpeed = 0.4; // m/s
+double linearAccel = 0.4; // m/s^2
 
 int current_state = IDLE;
 int index = 0;

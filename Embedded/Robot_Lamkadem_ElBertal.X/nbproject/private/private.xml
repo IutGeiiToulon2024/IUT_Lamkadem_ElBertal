@@ -12,6 +12,9 @@
             <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/main.c</file>
             <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/timer.c</file>
             <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/trajectory.h</file>
+            <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/PWM.h</file>
+            <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/robot.h</file>
+            <file>file:/C:/GitHub/IUT_Lamkadem_ElBertal/Embedded/Robot_Lamkadem_ElBertal.X/QEI.c</file>
         </group>
     </open-files>
 </project-private>

@@ -5,7 +5,7 @@
 #include "UART_Protocol.h"
 
 #define FREQ_ECH_QEI 250.0
-#define DISTROUES 0.281 
+#define DISTROUES 0.216
 
 void SetupPidAsservissement(volatile PidCorrector* PidCorr, double Kp, double Ki, double Kd, double proportionelleMax, double integralMax, double deriveeMax) {
     PidCorr->Kp = Kp;
