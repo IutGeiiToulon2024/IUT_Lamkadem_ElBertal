@@ -55,8 +55,8 @@ int main(void) {
     
     InitTrajectoryGenerator();
     
-    SetupPidAsservissement(&robotState.PidX, 3.2f, 40.0f, 0.0f,100.0f, 100.0f, 100.0f);
-    SetupPidAsservissement(&robotState.PidTheta, 3.3f, 45.0f, 0.0f,100.0f, 100.0f, 100.0f);
+    SetupPidAsservissement(&robotState.PidX, 2.9f, 39.0f, 0.0f,100.0f, 100.0f, 100.0f);
+    SetupPidAsservissement(&robotState.PidTheta, 3.1f, 42.0f, 0.0f,100.0f, 100.0f, 100.0f);
 
     int subSamplingSendCounter = 0;
     while (1) {
