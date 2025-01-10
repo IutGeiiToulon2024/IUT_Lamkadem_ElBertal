@@ -18,6 +18,7 @@
 #include "UART.h"
 #include "CB_TX1.h"
 #include "CB_RX1.h"
+#include "CB_RX2.h"
 #include "UART_Protocol.h"
 #include "QEI.h"
 #include "asservissement.h"
@@ -67,7 +68,11 @@ int main(void) {
             UartDecodeMessage(CB_RX1_Get());
         }
         //        char payloadAsservissementX[24], payloadAsservissementTheta[24];
-
+           
+        while (CB_RX2_IsDataAvailable()) {
+            Uart2DecodeMessage(CB_RX2_Get());
+        }
+        
         if (ADCIsConversionFinished() == 1) {
             ADCClearConversionFinishedFlag();
             unsigned int * result = ADCGetResult();

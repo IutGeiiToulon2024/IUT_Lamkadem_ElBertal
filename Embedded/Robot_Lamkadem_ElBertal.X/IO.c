@@ -51,6 +51,9 @@ void InitIO() {
     //Assignation des remappable pins
     _U1RXR = 78;
     _RP79R = 0b00001; //Remappe la sortie Tx1 vers RP36R (macro de RPOR1BITS.RP36R)
+    
+    _U2RXR = 98; //Remappe la RP... sur l??entre Rx1
+    
     _QEA2R = 97; //assign QEI A to pin RP97
     _QEB2R = 113; //assign QEI B to pin RP96
     _QEA1R = 126; //assign QEI A to pin RP70

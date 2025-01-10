@@ -81,7 +81,7 @@ void UartDecodeMessage(unsigned char c) {
             }
             break;
         case CHECKSUM:
-            calculatedChecksum = UartCalculateChecksum(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload);
+            calculatedChecksum = (msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload);
 
             if (calculatedChecksum == c) {
                 //Success, on a un message valide
@@ -94,6 +94,55 @@ void UartDecodeMessage(unsigned char c) {
             //break;
     }
 }
+
+
+void Uart2DecodeMessage(unsigned char c) {
+    switch (rcvState) {
+        case WAITING:
+            if (c == 0xFE) {
+                msgDecodedPayloadIndex = 0;
+                rcvState = FUNCTIONMSB;
+            }
+            break;
+        case FUNCTIONMSB:
+            msgDecodedFunction = c << 8;
+            rcvState = FUNCTIONLSB;
+            break;
+        case FUNCTIONLSB:
+            msgDecodedFunction |= c;
+            rcvState = PAYLOADLENGTHMSB;
+            break;
+        case PAYLOADLENGTHMSB:
+            msgDecodedPayloadLength = c << 8;
+            rcvState = PAYLOADLENGTHLSB;
+            break;
+        case PAYLOADLENGTHLSB:
+            msgDecodedPayloadLength |= c;
+            rcvState = PAYLOAD;
+            break;
+        case PAYLOAD:
+            msgDecodedPayload[msgDecodedPayloadIndex++] = c;
+            if (msgDecodedPayloadIndex == msgDecodedPayloadLength) {
+                rcvState = CHECKSUM;
+                msgDecodedPayloadIndex = 0;
+            }
+            break;
+        case CHECKSUM:
+            calculatedChecksum = (msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload);
+
+            if (calculatedChecksum == c) {
+                //Success, on a un message valide
+                UartProcessDecodedMessage(msgDecodedFunction, msgDecodedPayloadLength, msgDecodedPayload);
+            }
+            rcvState = WAITING;
+            break;
+            //        default:
+            //            rcvState = WAITING;
+            //break;
+    }
+}
+
+
 
 
 float correcteurKp, correcteurKd, correcteurKi, consigneLineaire, limitPX, limitIX, limitDX;
@@ -161,6 +210,11 @@ void UartProcessDecodedMessage(int function,
             ghostPosition.targetX = getFloat(payload, 0);
             ghostPosition.targetY = getFloat(payload, 4);
             
+            break;
+        
+        case CAMERA_XY:
+            ghostPosition.red_target_x = getFloat(payload, 0);
+            ghostPosition.red_target_y = getFloat(payload, 4);
             break;
             
         default:

@@ -26,10 +26,12 @@
 #define COMMANDEERREUR 0x0096
 #define SEND_GHOST 0x0011
 #define RECEIVE_POS_GHOST 0x0010
+#define CAMERA_XY 0x0041
 
 unsigned char UartCalculateChecksum(int, int, unsigned char*) ;
 void UartEncodeAndSendMessage(int, int, unsigned char*) ;
 void UartDecodeMessage(unsigned char) ;
+void Uart2DecodeMessage(unsigned char) ;
 void UartProcessDecodedMessage(int, int, unsigned char*) ;
 
 #endif	/* UART_PROTOCOL_H */

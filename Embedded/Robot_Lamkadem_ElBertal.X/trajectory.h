@@ -42,7 +42,9 @@ typedef struct {
     double targetX;
     double targetY;
     double angleToTarget;
-    double distanceToTarget;   
+    double distanceToTarget; 
+    double red_target_x ;
+    double red_target_y ;
 } GhostPosition;
 
 
